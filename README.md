@@ -1,3 +1,2 @@
 # Bourg Nell
-
-Jass WebApp
+Jass web app
