@@ -52,16 +52,5 @@ friend "*" -- "1" user
 
 gamestate -* game
 
-
-
-
-
-
-
-
-
-
-
-
 @enduml
 
