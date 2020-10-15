@@ -1,0 +1,67 @@
+@startuml bourg
+title bourg-nell database schema
+
+
+enum gamestate{
+    CREATED = 0 
+    ABORTED = 1
+    PLAYING = 2
+    WONTEAM1 = 3
+    WONTEAM2 = 4
+}
+
+class game{
+    #id : id
+    player1 : id
+    player2 : id
+    player3 : id
+    player4 : id
+    scorelimit : uint
+    scoreteam1 : uint
+    scoreteam2 : uint
+    gamestate : gamestate
+    creationdate : timestamp
+}
+
+class user{
+    #id : id
+    +username : string
+    +hashpassword : string
+    +email : string
+    +profilpicturepath : string
+}
+
+class friendinvitation{
+    #requester : id
+    #resquested : id
+}
+
+class friend{
+    #user1 : id
+    #user2 : id
+}
+
+game "*" -- "4" user 
+
+user "1" -- "*" friendinvitation
+friendinvitation "*" -- "1" user
+
+user "1" -- "*" friend
+
+friend "*" -- "1" user
+
+gamestate -* game
+
+
+
+
+
+
+
+
+
+
+
+
+@enduml
+
