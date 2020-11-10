@@ -2,7 +2,7 @@ import {CARD_VALUE} from "./CardValue";
 import {CARD_COLOR} from "./CardColor";
 import {CARDS} from "./Cards";
 
-export class CardGame{
+export class Deck{
 
     private deck = new Array<CARDS>();
     
