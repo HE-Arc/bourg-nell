@@ -1,8 +1,8 @@
 import { createDecipheriv } from "crypto";
-import { CARD_COLOR } from "./Cards/CardColor";
-import {Deck} from "./Cards/Deck";
-import {CARDS} from "./Cards/Cards";
-import { CARD_VALUE } from "./Cards/CardValue";
+import {CARD_COLOR} from "./GameBoard/Cards/CardColor";
+import {Deck} from "./GameBoard/Cards/Deck";
+import {CARDS} from "./GameBoard/Cards/Cards";
+import {CARD_VALUE} from "./GameBoard/Cards/CardValue";
 
 let deck = new Deck();
 console.log(deck.getDeck());
