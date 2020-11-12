@@ -13,12 +13,10 @@ class CreateFriendTable extends Migration
      */
     public function up()
     {
-        Schema::create('friend', function (Blueprint $table) {
-            $table->unsignedBigInteger("user1");
-            $table->unsignedBigInteger("user2");
-
-            $table->foreign("user1")->references("id")->on("user");
-            $table->foreign("user2")->references("id")->on("user");
+        Schema::create('friends', function (Blueprint $table) {
+            $table->foreignId("user1")->references("id")->on("users");
+            $table->foreignId("user2")->references("id")->on("users");
+            $table->timestamps();
         });
     }
 

@@ -13,12 +13,10 @@ class CreateFriendinvitationTable extends Migration
      */
     public function up()
     {
-        Schema::create('friendinvitation', function (Blueprint $table) {
-            $table->unsignedBigInteger("requester");
-            $table->unsignedBigInteger("requested");
-
-            $table->foreign("requester")->references("id")->on("user");
-            $table->foreign("requested")->references("id")->on("user");
+        Schema::create('friendinvitations', function (Blueprint $table) {
+            $table->foreignId("requester")->references("id")->on("users");
+            $table->foreignId("requested")->references("id")->on("users");
+            $table->timestamps();
         });
     }
 

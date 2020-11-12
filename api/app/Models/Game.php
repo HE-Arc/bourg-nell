@@ -5,12 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class Game extends Model
 {
     use HasFactory;
 
-    public function index()
-    {
-        
+    public function index(){
+
     }
 }
