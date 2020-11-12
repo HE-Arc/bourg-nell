@@ -3,6 +3,7 @@ import {Deck} from "./Cards/Deck";
 class GameBoard {
     private deck = new Deck();
     private score = {"team1": 0, "team2":0};
+    // private players = new Array<Player>(4); // TODO Implement Player Class
 
     public constructor() {
         this.init();
