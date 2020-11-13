@@ -1,0 +1,156 @@
+.history_item
+{
+    overflow: hidden;
+    cursor: pointer;
+    padding: 0 24px;
+
+    .score
+    {
+        overflow: hidden;
+        transition: box-shadow .3s;
+
+        .score-header
+        {
+            display: grid;
+            grid-template-columns: auto max-content;
+            padding: 8px 0 12px 0;
+
+            .gamestatus
+            {
+                align-self: center;
+                line-height: 16px;
+                &:before
+                {
+                    content: "";
+                    display: inline-block;
+                    position: relative;
+                    background: var(--history_item-dot-color-canceled);
+                    width: 16px;
+                    height: 16px;
+                    border-radius: 4px;
+                    animation: none;
+                    margin: 0 8px 0 8px;
+                }
+            }
+
+            .date
+            {
+                align-self: center;
+                span
+                {
+                    display: block;
+                    text-align: right;
+                }
+            }
+        }
+
+        .gameresult {
+            display: flex;
+            position: relative;
+            padding: 4px 0;
+
+            &:after
+            {
+                content: "";
+                display: block;
+                background: var(--divider-color);
+                top: 0;
+                bottom: 0;
+                width: 1px;
+                transform: rotate(30deg) translateX(-50%) scaleY(1.15470053);
+                left: 50%;
+                position: absolute;
+            }
+
+            > div
+            {
+                flex: 1;
+                text-align: center;
+
+                .score-placeholder
+                {
+                    width: 2rem;
+                    height: .25rem;
+                    border-radius: .125rem;
+                    background: var(--secondary-text-color);
+                    display: inline-block;
+                }
+
+                &:first-of-type
+                {
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+
+    .hidden-content
+    {
+        border-top: 1px solid transparent;
+        opacity: 0;
+        padding: 0;
+        overflow: hidden;
+        transition: max-height .3s, border-color .3s, margin-top .3s, padding .3s, opacity .3s;
+        max-height: 0;
+
+        h6
+        {
+            padding: 16px 0 8px 0;
+        }
+
+        .players
+        {
+            display: grid;
+            row-gap: 8px;
+            column-gap: 8px;
+            position: relative;
+            grid-template-columns: repeat(2, calc(50% - 4px));
+            > *
+            {
+                justify-self: center;
+                align-self: center;
+            }
+
+            &:after
+            {
+                content: "";
+                display: block;
+                position: absolute;
+                width: 1px;
+                top: 0;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                background: var(--divider-color);
+            }
+        }
+    }
+
+
+    &.open,
+    &.playing
+    {
+        .hidden-content
+        {
+            opacity: 1;
+            margin-top: 8px;
+            border-color: var(--divider-color);
+            padding: 8px 0;
+            max-height: 200px;
+        }
+    }
+    &.playing .score .score-header .gamestatus:before
+    {
+        animation: infinite 2s dotAnimation;
+        border-radius: 100%;
+        background: var(--history_item-dot-color-playing);
+    }
+    &.won .score .score-header .gamestatus:before
+    {
+        background-color: var(--history_item-dot-color-won);
+    }
+    &.lost .score .score-header .gamestatus:before
+    {
+        background-color: var(--history_item-dot-color-lost);
+    }
+}
