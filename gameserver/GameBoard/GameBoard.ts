@@ -1,12 +1,20 @@
 import {Deck} from "./Cards/Deck";
+import {Player} from "./Player/Player";
 
-class GameBoard {
+const PLAYERNUMBER = 4;
+
+export class GameBoard {
     private deck = new Deck();
-    private score = {"team1": 0, "team2":0};
-    // private players = new Array<Player>(4); // TODO Implement Player Class
+    private score = {"team1": 0, "team2": 0};
+    private players = new Array<Player>();
 
     public constructor() {
-        this.init();
+        this.setScore(0,0);
+        this.deck.shuffleDeck();
+        for (let i =0; i<PLAYERNUMBER ;++i) {
+            this.players.push(new Player("Player" + i));
+        }
+        this.giveCards();
     }
 
     public getDeck(){
@@ -22,8 +30,14 @@ class GameBoard {
         this.score["team2"] = team2Score;
     }
 
-    public init() {
-        this.setScore(0,0);
-        this.deck.shuffleDeck();
+    public giveCards() {
+        let cardNumber = this.deck.getDeck().length / PLAYERNUMBER;
+        this.players.forEach(player => {
+            player.setCards(this.deck.getDeck().splice(0,cardNumber));
+        });
     }
+
+    public getPlayers() {
+        return this.players;
+    } 
 }
