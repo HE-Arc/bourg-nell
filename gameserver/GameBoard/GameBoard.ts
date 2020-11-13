@@ -1,6 +1,8 @@
 import {Deck} from "./Cards/Deck";
 import {Player} from "./Player/Player";
 
+const playerNumber = 4;
+
 export class GameBoard {
     private deck = new Deck();
     private score = {"team1": 0, "team2": 0};
@@ -9,7 +11,7 @@ export class GameBoard {
     public constructor() {
         this.setScore(0,0);
         //this.deck.shuffleDeck();
-        for (let i =0;i<4;++i) {
+        for (let i =0; i<playerNumber ;++i) {
             this.players.push(new Player("Player" + i));
         }
         this.giveCards();
@@ -30,7 +32,7 @@ export class GameBoard {
 
     public giveCards() {
         this.players.forEach(player => {
-            player.setCards(this.deck.getDeck().splice(0,9));
+            player.setCards(this.deck.getDeck().splice(0,this.deck.getDeck().length / playerNumber));
         });
     }
 
