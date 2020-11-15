@@ -1,33 +1,50 @@
+import { CARD_COLOR } from "./Cards/CardColor";
+import { CARDS } from "./Cards/Cards";
 import {Deck} from "./Cards/Deck";
 import {Player} from "./Player/Player";
+import { Team } from "./Team/Team";
 
 const PLAYERNUMBER = 4;
 
 export class GameBoard {
     private deck = new Deck();
-    private score = {"team1": 0, "team2": 0};
     private players = new Array<Player>();
+    private trumpCardColor: CARD_COLOR = CARD_COLOR.DIAMOND;
+    
+    private team1: Team;
+    private team2: Team;
 
-    public constructor() {
-        this.setScore(0,0);
-        this.deck.shuffleDeck();
+    public constructor(trumpCard: CARD_COLOR) {
+        //this.deck.shuffleDeck();
         for (let i =0; i<PLAYERNUMBER ;++i) {
             this.players.push(new Player("Player" + i));
         }
+        this.team1 = new Team(this.players[0], this.players[2]);
+        this.team2 = new Team(this.players[1], this.players[3]); 
+        this.setScore(0,0);
         this.giveCards();
+        this.trumpCardColor = trumpCard;   
     }
 
     public getDeck(){
         return this.deck;
     }
 
-    public getScore(){
-        return this.score;
+    public getTeam1(){
+        return this.team1;
+    }
+
+    public getTeam2(){
+        return this.team2;
     }
 
     public setScore(team1Score: number, team2Score: number) {
-        this.score["team1"] = team1Score;
-        this.score["team2"] = team2Score;
+        this.team1.setScore(team1Score)
+        this.team2.setScore(team2Score)
+    }
+
+    public printScore() {
+        console.log("Team1: " + this.team1.getScore() + " | Team2: " + this.team2.getScore()); 
     }
 
     public giveCards() {
@@ -35,6 +52,14 @@ export class GameBoard {
         this.players.forEach(player => {
             player.setCards(this.deck.getDeck().splice(0,cardNumber));
         });
+    }
+
+    public setTrumpCardColor(color: CARD_COLOR) {
+        this.trumpCardColor = color;
+    }
+
+    public getTrumpCard(){
+        return this.trumpCardColor;
     }
 
     public getPlayers() {
