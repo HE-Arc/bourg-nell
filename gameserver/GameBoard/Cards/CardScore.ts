@@ -1,7 +1,6 @@
 import {CARD_VALUE} from "./CardValue";
 import {CARDS} from "./Cards";
 import {Deck} from "./Deck"
-import {GameBoard} from "../GameBoard";
 import { CARD_COLOR } from "./CardColor";
 
 let basicScore = [
