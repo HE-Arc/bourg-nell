@@ -1,7 +1,7 @@
-import { CARD_COLOR } from "./Cards/CardColor";
+import {CARD_COLOR} from "./Cards/CardColor";
 import {Deck} from "./Cards/Deck";
 import {Player} from "./Player/Player";
-import { Team } from "./Team/Team";
+import {Team} from "./Team/Team";
 
 const PLAYERNUMBER = 4;
 

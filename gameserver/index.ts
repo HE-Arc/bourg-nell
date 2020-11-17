@@ -28,3 +28,4 @@ game.getTeam2().setScore(getScore(card2, game.getTrumpCard()));
 game.getTeam2().setScore(getScore(card4, game.getTrumpCard()));
 
 game.printScore();
+

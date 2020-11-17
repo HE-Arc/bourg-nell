@@ -1,7 +1,7 @@
 import {CARD_VALUE} from "./CardValue";
 import {CARDS} from "./Cards";
 import {Deck} from "./Deck"
-import { CARD_COLOR } from "./CardColor";
+import {CARD_COLOR} from "./CardColor";
 
 let basicScore = [
     [CARD_VALUE.SIX, 0],
@@ -23,7 +23,7 @@ let trumpScore = [
 export function getScore(card: CARDS, trump: CARD_COLOR) {
     let value = Deck.findCardValue(card);
     if ((value === CARD_VALUE.NINE || value === CARD_VALUE.JACK) && Deck.findCardColor(card) === trump) {
-        return value === 3 ? trumpScore[0][1] : trumpScore[1][1] ;
+        return value === CARD_VALUE.NINE ? trumpScore[0][1] : trumpScore[1][1] ;
     }
     return basicScore[value][1];
 }
