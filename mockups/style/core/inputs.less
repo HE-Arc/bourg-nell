@@ -1,0 +1,53 @@
+input[type="text"],
+input[type="password"]
+{
+    box-shadow: none;
+    padding: 8px 0 8px 8px;
+    border: none;
+    border-bottom: 2px solid var(--divider-color);
+    background: transparent;
+    outline: none;
+    transition: border-bottom-color 250ms;
+    position: relative;
+    font-size: 16px;
+
+    &:focus
+    {
+        border-bottom-color: var(--input-focus-color);
+    }
+}
+
+input[type="submit"],
+button
+{
+    background-color: var(--submit-button-background-color);
+    border: none;
+    box-shadow: none;
+    outline: none;
+    border-radius: var(--base-border-radius);
+    padding: 12px;
+    color: var(--submit-button-text-color);
+    transition: background-color 250ms, color 250ms;
+    cursor: pointer;
+
+    &:hover
+    {
+        background-color: var(--submit-button-hover-background-color);
+        color: var(--submit-button-hover-text-color);
+    }
+}
+
+.input-error
+{
+    input[type="text"],
+    input[type="password"]
+    {
+        border-bottom-color: var(--input-error-color);
+    }
+
+    .error
+    {
+        color: red;
+        font-size: var(--input-error-color);
+    }
+}
