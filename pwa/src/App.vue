@@ -31,7 +31,7 @@ export default {
                     scoreLimit: 1000,
                     scoreTeam1: 560,
                     scoreTeam2: 1012,
-                    gameState: 2,
+                    gameState: 3,
                     creationDate: new Date(Date.now())
                 }
             ]
