@@ -3,14 +3,24 @@ import {Deck} from "./GameBoard/Cards/Deck";
 import {CARDS} from "./GameBoard/Cards/Cards";
 import {CARD_VALUE} from "./GameBoard/Cards/CardValue";
 import {GameBoard} from "./GameBoard/GameBoard";
+import {findCardScore} from "./GameBoard/Cards/CardScore";
+import * as socketio from "socket.io";
 
-let game = new GameBoard();
+const http = require("http")
+const io = require("socket.io")(http)
 
-let players = game.getPlayers();
-players.forEach(player => {
-    console.log(player);
+io.on("connection", () => {
+    // TODO
 });
 
-let card = players[3].play(CARDS["TEN_SPADES"]);
-console.log(players[3].getName() + " played " + card);
-console.log(players[3]);
+io.on("api/games", () => {
+
+})
+
+function print(str: any) {
+    console.log(str);
+}
+
+const server = http.listen(3000, function() {
+    console.log("listening on *:3000");
+})

@@ -42,6 +42,7 @@ export class Player {
         } else {
             throw new Error(card + " doesn't exist in this player deck");
         }
+        console.log(this.name + " played: " + CARD_VALUE[Deck.findCardValue(card)] + "_" + CARD_COLOR[Deck.findCardColor(card)]);
         return result;
     }
 }
