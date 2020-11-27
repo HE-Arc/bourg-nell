@@ -8,7 +8,7 @@ const PLAYERNUMBER = 4;
 export class GameBoard {
     private deck = new Deck();
     private players = new Array<Player>();
-    private trumpCardColor: CARD_COLOR = CARD_COLOR.DIAMOND;
+    private trumpCardColor;
     
     private team1: Team;
     private team2: Team;
@@ -19,7 +19,7 @@ export class GameBoard {
             this.players.push(new Player("Player" + i));
         }
         this.team1 = new Team(this.players[0], this.players[2]);
-        this.team2 = new Team(this.players[1], this.players[3]); 
+        this.team2 = new Team(this.players[1], this.players[3]); // line 18 to 22 will be changed for a more dynamic setting
         this.setScore(0,0);
         this.giveCards();
         this.trumpCardColor = trumpCard;   

@@ -2,7 +2,7 @@ export enum CARD_VALUE
 {
     SIX    = 0b00000000,
     SEVEN  = 0b00000001,
-    HEIGHT = 0b00000010,
+    EIGHT  = 0b00000010,
     NINE   = 0b00000011,
     TEN    = 0b00000100,
     JACK   = 0b00000101,
