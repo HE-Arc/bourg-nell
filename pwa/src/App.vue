@@ -14,6 +14,7 @@ import Avatar from './components/Avatar';
 import HistoryItem from './components/HistoryItem';
 
 export default {
+    // Todo : Load games from server
     name: 'App',
     components: {
         Avatar,
