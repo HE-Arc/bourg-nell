@@ -8,7 +8,7 @@ export class Game {
 
     public constructor(trumpColor: CARD_COLOR) {
         this.gameBoard = new GameBoard(trumpColor);
-        this.state = GameStates.IN_PROGRESS;
+        this.state = GameStates.CREATED;
     }
 
     public getGameBoard() {

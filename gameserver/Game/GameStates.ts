@@ -1,5 +1,7 @@
 export enum GameStates {
-    FINISHED,
-    IN_PROGRESS,
-    PAUSED
+    CREATED,
+    ABORTED,
+    PLAYING,
+    WON_TEAM1,
+    WON_TEAM2
 }
