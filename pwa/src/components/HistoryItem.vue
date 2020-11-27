@@ -36,6 +36,7 @@
 <script>
     import Avatar from "./Avatar";
 
+    // todo: load user informations
     export default {
         components: {
             Avatar
