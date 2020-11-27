@@ -4,6 +4,7 @@ import {Player} from "./Player/Player";
 import {Team} from "./Team/Team";
 
 const PLAYERNUMBER = 4;
+const MAXSCORE = 157;
 
 export class GameBoard {
     private deck = new Deck();
@@ -40,6 +41,10 @@ export class GameBoard {
     public setScore(team1Score: number, team2Score: number) {
         this.team1.setScore(team1Score)
         this.team2.setScore(team2Score)
+
+        if (this.team1.getScore() + this.team2.getScore() >= MAXSCORE) {
+            throw new Error("The total score cannot be superior to the game max score");
+        }
     }
 
     public printScore() {
