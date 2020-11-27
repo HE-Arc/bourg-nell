@@ -1,0 +1,32 @@
+.card
+{
+    border-radius: var(--base-border-radius);
+    background: var(--lvl1-elevation-background-color);
+    box-shadow: var(--lvl1-elevation-shadow);
+    transition: box-shadow 250ms;
+    padding: 16px;
+}
+
+.card[card-elevation="1"]
+{
+    box-shadow: var(--lvl1-elevation-shadow);
+    background: var(--lvl1-elevation-background-color);
+}
+
+.card[card-elevation="2"]
+{
+    box-shadow: var(--lvl2-elevation-shadow);
+    background: var(--lvl2-elevation-background-color);
+}
+
+.card[card-elevation="3"]
+{
+    box-shadow: var(--lvl3-elevation-shadow);
+    background: var(--lvl3-elevation-background-color);
+}
+
+.card[card-elevation="4"]
+{
+    box-shadow: var(--lvl4-elevation-shadow);
+    background: var(--lvl4-elevation-background-color);
+}
