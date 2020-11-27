@@ -1,5 +1,5 @@
 <template>
-    <div :class="historyItemClass" card-elevation="1">
+    <div @click="toggleExpand" :class="historyItemClass" card-elevation="1">
         <div class="score">
             <div class="score-header">
                 <div class="gamestatus">{{gameStatusText}}</div>
@@ -7,9 +7,13 @@
                     <span>{{gameObj.creationDate}}</span>
                 </div>
             </div>
-            <div class="gameresult">
+            <div v-if="displayScore" class="gameresult">
                 <div class="myscore">{{gameObj.scoreTeam1}}</div>
                 <div class="theirscore">{{gameObj.scoreTeam2}}</div>
+            </div>
+            <div v-else class="gameresult">
+                <div class="myscore"><span class="score-placeholder"></span></div>
+                <div class="theirscore"><span class="score-placeholder"></span></div>
             </div>
         </div>
         <div class="hidden-content">
@@ -47,6 +51,11 @@
                 required: true
             }
         },
+        data(){
+            return {
+                expanded: false
+            };
+        },
         computed: { 
             historyItemClass() {
                 let classStr = "";
@@ -55,6 +64,10 @@
                     case 2: classStr = "playing"; break;
                     case 3: classStr = "won"; break;
                     case 4: classStr = "lost"; break;
+                }
+                if(this.expanded)
+                {
+                    classStr += " open";
                 }
                 return `card history_item ${classStr}`;
             },
@@ -68,6 +81,14 @@
                     case 4: return "Won team2";
                     default: return "Error";
                 }
+            },
+            displayScore() {
+                return this.gameObj.gameState > 2;
+            }
+        },
+        methods: {
+            toggleExpand() {
+                this.expanded = !this.expanded;
             }
         }
     }
