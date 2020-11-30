@@ -1,25 +1,23 @@
 import {CARD_COLOR} from "./Game/GameBoard/Cards/CardColor";
 import {Game} from "./Game/Game";
-import {Socket} from "socket.io";
+import * as Socketio  from "socket.io";
 
 function chooseTrumpColor(){
     return CARD_COLOR.HEARTH // TO CHANGE
 }
 
-const http = require("http");
-const io = require("socket.io")(http);
+const io = require("socket.io")();
 
-io.on("connection", (socket: Socket) => {
+io.on("connect", (socket: Socketio.Socket) => {
     console.log("a connection happened");
-    let game: Game;
-    let trumpColor = chooseTrumpColor();
+    //let game: Game;
+    //let trumpColor = chooseTrumpColor();
 
-    socket.on("api/games", () => {
-        game = new Game(trumpColor);
-    });
+    //socket.on("api/games", () => {
+    //    game = new Game(trumpColor);
+    //    console.log("creating a game..");
+    //});
 
 });
 
-const server = io.listen(3000, function() {
-    console.log("listening on *:3000");
-})
+io.listen(3000);
