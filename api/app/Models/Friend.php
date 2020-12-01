@@ -9,7 +9,4 @@ class Friend extends Model
 {
     use HasFactory;
 
-    public function index(){
-        
-    }
 }

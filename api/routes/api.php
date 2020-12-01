@@ -28,12 +28,14 @@ Route::get('/users/{id}', function($id){
 });
 
 Route::post('/users', function(Request $request) {
-    UserController::create($request);
+    return UserController::create($request);
 });
 
 //TODO Bug
+//Methode patch ne prend que des arguments en parametre d'URL
+//https://laravel.io/forum/02-13-2014-i-can-not-get-inputs-from-a-putpatch-request
 Route::patch('/users/{id}', function(Request $request, $id) {
-    UserController::update($request, $id);
+    return UserController::update($request, $id);
 });
 
 Route::delete('/users/{id}', function($id){
@@ -44,30 +46,29 @@ Route::delete('/users/{id}', function($id){
 Route relative to the game
 */
 Route::post('/games', function(Request $request){
-    GameController::create($request);
+    return GameController::create($request);
 });
 
 Route::get('/games/by-user/{id}', function(Request $request, $id){
-    GameController::getByUser($id);
+    return GameController::getByUser($id);
 });
 
 Route::get('/games/{id}', function($id){
-    GameController::read($id);
+    return GameController::read($id);
 });
 
 Route::patch('/games/{id}', function($id){
-    GameController::update($id);
+    return GameController::update($id);
 });
 
 Route::delete('/games/{id}', function($id){
-    GameController::delete($id);
+    return GameController::delete($id);
 });
 
 /*
 Route relative to the friend invitation
 */
 Route::post('/invites', function(){
-
 });
 
 Route::get('/invites', function(){

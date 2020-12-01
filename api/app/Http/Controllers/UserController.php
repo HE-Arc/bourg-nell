@@ -11,7 +11,13 @@ class UserController extends Controller
 {
     public static function read($id)
     {
-        return User::findOrFail($id);
+
+        $user =  User::find($id);
+        if (empty($user)) {
+            return response()->json(['id' => 'user ' . $id . ' does not exist'], 400);
+        } else {
+            return response($user, 200);
+        }
     }
 
     public static function create(Request $request)
@@ -20,12 +26,17 @@ class UserController extends Controller
         $email = $request->input("email");
         $password = $request->input("password");
 
+        $userAlreadyExist = UserController::getUserByName($username);
+
+
         if (empty($username)) {
-            //TODO Error
+            return response()->json(["username" => "string"], 400);
         } else if (empty($email)) {
-            //TODO Error
+            return response()->json(["email" => "string"], 400);
         } else if (empty($password)) {
-            //TODO Error
+            return response()->json(["password" => "string"], 400);
+        } else if (empty($userAlreadyExist)) {
+            return response()->json(["username" => "user " . $username . " already exists"], 400);
         } else {
             $u = new User();
             $u->username = $username;
@@ -36,19 +47,31 @@ class UserController extends Controller
             $u->save();
 
             //TODO Debug
-            UserController::getUserByName($username);
+            $user = UserController::getUserByName($username);
+            return response($user, 400);
         }
     }
 
     public static function update(Request $request, $id)
     {
+        //TODO
+        $test = $request->all();
         print($id);
         print($request->input("username"));
+        print_r($test);
+        
     }
 
     public static function delete($id)
     {
-        return DB::delete('DELETE FROM users WHERE id = ?', [$id]);
+        $resDelete = DB::delete('DELETE FROM users WHERE id = ?', [$id]);
+        if ($resDelete == 0) {
+            return response()->json(['id' => 'user ' . $id . ' does not exist'], 400);
+        } else {
+            
+            return response()->json(['deleted' => "user" . $id], 200);
+        }
+        
     }
 
     public static function getUserByName($username)
