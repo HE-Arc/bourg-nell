@@ -42,6 +42,7 @@
 
     // todo: load user informations
     export default {
+        name: "HistoryItem",
         components: {
             Avatar
         },

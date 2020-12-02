@@ -6,6 +6,7 @@
 
 <script>
     export default {
+        name: "Avatar",
         props: {
             status: {
                 type: String,
