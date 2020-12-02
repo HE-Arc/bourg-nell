@@ -10,8 +10,10 @@
 </template>
 
 <script>
+
 import Avatar from './components/Avatar';
 import HistoryItem from './components/HistoryItem';
+import Navigation from './components/HistoryItem';
 
 export default {
     // Todo : Load games from server
@@ -21,6 +23,7 @@ export default {
         HistoryItem
     },
     data() {
+        new Date().toLocaleDateString()
         return {
             games: [
                 {
@@ -32,7 +35,29 @@ export default {
                     scoreLimit: 1000,
                     scoreTeam1: 560,
                     scoreTeam2: 1012,
+                    gameState: 2,
+                    creationDate: new Date(Date.now())
+                },{
+                    gameId: "123712947123908",
+                    player1: "12398712893789",
+                    player2: "123897128937",
+                    player3: "123897128937",
+                    player4: "123897128937",
+                    scoreLimit: 1000,
+                    scoreTeam1: 560,
+                    scoreTeam2: 1012,
                     gameState: 3,
+                    creationDate: new Date(Date.now())
+                }, {
+                    gameId: "123712947123908",
+                    player1: "12398712893789",
+                    player2: "123897128937",
+                    player3: "123897128937",
+                    player4: "123897128937",
+                    scoreLimit: 1000,
+                    scoreTeam1: 850,
+                    scoreTeam2: 1012,
+                    gameState: 4,
                     creationDate: new Date(Date.now())
                 }
             ]

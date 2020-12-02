@@ -4,7 +4,7 @@
             <div class="score-header">
                 <div class="gamestatus">{{gameStatusText}}</div>
                 <div class="date">
-                    <span>{{gameObj.creationDate}}</span>
+                    <span>{{gameObj.creationDate.toLocaleDateString()}}</span>
                 </div>
             </div>
             <div v-if="displayScore" class="gameresult">
@@ -21,16 +21,16 @@
             <div class="players">
                 <div class="player">
                     <Avatar md5hash="78d172c9cbb993794d2e9021fce57d68"/>
-                    <span>Username placeholder</span>
+                    <span>Luca</span>
                 </div><div class="player">
                     <Avatar md5hash="78d172c9cbb993794d2e9021fce57d68"/>
-                    <span>Username placeholder</span>
+                    <span>Luca</span>
                 </div><div class="player">
                     <Avatar md5hash="78d172c9cbb993794d2e9021fce57d68"/>
-                    <span>Username placeholder</span>
+                    <span>Luca</span>
                 </div><div class="player">
                     <Avatar md5hash="78d172c9cbb993794d2e9021fce57d68"/>
-                    <span>Username placeholder</span>
+                    <span>Luca</span>
                 </div>
             </div>
         </div>
