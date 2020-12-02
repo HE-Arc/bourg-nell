@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class GameController extends Controller
 {
+
     public static function create(Request $request)
     {
         $player1 = $request->input("player1");
@@ -41,13 +42,17 @@ class GameController extends Controller
     }
 
     public static function getByUser($id)
-    {
-        $games = DB::select('SELECT * FROM games WHERE player1 = ? OR player2 = ? OR player3=? OR player4=?', [$id, $id, $id, $id]);
+    {   
+        $games = Game::where('player1', '=', $id)
+                        ->orWhere('player2', '=', $id)
+                        ->orWhere('player3', '=', $id)
+                        ->orWhere('player4', '=', $id)
+                        ->get();
 
         return response($games, 200);
     }
 
-    public static function read($id)
+    public static function index($id)
     {
         $game = Game::find($id);
         if(empty($game)){
@@ -57,17 +62,53 @@ class GameController extends Controller
         }
     }
 
-    public static function update($id)
+    public static function update(Request $request, $id)
     {
+        $player1 = $request->input("player1");
+        $player2 = $request->input("player2");
+        $player3 = $request->input("player3");
+        $player4 = $request->input("player4");
+        $scoreLimit = $request->input("scoreLimit");
+        $gamestate = $request->input("gamestate");
+        $scoreteam1 = $request->input("scoreteam1");
+        $scoreteam2 = $request->input("scoreteam2");
+
+        $updateField = array();
+
+        if (!empty($player1)) {
+            $updateField["player1"] = $player1;
+        }
+        
+        if (!empty($player2)) {
+            $updateField["player2"] = $player2;
+        }
+        
+        if (!empty($player3)) {
+            $updateField["player3"] = $player3;
+        }
+        
+        if (!empty($player4)) {
+            $updateField["player4"] = $player4;
+        }
+        
+        if (!empty($scoreLimit)) {
+            $updateField["scoreLimit"] = $scoreLimit;
+        }
+
+        print_r($updateField);
+
+        if (!empty($updateField)) {
+            Game::where('id', '=', $id)->update($updateField);
+            return GameController::index($id);
+        }
     }
 
     public static function delete($id)
     {
-        $resDelete = DB::delete('DELETE FROM games WHERE id = ?', [$id]);
+        $resDelete = Game::where('id', '=', $id)->delete();
         if ($resDelete == 0) {
             return response()->json(['id' => 'game ' . $id . ' does not exist'], 400);
         } else {
-            
             return response()->json(['deleted' => 'game ' . $id], 200);
         }
     }
