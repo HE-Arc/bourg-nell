@@ -3,7 +3,6 @@ import {Deck} from "./Cards/Deck";
 import {Player} from "./Player/Player";
 import {Team} from "./Team/Team";
 
-const PLAYERNUMBER = 4;
 const MAXSCORE = 157;
 
 export class GameBoard {
@@ -52,7 +51,7 @@ export class GameBoard {
     }
 
     public giveCards() {
-        let cardNumber = this.deck.getDeck().length / PLAYERNUMBER;
+        let cardNumber = this.deck.getDeck().length / this.players.length;
         this.players.forEach(player => {
             player.setCards(this.deck.getDeck().splice(0,cardNumber));
         });
