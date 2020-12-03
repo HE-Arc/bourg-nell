@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
     {
         $u = new User();
         $u->username = Str::random(10);
-        $u->hashpassword = Hash::make("password");
+        $u->password = Hash::make("password");
         $u->email = Str::random(10) . "@gmail.com";
         $u->profilpicturepath = "/pictures/" . Str::random(5) . ".png";
         $u->save();

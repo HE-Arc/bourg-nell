@@ -23,7 +23,7 @@ class CreateGameTable extends Migration
             $table->unsignedInteger("scorelimit");
             $table->unsignedInteger("scoreteam1");
             $table->unsignedInteger("scoreteam2");
-            $table->enum("gamestate", ["CREATED", "ABORTED", "PLAYING", "WONTEAM1", "WONTEAM2"]);
+            $table->tinyInteger("gamestate");
             $table->timestamps();            
         });
     }
