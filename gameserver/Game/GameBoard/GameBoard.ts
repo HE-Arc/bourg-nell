@@ -8,17 +8,17 @@ const MAXSCORE = 157;
 
 export class GameBoard {
     private deck = new Deck();
-    private players = new Array<Player>();
     private trumpCardColor;
+    private players = new Array<Player>();
     
     private team1: Team;
     private team2: Team;
 
-    public constructor(trumpCard: CARD_COLOR) {
+    public constructor(trumpCard: CARD_COLOR, players: Array<string>) {
         //this.deck.shuffleDeck();
-        for (let i =0; i<PLAYERNUMBER ;++i) {
-            this.players.push(new Player("Player" + i));
-        }
+        players.forEach(player => {
+            this.players.push(new Player(player));
+        });
         this.team1 = new Team(this.players[0], this.players[2]);
         this.team2 = new Team(this.players[1], this.players[3]); // line 18 to 22 will be changed for a more dynamic setting
         this.setScore(0,0);

@@ -6,8 +6,8 @@ export class Game {
     private gameBoard;
     private state;
 
-    public constructor(trumpColor: CARD_COLOR) {
-        this.gameBoard = new GameBoard(trumpColor);
+    public constructor(players: Array<string> ,trumpColor: CARD_COLOR) {
+        this.gameBoard = new GameBoard(trumpColor, players);
         this.state = GameStates.CREATED;
     }
 
