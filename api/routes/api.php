@@ -26,11 +26,31 @@ Route::apiResource('test', TestController::class);
 /*
 Route relative to the user
 */
+//create a user 
+Route::post('/users/create', function(Request $request){
+    $inputs = $request->only(["name", "password", "email"]);
 
-Route::get('/users/{id}/', function($id){
-    return UserController::index($id);
+    return UserController::create($inputs);
 });
 
+//login a user (get token)
+Route::post('/users/login', function(Request $request){
+    $credentials = $request->only(["email", "password"]);
+    return UserController::login($credentials);
+});
+
+
+Route::middleware('auth')->get('/users/me', function(){
+    $user = auth()->user();
+
+    return $user;
+});
+
+Route::get('/users/{id}', function($id){
+    return UserController::index($id);
+});
+/*
+// Deviens /users/create
 Route::post('/users/', function(Request $request) {
     return UserController::create($request);
 });
@@ -45,6 +65,8 @@ Route::patch('/users/{id}/', function(Request $request, $id) {
 Route::delete('/users/{id}/', function($id){
     return UserController::delete($id);
 });
+*/
+
 
 /*
 Route relative to the game

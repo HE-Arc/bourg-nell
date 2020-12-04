@@ -13,15 +13,17 @@ class CreateUserTable extends Migration
      */
     public function up()
     {
+        Schema::disableForeignKeyConstraints();
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string("name");
             $table->string("email")->unique();
             $table->string("password");
-            $table->string("profilpicturepath");
+            $table->string("profilpicturepath")->default("/picture/base.png");
             $table->rememberToken();
             $table->timestamps();
         });
+        Schema::enableForeignKeyConstraints();
     }
 
     /**

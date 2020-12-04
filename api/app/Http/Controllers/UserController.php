@@ -8,8 +8,10 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+
     public static function index($id)
     {
+
         $user =  User::find($id);
         if (empty($user)) {
             return response()->json(['id' => 'user ' . $id . ' does not exist'], 400);
@@ -18,36 +20,23 @@ class UserController extends Controller
         }
     }
 
-    public static function create(Request $request)
+    public static function create($inputs)
     {
-        $username = $request->input("username");
-        $email = $request->input("email");
-        $password = $request->input("password");
-
-        $user = User::where('username', '=', $username)->exists();
+        $user = User::where('name', '=', $inputs['name'])->exists();
 
         if ($user == null) {
-            if (empty($username)) {
-                return response()->json(["username" => "string"], 400);
-            } else if (empty($email)) {
-                return response()->json(["email" => "string"], 400);
-            } else if (empty($password)) {
-                return response()->json(["password" => "string"], 400);
+            if (sizeof($inputs) < 3) {
+                return response()->json(['error' => 'missing parameter'], 400);
             } else {
-                $u = new User();
-                $u->username = $username;
-                $u->email = $email;
-                $u->hashpassword = Hash::make($password);
-                $u->profilpicturepath = '/pictures/default.png';
-
-                $u->save();
-
-                //TODO Debug
-                $user =  User::where('username', '=', $username)->first();
-                return response($user, 200);
+                $user = User::create([
+                    'name' => $inputs['name'],
+                    'email' => $inputs['email'],
+                    'password' => Hash::make($inputs['password']),
+                ]);
+                return response()->json(['user' => $user]);
             }
         } else {
-            return response()->json(['username' => 'user ' . $username . ' already exists'], 400);
+            return response()->json(['error' => 'user exists'], 400);
         }
     }
 
@@ -76,7 +65,6 @@ class UserController extends Controller
         }
 
         return response()->json([], 400);
-        
     }
 
     public static function delete($id)
@@ -93,5 +81,13 @@ class UserController extends Controller
     public static function getUserByName($username)
     {
         //TODO
+    }
+
+    public static function login($credentials)
+    {
+        $token = auth()->attempt($credentials);
+
+        return response()->json(['token' => $token], 200);
+        
     }
 }
