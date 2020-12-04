@@ -1,7 +1,4 @@
 import {CARDS} from "../Cards/Cards";
-import {CARD_COLOR} from "../Cards/CardColor";
-import {CARD_VALUE} from "../Cards/CardValue";
-import {Deck} from "../Cards/Deck";
 
 export class Player {
     private name: string;
@@ -38,7 +35,7 @@ export class Player {
         let result = null;
         if(index > -1) {
             result = this.cards[index];
-            this.cards.splice(index, 1);
+            this.cards.splice(index, 1); // delete the card from the card list
         } else {
             throw new Error(card + " doesn't exist in this player deck");
         }

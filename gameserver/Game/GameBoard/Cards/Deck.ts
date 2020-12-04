@@ -36,8 +36,4 @@ export class Deck{
     static findCardValue(card: CARDS): CARD_VALUE {
         return card & 0b00001111;
     }
-
-    static findCard(card: CARDS){
-        return card & 0b00000000;
-    }
 }
