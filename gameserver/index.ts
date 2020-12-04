@@ -43,13 +43,6 @@ io.on("connect", async (socket: Socketio.Socket) => {
             playerList.forEach(player => {
                 io.to(playerMap.get(player.getName()))
                     .emit("cards", player.getCards());
-                    //console.log(player);
-                    //console.log(playerMap.get(player.getName()))
-                    /**
-                     * Maybe it will be modified in the futur, has we're testing
-                     * in localhost, all socket's id are the same, so, we don't know
-                     * if this really work or no
-                     */
             });
             
             players = new Array<string>();
@@ -59,9 +52,8 @@ io.on("connect", async (socket: Socketio.Socket) => {
         
     socket.on("playCard", (playerName: string, card: CARDS) => {
         game.playCard(playerName, card);
+        console.log(game.getGameBoard().getPlayedCards());
     });
-   
-    
 });
 
 io.listen(3000);

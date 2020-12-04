@@ -26,16 +26,21 @@ export class Fold {
     };
     
     private trumpColor: CARD_COLOR;
+    private cardPlayed = new Map();
+    private winner: string = "";
 
     constructor(trumpColor: CARD_COLOR) {
         this.fold = new Array<CARDS>();
         this.trumpColor = trumpColor;
     }
 
-    public playCard(card: CARDS) {
+    public playCard(playerName: string, card: CARDS) {
         this.fold.push(card);
+        this.cardPlayed.set(card, playerName);
+        
         if (this.fold.length === MAX_INBOARD_CARDS) {
-            this.findWinner();
+            this.winner = this.cardPlayed.get(this.findWinner());
+            this.clearLists();
         }
     }
     
@@ -63,6 +68,16 @@ export class Fold {
             }    
         })
         console.log("the card " + CARDS[winner] + " won the fold");
+        return winner;
     }
 
+    private clearLists() {
+        this.fold = new Array<CARDS>();
+        console.log("new row");
+        this.cardPlayed = new Map();
+    }
+
+    public getWinner() {
+        return this.winner;
+    }
 }

@@ -8,7 +8,7 @@ const MAXSCORE = 157;
 
 export class GameBoard {
     private deck = new Deck();
-    private playedCards = Array<CARDS>();
+    private playedCards = Array<string>();
 
     private trumpCardColor;
     private players = new Array<Player>();
@@ -83,7 +83,7 @@ export class GameBoard {
     }
 
     public putPlayedCard(card: CARDS) {
-        this.playedCards.push(card);
+        this.playedCards.push(CARDS[card]);
     }
 
     public getPlayedCards() {
