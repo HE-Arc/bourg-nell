@@ -1,13 +1,13 @@
 <template>
     <div>
-        <AccountScreen userId="Luca Laissue"/>
+        <AccountScreen :userId="1"/>
         <Navigation/>
     </div>
 </template>
 
 <script>
 
-import AccountScreen from './screens/AccountScreen';
+import AccountScreen from './views/AccountScreen';
 import Navigation from './components/Navigation';
 
 export default {
