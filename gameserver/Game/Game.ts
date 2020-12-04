@@ -6,10 +6,12 @@ import { CARDS } from "./GameBoard/Cards/Cards";
 export class Game {
     private gameBoard;
     private state;
+    private roomNumber;
 
-    public constructor(players: Array<string> ,trumpColor: CARD_COLOR) {
+    public constructor(players: Array<string> ,trumpColor: CARD_COLOR, roomNumber: number) {
         this.gameBoard = new GameBoard(trumpColor, players);
         this.state = GameStates.CREATED;
+        this.roomNumber = roomNumber;
     }
 
     public getGameBoard() {
@@ -22,5 +24,9 @@ export class Game {
 
     public setState(state: GameStates){
         this.state = state;
+    }
+
+    public getRoomNumber() {
+        return this.roomNumber;
     }
 }
