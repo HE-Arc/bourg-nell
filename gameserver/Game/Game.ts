@@ -35,7 +35,7 @@ export class Game {
     }
 
     public playCard(playerName: string, card: CARDS) {
-        this.fold.playCard(card);
         this.getGameBoard().getPlayerByName(playerName).play(card);
+        this.fold.playCard(card);
     }
 }

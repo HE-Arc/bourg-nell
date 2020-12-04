@@ -54,14 +54,15 @@ export class Fold {
             scores.push(valueScore * colorScore);
         });
 
-        scores = scores.sort((n1, n2) => n1-n2);
-        console.log(scores);
+        scores = scores.sort((n1, n2) => n2-n1); // sort like this: [300, 200, 4, 2]
 
-        //finalScores.forEach((value, key) => {
-        //    
-        //})
-        
-
+        let winner: CARDS = CARDS.ACE_CLUBS;
+        finalScores.forEach((value: number, key: CARDS) => {
+            if(value === scores[0]) { // we took score[0] because now the array is sorted, so the first index is the higher
+                winner = key;
+            }    
+        })
+        console.log("the card " + CARDS[winner] + " won the fold");
     }
 
 }

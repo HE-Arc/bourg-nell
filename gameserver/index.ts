@@ -18,13 +18,6 @@ let trumpColor = chooseTrumpColor();
 let playerMap = new Map();
 let roomNumber = 0;
 
-let test = ['Jean', 'Claude', 'Vend', 'Dame'];
-let gameTest = new Game(test, trumpColor, 98);
-// let jean = gameTest.getGameBoard().getPlayerByName('Jean');
-// let claude = gameTest.getGameBoard().getPlayerByName('Claude');
-// console.log(jean.getCards());
-// console.log(claude.getCards());
-
 io.on("connect", async (socket: Socketio.Socket) => {
     io.send("Connected !");
 
@@ -44,7 +37,7 @@ io.on("connect", async (socket: Socketio.Socket) => {
             console.log("creating a new game...");
             game.setState(GameStates.PLAYING);
 
-            io.in("room" + game.getRoomNumber()).emit("announcement", "the game is started");
+            io.in("room" + game.getRoomNumber()).emit("announcement", "the game is starting");
 
             let playerList = game.getGameBoard().getPlayers();
             playerList.forEach(player => {
@@ -65,7 +58,7 @@ io.on("connect", async (socket: Socketio.Socket) => {
     });
         
     socket.on("playCard", (playerName: string, card: CARDS) => {
-        game.getGameBoard().getPlayerByName(playerName).play(card);
+        game.playCard(playerName, card);
     });
    
     
