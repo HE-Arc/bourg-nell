@@ -14,8 +14,8 @@ class CreateFriendinvitationTable extends Migration
     public function up()
     {
         Schema::create('friendinvitations', function (Blueprint $table) {
-            $table->foreignId("requester")->references("id")->on("users");
-            $table->foreignId("requested")->references("id")->on("users");
+            $table->foreignId("requester")->references("id")->on("users")->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId("requested")->references("id")->on("users")->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

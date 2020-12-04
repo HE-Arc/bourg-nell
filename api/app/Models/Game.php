@@ -9,7 +9,4 @@ class Game extends Model
 {
     use HasFactory;
 
-    public function index(){
-
-    }
 }

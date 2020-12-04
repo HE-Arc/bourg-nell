@@ -15,7 +15,7 @@ class GameSeeder extends Seeder
      */
     public function run()
     {
-        $gameStateValues = ["CREATED", "ABORTED", "PLAYING", "WONTEAM1", "WONTEAM2"];
+        $gameStateValues = ["CREATED" => 0, "ABORTED" => 1, "PLAYING" => 2, "WONTEAM1" => 3, "WONTEAM2" => 4];
 
         $g = new Game();
 
@@ -26,22 +26,23 @@ class GameSeeder extends Seeder
         $g->player4 = 4;
 
         $g->scorelimit = 1000;
-        $gameState = $gameStateValues[rand(0, 4)];
+        $gameState = rand(0, 4);
         $g->gamestate = $gameState;
 
         switch ($gameState) {
-            case "WONTEAM1":
-                $g->scoreteam1 = 1000;
-                $g->scoreteam2 = rand(100, 999);
-                break;
-            case "WONTEAM2":
-                $g->scoreteam1 = rand(100, 999);
-                $g->scoreteam2 = 1000;
-                break;
-            case "CREATED":
+            case 0:
                 $g->scoreteam1 = 0;
                 $g->scoreteam2 = 0;
                 break;
+            case 3:
+                $g->scoreteam1 = 1000;
+                $g->scoreteam2 = rand(100, 999);
+                break;
+            case 4:
+                $g->scoreteam1 = rand(100, 999);
+                $g->scoreteam2 = 1000;
+                break;
+            
             default: #case ABORTED et PLAYING
                 $g->scoreteam1 = rand(100, 999);
                 $g->scoreteam2 = rand(100, 999);
