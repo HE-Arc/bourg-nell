@@ -1,4 +1,5 @@
 import {CARD_COLOR} from "./Cards/CardColor";
+import { CARDS } from "./Cards/Cards";
 import {Deck} from "./Cards/Deck";
 import {Player} from "./Player/Player";
 import {Team} from "./Team/Team";
@@ -7,6 +8,8 @@ const MAXSCORE = 157;
 
 export class GameBoard {
     private deck = new Deck();
+    private playedCards = Array<CARDS>();
+
     private trumpCardColor;
     private players = new Array<Player>();
     
@@ -19,7 +22,7 @@ export class GameBoard {
             this.players.push(new Player(player));
         });
         this.team1 = new Team(this.players[0], this.players[2]);
-        this.team2 = new Team(this.players[1], this.players[3]); // line 18 to 22 will be changed for a more dynamic setting
+        this.team2 = new Team(this.players[1], this.players[3]);
         this.setScore(0,0);
         this.giveCards();
         this.trumpCardColor = trumpCard;   
@@ -67,5 +70,23 @@ export class GameBoard {
 
     public getPlayers() {
         return this.players;
-    } 
+    }
+
+    public getPlayerByName(name: string) {
+        let returnPlayer = new Player("random");
+        for (let player of this.players) {
+            if (player.getName() === name){
+                returnPlayer = this.players[this.players.indexOf(player)]
+            }
+        }
+        return returnPlayer;
+    }
+
+    public putPlayedCard(card: CARDS) {
+        this.playedCards.push(card);
+    }
+
+    public getPlayedCards() {
+        return this.playedCards;
+    }
 }

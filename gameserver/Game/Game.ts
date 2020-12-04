@@ -1,6 +1,7 @@
 import {GameBoard} from "./GameBoard/GameBoard";
 import {CARD_COLOR} from "./GameBoard/Cards/CardColor";
 import {GameStates} from "./GameStates";
+import { CARDS } from "./GameBoard/Cards/Cards";
 
 export class Game {
     private gameBoard;

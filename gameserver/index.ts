@@ -15,34 +15,25 @@ let game: Game;
 let trumpColor = chooseTrumpColor();
 
 io.on("connect", (socket: Socketio.Socket) => {
-    console.log("a connection happened");
     io.send("Connected !");
-
-    socket.on("message", (message) => {
-        io.emit(message);
-    })
 
     socket.on("PlayerJoin", (playerName: string) => {
         console.log("Player: " + playerName + " join");
         players.push(playerName);
         if(players.length === MAX_GAME_PLAYERS) {
             game = new Game(players, trumpColor);
-            console.log("player " + players + " are player together")
+            console.log("player " + players + " are playing together")
             console.log("creating a new game...");
             players = new Array<string>();
+            console.log(game.getGameBoard());
         }
     });
         
-    socket.on("playCard", (playerName: String, card: CARDS) => {
-        console.log(playerName + " play " + CARDS[card]);
+    socket.on("playCard", (playerName: string, card: CARDS) => {
+        game.getGameBoard().getPlayerByName(playerName).play(card);
     });
-
-    console.log(players.length + " === " + MAX_GAME_PLAYERS);
-    
+   
     
 });
-
-
-
 
 io.listen(3000);
