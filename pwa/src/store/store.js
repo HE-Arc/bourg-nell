@@ -3,12 +3,13 @@ import Vuex from 'vuex'
 import axios from 'axios'
 
 Vue.use(Vuex)
-axios.defaults.baseURL = "http://workshop-vuejs.test/api"
+axios.defaults.baseURL = "http://localhost:8000"
 
 export default new Vuex.Store({
     state: {
         token: localStorage.getItem('access_token') || null,
-        currentShownUser: null
+        currentShownUser: {username: "unknown"},
+        currentShownUserGames: []
     },
     getters: {
         loggedIn(state) {
@@ -24,6 +25,9 @@ export default new Vuex.Store({
         },
         updateUser(state, user) {
             state.currentShownUser = user;
+        },
+        updateGames(state, games) {
+            state.currentShownUserGames = games;
         }
     },
     actions: {
@@ -42,12 +46,24 @@ export default new Vuex.Store({
             })
         },
         fetchUser(context, userId) {
-            axios.defaults.headers.common["Authorization"] = "Bearer " + context.state.token
-
+            //axios.defaults.headers.common["Authorization"] = "Bearer " + context.state.token
             return new Promise((resolve, reject) => {
-                axios.get(`/user/${userId}`)
+                axios.get(`/users/${userId}`)
                     .then(response => {
-                        context.commit("updateCurrentUser", response.data.coffee_counter)
+                        context.commit("updateUser", response.data)
+                        resolve(response)
+                    })
+                    .catch(error => {
+                        reject(error)
+                    })
+            })
+        },
+        fetchGames(context, userId) {
+            //axios.defaults.headers.common["Authorization"] = "Bearer " + context.state.token
+            return new Promise((resolve, reject) => {
+                axios.get(`/games/by-user/${userId}`)
+                    .then(response => {
+                        context.commit("updateGames", response.data)
                         resolve(response)
                     })
                     .catch(error => {
