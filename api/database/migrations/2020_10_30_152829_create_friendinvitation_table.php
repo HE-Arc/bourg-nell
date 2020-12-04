@@ -27,6 +27,8 @@ class CreateFriendinvitationTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('friendinvitation');
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('friendinvitations');
+        Schema::enableForeignKeyConstraints();
     }
 }

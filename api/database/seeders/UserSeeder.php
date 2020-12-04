@@ -18,9 +18,9 @@ class UserSeeder extends Seeder
     public function run()
     {
         $u = new User();
-        $u->username = Str::random(10);
-        $u->password = Hash::make("password");
-        $u->email = Str::random(10) . "@gmail.com";
+        $u->name = Str::random(10);
+        $u->password = "1234";
+        $u->email = "test" . Str::random(5) . "@gmail.com";
         $u->profilpicturepath = "/pictures/" . Str::random(5) . ".png";
         $u->save();
     }

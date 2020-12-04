@@ -35,6 +35,8 @@ class CreateGameTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('game');
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('games');
+        Schema::enableForeignKeyConstraints();
     }
 }
