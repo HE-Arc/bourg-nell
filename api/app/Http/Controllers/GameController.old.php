@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * This class will be moved to ./API/GameController.php
+ */
 namespace App\Http\Controllers;
 
 use App\Models\Game;

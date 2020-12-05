@@ -5,6 +5,12 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Validator;
+
+
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+
 class UserController extends Controller
 {
     /**
@@ -14,14 +20,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        
-        //$user =  User::find($id);
-        if (empty($user)) {
-            //return response()->json(['id' => 'user ' . $id . ' does not exist'], 400);
-        } else {
-            //return response($user, 200);
-        }
-        
+        print("hey");
     }
 
     /**
@@ -30,9 +29,26 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public static function store(Request $request)
     {
-        //
+        $inputs = $request->only(["name", "password", "email"]);
+        $user = User::where('name', '=', $inputs['name'])
+            ->orWhere('email', '=', $inputs['email'])->exists();
+
+        if ($user == null) {
+            if (sizeof($inputs) < 3) {
+                return response()->json(['error' => 'missing parameter'], 400);
+            } else {
+                $user = User::create([
+                    'name' => $inputs['name'],
+                    'email' => $inputs['email'],
+                    'password' => Hash::make($inputs['password']),
+                ]);
+                return response()->json(['user' => $user]);
+            }
+        } else {
+            return response()->json(['error' => 'user exists'], 400);
+        }
     }
 
     /**
@@ -43,7 +59,12 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        $user =  User::find($id);
+        if (empty($user)) {
+            return response()->json(['id' => 'user ' . $id . ' does not exist'], 400);
+        } else {
+            return response($user, 200);
+        }
     }
 
     /**
@@ -55,7 +76,28 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
+        $inputs = $request->only(["name", "password", "email"]);
+
+        $validator = Validator::make($inputs, [
+            "name" => "unique:users",
+            "email" => "unique:users",
+        ]);
+
+        $user = User::find($id);
+        
+    
+        if (!$validator->fails()) {
+            if (!empty($inputs)) {
+                
+
+                $user->update($inputs);
+                return response()->json(['success' => 'true', 'user' => User::find($id)], 200);
+                //return $this->show($id);
+            }
+        }else{
+            return response()->json(['success' => 'false', 'message' => 'duplicate username or email'], 400);
+        }
     }
 
     /**
@@ -66,6 +108,12 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $resDelete = User::find($id)->delete();
+        if ($resDelete == 0) {
+            return response()->json(['id' => 'user ' . $id . ' does not exist'], 400);
+        } else {
+
+            return response()->json(['deleted' => 'user ' . $id], 200);
+        }
     }
 }

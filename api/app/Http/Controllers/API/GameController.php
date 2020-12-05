@@ -5,17 +5,16 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class TestController extends Controller
+class GameController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        print($request->input("id"));
-        print("index");
+        //
     }
 
     /**
@@ -26,8 +25,7 @@ class TestController extends Controller
      */
     public function store(Request $request)
     {
-        print_r($request->url());  
-        print_r($request->input("test"));  
+        //
     }
 
     /**
@@ -38,7 +36,7 @@ class TestController extends Controller
      */
     public function show($id)
     {
-        print($id);
+        //
     }
 
     /**
@@ -50,9 +48,7 @@ class TestController extends Controller
      */
     public function update(Request $request, $id)
     {
-        print($id);
-        print_r($request->input("test"));
-        print_r($request->input("test2"));
+        //
     }
 
     /**
