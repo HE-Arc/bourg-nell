@@ -44,7 +44,9 @@ io.on("connect", async (socket: Socketio.Socket) => {
                 io.to(playerMap.get(player.getName()))
                     .emit("cards", player.getCards());
             });
-            
+            let nextPlayerName = game.getGameBoard().getPlayers()[game.getPlayerTurn()].getName();
+            io.to(playerMap.get(nextPlayerName)).emit("turn", "it's your turn to play a card");
+            game.nextPlayerTurn();
             players = new Array<string>();
             roomNumber++;
         }
@@ -52,7 +54,9 @@ io.on("connect", async (socket: Socketio.Socket) => {
         
     socket.on("playCard", (playerName: string, card: CARDS) => {
         game.playCard(playerName, card);
-        console.log(game.getGameBoard().getPlayedCards());
+        let nextPlayerName = game.getGameBoard().getPlayers()[game.getPlayerTurn()].getName();
+        io.to(playerMap.get(nextPlayerName)).emit("turn", "it's your turn to play a card");
+        game.nextPlayerTurn();
     });
 });
 

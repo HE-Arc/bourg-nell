@@ -1,5 +1,5 @@
 import {CARD_COLOR} from "./Cards/CardColor";
-import { CARDS } from "./Cards/Cards";
+import {CARDS} from "./Cards/Cards";
 import {Deck} from "./Cards/Deck";
 import {Player} from "./Player/Player";
 import {Team} from "./Team/Team";

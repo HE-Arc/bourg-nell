@@ -10,12 +10,16 @@ export class Game {
     private roomNumber;
     private fold;
     private rowWinner = "";
+    private playerTurn;
+    private players;
 
     public constructor(players: Array<string> ,trumpColor: CARD_COLOR, roomNumber: number) {
         this.gameBoard = new GameBoard(trumpColor, players);
         this.state = GameStates.CREATED;
         this.roomNumber = roomNumber;
         this.fold = new Fold(trumpColor);
+        this.playerTurn = 0;
+        this.players = players;
     }
 
     public getGameBoard() {
@@ -36,6 +40,15 @@ export class Game {
 
     public getRowWinner() {
         return this.rowWinner;
+    }
+
+    public getPlayerTurn() {
+        return this.playerTurn;
+    }
+
+    public nextPlayerTurn() {
+        this.playerTurn = (this.playerTurn + 1) % this.players.length;
+        console.log("turn to player n°"+ this.playerTurn);
     }
 
     public playCard(playerName: string, card: CARDS) {
