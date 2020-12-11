@@ -1,11 +1,12 @@
 import {CARD_COLOR} from "./Cards/CardColor";
 import {CARDS} from "./Cards/Cards";
-import { findCardScore } from "./Cards/CardScore";
+import {findCardScore} from "./Cards/CardScore";
 import {Deck} from "./Cards/Deck";
 import {Player} from "./Player/Player";
 import {Team} from "./Team/Team";
 
 const MAXSCORE = 157;
+const WINNERSCORE = 5;
 
 export class GameBoard {
     private deck = new Deck();
@@ -40,7 +41,7 @@ export class GameBoard {
         return this.team2;
     }
 
-    public setScore(cards: Map<CARDS, string>) {
+    public setScore(cards: Map<CARDS, string>, winner: string) {
         cards.forEach((playerName: string, card:CARDS) => {
             let cardScore = findCardScore(card, this.trumpCardColor);
             // find return 'undefined' if nothing in found in the arrays, then, if the return statement is not undefined
@@ -50,7 +51,18 @@ export class GameBoard {
             } else {
                 this.team2.setScore(cardScore);
             }
+
+            
         });
+        
+        if(this.playedCards.length === 32) {
+            console.log("winner is " + winner);
+            if(this.team1.getPlayers().find(player => player.getName() === winner)) {
+                this.team1.setScore(WINNERSCORE);
+            } else {
+                this.team2.setScore(WINNERSCORE);
+            }
+        }
     }
 
     public getScores() {

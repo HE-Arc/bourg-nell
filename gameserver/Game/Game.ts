@@ -32,12 +32,6 @@ export class Game {
         this.trumpColor = trumpColor;
     }
 
-    // public startGame(trumpColor: CARD_COLOR)
-    // {
-    //     this.gameBoard = new GameBoard(trumpColor, this.players);
-    //     this.fold = new Fold(trumpColor);
-    // }
-
     public getGameBoard() {
         return this.gameBoard;
     }
@@ -74,7 +68,7 @@ export class Game {
         if (!(this.rowWinner === ""))
         {
             this.playerTurn = this.players.indexOf(this.rowWinner);
-            this.gameBoard.setScore(this.fold.getPlayedCard());
+            this.gameBoard.setScore(this.fold.getPlayedCard(), this.rowWinner);
             this.fold = new Fold(this.trumpColor);
         }
     }
