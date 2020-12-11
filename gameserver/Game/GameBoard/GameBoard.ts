@@ -1,5 +1,6 @@
 import {CARD_COLOR} from "./Cards/CardColor";
 import {CARDS} from "./Cards/Cards";
+import { findCardScore } from "./Cards/CardScore";
 import {Deck} from "./Cards/Deck";
 import {Player} from "./Player/Player";
 import {Team} from "./Team/Team";
@@ -17,15 +18,14 @@ export class GameBoard {
     private team2: Team;
 
     public constructor(trumpCard: CARD_COLOR, players: Array<string>) {
-        //this.deck.shuffleDeck();
+        this.deck.shuffleDeck();
         players.forEach(player => {
             this.players.push(new Player(player));
         });
         this.team1 = new Team(this.players[0], this.players[2]);
         this.team2 = new Team(this.players[1], this.players[3]);
-        this.setScore(0,0);
         this.giveCards();
-        this.trumpCardColor = trumpCard;   
+        this.trumpCardColor = trumpCard;  
     }
 
     public getDeck(){
@@ -40,17 +40,21 @@ export class GameBoard {
         return this.team2;
     }
 
-    public setScore(team1Score: number, team2Score: number) {
-        this.team1.setScore(team1Score)
-        this.team2.setScore(team2Score)
-
-        if (this.team1.getScore() + this.team2.getScore() >= MAXSCORE) {
-            throw new Error("The total score cannot be superior to the game max score");
-        }
+    public setScore(cards: Map<CARDS, string>) {
+        cards.forEach((playerName: string, card:CARDS) => {
+            let cardScore = findCardScore(card, this.trumpCardColor);
+            // find return 'undefined' if nothing in found in the arrays, then, if the return statement is not undefined
+            // it means that a player has been found in the team1 players, so we increment the score of team1
+            if(this.team1.getPlayers().find(player => player.getName() === playerName) !== undefined) {
+                this.team1.setScore(cardScore);
+            } else {
+                this.team2.setScore(cardScore);
+            }
+        });
     }
 
-    public printScore() {
-        console.log("Team1: " + this.team1.getScore() + " | Team2: " + this.team2.getScore()); 
+    public getScores() {
+        return [this.team1.getScore(), this.team2.getScore()];
     }
 
     public giveCards() {

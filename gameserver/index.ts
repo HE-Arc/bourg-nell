@@ -2,10 +2,11 @@ import {CARD_COLOR} from "./Game/GameBoard/Cards/CardColor";
 import {Game} from "./Game/Game";
 import * as Socketio  from "socket.io";
 import {CARDS} from "./Game/GameBoard/Cards/Cards";
-import { GameStates } from "./Game/GameStates";
+import { GameStates} from "./Game/GameStates";
+import {Deck} from "./Game/GameBoard/Cards/Deck";
 
 function chooseTrumpColor(){
-    return CARD_COLOR.HEARTH // TO CHANGE
+    return CARD_COLOR.CLUBS // TO CHANGE
 }
 
 const MAX_GAME_PLAYERS = 4;
@@ -30,7 +31,7 @@ io.on("connect", async (socket: Socketio.Socket) => {
 
         if(players.length === MAX_GAME_PLAYERS) {
             console.log("game is starting in room n°" + roomNumber);
-            game = new Game(players, trumpColor, roomNumber);
+            game = new Game(players, roomNumber);
             gameList.push(game);
 
             console.log("Player " + players + " are playing together");
@@ -43,6 +44,7 @@ io.on("connect", async (socket: Socketio.Socket) => {
             playerList.forEach(player => {
                 io.to(playerMap.get(player.getName()))
                     .emit("cards", player.getCards());
+                console.log(player.getCards());
             });
             let nextPlayerName = game.getGameBoard().getPlayers()[game.getPlayerTurn()].getName();
             io.to(playerMap.get(nextPlayerName)).emit("turn", "it's your turn to play a card");
@@ -57,7 +59,8 @@ io.on("connect", async (socket: Socketio.Socket) => {
         let nextPlayerName = game.getGameBoard().getPlayers()[game.getPlayerTurn()].getName();
         io.to(playerMap.get(nextPlayerName)).emit("turn", "it's your turn to play a card");
         game.nextPlayerTurn();
-    });
+        console.log(game.getGameBoard().getScores());
+        });
 });
 
 io.listen(3000);

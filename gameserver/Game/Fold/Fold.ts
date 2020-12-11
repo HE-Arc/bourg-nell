@@ -40,7 +40,6 @@ export class Fold {
         
         if (this.fold.length === MAX_INBOARD_CARDS) {
             this.winner = this.cardPlayed.get(this.findWinner());
-            this.clearLists();
         }
     }
     
@@ -55,29 +54,40 @@ export class Fold {
         this.fold.forEach(card => {
             let valueScore = this.valueScoreMultiplier[Deck.findCardValue(card)];
             let colorScore = this.colorScoreMultiplier[Deck.findCardColor(card)];
-            finalScores.set(card, valueScore * colorScore);
-            scores.push(valueScore * colorScore);
+            let score = valueScore * colorScore;
+            if(Deck.findCardColor(card) === this.trumpColor) {
+                if (Deck.findCardValue(card) === CARD_VALUE.JACK) {
+                    score *= 10; // if the card is the Jack of trump card, only the nine can beat it, so we multiply the score
+                }
+                if (Deck.findCardValue(card) === CARD_VALUE.NINE) {
+                    score *= 100; // if the card is the Nine of trump card, it is the best card in game, so we multiply the score by 100
+                }
+            }
+            finalScores.set(card, score);
+            scores.push(score);
         });
 
         scores = scores.sort((n1, n2) => n2-n1); // sort like this: [300, 200, 4, 2]
 
         let winner: CARDS = CARDS.ACE_CLUBS;
         finalScores.forEach((value: number, key: CARDS) => {
-            if(value === scores[0]) { // we took score[0] because now the array is sorted, so the first index is the higher
+            if(value == scores[0]) { // we took score[0] because now the array is sorted, so the first index is the higher
                 winner = key;
             }    
         })
-        console.log("the card " + CARDS[winner] + " won the fold");
+        console.log(this.cardPlayed.get(winner) + " won the fold");
         return winner;
-    }
-
-    private clearLists() {
-        this.fold = new Array<CARDS>();
-        console.log("new row");
-        this.cardPlayed = new Map();
     }
 
     public getWinner() {
         return this.winner;
+    }
+
+    public getPlayedCardNumber() {
+        return this.fold.length;
+    }
+
+    public getPlayedCard() {
+        return this.cardPlayed;
     }
 }

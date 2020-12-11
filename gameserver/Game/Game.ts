@@ -12,15 +12,31 @@ export class Game {
     private rowWinner = "";
     private playerTurn;
     private players;
+    private trumpColor;
 
-    public constructor(players: Array<string> ,trumpColor: CARD_COLOR, roomNumber: number) {
-        this.gameBoard = new GameBoard(trumpColor, players);
+    public constructor(players: Array<string>, roomNumber: number, trumpColor = CARD_COLOR.SPADES) {
         this.state = GameStates.CREATED;
         this.roomNumber = roomNumber;
-        this.fold = new Fold(trumpColor);
         this.playerTurn = 0;
         this.players = players;
+        this.gameBoard = new GameBoard(trumpColor, this.players);
+        this.fold = new Fold(trumpColor);
+        this.trumpColor = trumpColor;
     }
+
+    public getFold() {
+        return this.fold;
+    }
+
+    public setTrumpColor(trumpColor: CARD_COLOR) {
+        this.trumpColor = trumpColor;
+    }
+
+    // public startGame(trumpColor: CARD_COLOR)
+    // {
+    //     this.gameBoard = new GameBoard(trumpColor, this.players);
+    //     this.fold = new Fold(trumpColor);
+    // }
 
     public getGameBoard() {
         return this.gameBoard;
@@ -48,7 +64,6 @@ export class Game {
 
     public nextPlayerTurn() {
         this.playerTurn = (this.playerTurn + 1) % this.players.length;
-        console.log("turn to player n°"+ this.playerTurn);
     }
 
     public playCard(playerName: string, card: CARDS) {
@@ -56,5 +71,11 @@ export class Game {
         this.gameBoard.putPlayedCard(card);
         this.fold.playCard(playerName, card);
         this.rowWinner = this.fold.getWinner();
+        if (!(this.rowWinner === ""))
+        {
+            this.playerTurn = this.players.indexOf(this.rowWinner);
+            this.gameBoard.setScore(this.fold.getPlayedCard());
+            this.fold = new Fold(this.trumpColor);
+        }
     }
 }
