@@ -16,16 +16,6 @@ export class Player {
         return this.name;
     }
 
-    public toString() {
-        let res = "";
-        res = this.name + " [";
-        this.cards.forEach(card => {
-            res += CARDS[card] + " ";
-        });
-        res += "]";
-        return res;
-    }
-
     public getCards() {
         return this.cards;
     }

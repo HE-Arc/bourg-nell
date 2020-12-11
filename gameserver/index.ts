@@ -2,7 +2,6 @@ import {Game} from "./Game/Game";
 import * as Socketio  from "socket.io";
 import {CARDS} from "./Game/GameBoard/Cards/Cards";
 import { GameStates} from "./Game/GameStates";
-import { kMaxLength } from "buffer";
 
 const MAX_SCORE = 1000;
 const MAX_GAME_PLAYERS = 4;
@@ -60,20 +59,23 @@ io.on("connect", (socket: Socketio.Socket) => {
     socket.on("emptyDeck", async () => {
         rowFinished++;
         if (rowFinished === MAX_GAME_PLAYERS) {
-            let scores = game.getGameBoard().getScores();
-            console.log(scores);
-            if(scores[0] >= MAX_SCORE || scores[1] >= MAX_SCORE) {
+            let teams = game.getGameBoard().getTeams();
+            let team1Score = teams[0].getScore();
+            let team2Score = teams[1].getScore();
+            if(team1Score >= MAX_SCORE || team2Score >= MAX_SCORE) {
                 io.in("room"+game.getRoomNumber()).emit("announcement", "game is finished!");
                 let victoryMessage = "";
-                if (scores[0] >= MAX_SCORE) {
-                    victoryMessage = "team1 won the game!";
+                if (team1Score >= MAX_SCORE) {
+                    victoryMessage = teams[0].getPlayers() + " won the game!";
+                    game.setState(GameStates.WON_TEAM1);
                 } else {
-                    victoryMessage = "team2 won the game!";
+                    victoryMessage = teams[1].getPlayers() + " won the game!";
+                    game.setState(GameStates.WON_TEAM2);
                 }
                 io.in("room"+game.getRoomNumber()).emit("announcement", victoryMessage);
             } else {
                 io.in("room" + game.getRoomNumber()).emit("announcement", "new row in comming, cards will be distributed");
-                io.in("room" + game.getRoomNumber()).emit("scores", scores);
+                io.in("room" + game.getRoomNumber()).emit("scores", [team1Score, team2Score]);
                 game.getGameBoard().getDeck().provideNewDeck();
                 game.getGameBoard().giveCards();
                 game.getGameBoard().getPlayers().forEach(player => {

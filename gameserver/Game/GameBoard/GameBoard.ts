@@ -32,14 +32,6 @@ export class GameBoard {
         return this.deck;
     }
 
-    public getTeam1(){
-        return this.team1;
-    }
-
-    public getTeam2(){
-        return this.team2;
-    }
-
     public setScore(cards: Map<CARDS, string>, winner: string) {
         cards.forEach((playerName: string, card:CARDS) => {
             let cardScore = findCardScore(card, this.trumpCardColor);
@@ -50,8 +42,6 @@ export class GameBoard {
             } else {
                 this.team2.setScore(cardScore);
             }
-
-            
         });
 
         if(this.playedCards.length === 32) {
@@ -60,19 +50,11 @@ export class GameBoard {
             } else {
                 this.team2.setScore(WINNERSCORE);
             }
-
-            // this.deck = new Deck();
-            // this.deck.shuffleDeck();
-            // this.giveCards();
         }
-
-        // if(this.team1.getScore() >= 1000 || this.team2.getScore() >= 1000) {
-        //     this.deck= new Deck();
-        // }
     }
 
-    public getScores() {
-        return [this.team1.getScore(), this.team2.getScore()];
+    public getTeams() {
+        return [this.team1, this.team2];
     }
 
     public giveCards() {
@@ -80,14 +62,6 @@ export class GameBoard {
         this.players.forEach(player => {
             player.setCards(this.deck.getDeck().splice(0,cardNumber));
         });
-    }
-
-    public setTrumpCardColor(color: CARD_COLOR) {
-        this.trumpCardColor = color;
-    }
-
-    public getTrumpCard(){
-        return this.trumpCardColor;
     }
 
     public getPlayers() {
@@ -106,9 +80,5 @@ export class GameBoard {
 
     public putPlayedCard(card: CARDS) {
         this.playedCards.push(CARDS[card]);
-    }
-
-    public getPlayedCards() {
-        return this.playedCards;
     }
 }

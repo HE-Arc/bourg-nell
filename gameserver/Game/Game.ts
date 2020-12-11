@@ -28,16 +28,12 @@ export class Game {
         return this.fold;
     }
 
-    public setTrumpColor(trumpColor: CARD_COLOR) {
-        this.trumpColor = trumpColor;
-    }
+    // public setTrumpColor(trumpColor: CARD_COLOR) {
+    //     this.trumpColor = trumpColor;
+    // }
 
     public getGameBoard() {
         return this.gameBoard;
-    }
-
-    public getState() {
-        return this.state;
     }
 
     public setState(state: GameStates){
@@ -46,10 +42,6 @@ export class Game {
 
     public getRoomNumber() {
         return this.roomNumber;
-    }
-
-    public getRowWinner() {
-        return this.rowWinner;
     }
 
     public getPlayerTurn() {

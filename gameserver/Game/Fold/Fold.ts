@@ -83,10 +83,6 @@ export class Fold {
         return this.winner;
     }
 
-    public getPlayedCardNumber() {
-        return this.fold.length;
-    }
-
     public getPlayedCard() {
         return this.cardPlayed;
     }
