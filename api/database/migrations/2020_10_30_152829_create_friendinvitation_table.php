@@ -13,11 +13,13 @@ class CreateFriendinvitationTable extends Migration
      */
     public function up()
     {
+        Schema::disableForeignKeyConstraints();
         Schema::create('friendinvitations', function (Blueprint $table) {
             $table->foreignId("requester")->references("id")->on("users")->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId("requested")->references("id")->on("users")->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
+        Schema::enableForeignKeyConstraints();
     }
 
     /**
@@ -27,6 +29,8 @@ class CreateFriendinvitationTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('friendinvitation');
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('friendinvitations');
+        Schema::enableForeignKeyConstraints();
     }
 }

@@ -13,6 +13,8 @@ class CreateGameTable extends Migration
      */
     public function up()
     {
+        Schema::disableForeignKeyConstraints();
+
         Schema::create('games', function (Blueprint $table) {
             $table->id();
             $table->foreignId("player1")->references("id")->on("users")->onDelete('cascade')->onUpdate('cascade');
@@ -26,6 +28,7 @@ class CreateGameTable extends Migration
             $table->tinyInteger("gamestate");
             $table->timestamps();            
         });
+        Schema::enableForeignKeyConstraints();
     }
 
     /**
@@ -35,6 +38,8 @@ class CreateGameTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('game');
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('games');
+        Schema::enableForeignKeyConstraints();
     }
 }

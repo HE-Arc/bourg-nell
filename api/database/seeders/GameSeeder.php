@@ -15,7 +15,7 @@ class GameSeeder extends Seeder
      */
     public function run()
     {
-        $gameStateValues = ["CREATED" => 0, "ABORTED" => 1, "PLAYING" => 2, "WONTEAM1" => 3, "WONTEAM2" => 4];
+        // ["CREATED" => 0, "ABORTED" => 1, "PLAYING" => 2, "WONTEAM1" => 3, "WONTEAM2" => 4];
 
         $g = new Game();
 
