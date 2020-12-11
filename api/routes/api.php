@@ -1,6 +1,4 @@
 <?php
-
-use App\Http\Controllers\API\TestController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\GameController;
 use App\Http\Controllers\LoginController;
@@ -23,6 +21,9 @@ User admin route
 */
 Route::middleware('auth')->apiResource('users-admin', UserController::class);
 
+/*
+Game route
+*/
 Route::middleware('auth')->apiResource('games', GameController::class);
 
 //Error
@@ -34,6 +35,7 @@ Route::any('error', function () {
 Route relative to the user
 */
 //create a user 
+
 Route::post('users/create', function (Request $request) {
     return LoginController::create($request);
 });
@@ -56,31 +58,10 @@ Route::middleware('auth')->post('users/logout', function (Request $request) {
     return LoginController::logout($request);
 });
 
-/*
-Route relative to the game
-*/
-
-/*
-Route::post('/games/', function (Request $request) {
-    return GameController::create($request);
-});
-
-Route::get('/games/by-user/{id}/', function ($id) {
+Route::middleware('auth')->get('/games/by-user/{id}/', function (int $id) {
     return GameController::getByUser($id);
 });
 
-Route::get('/games/{id}/', function ($id) {
-    return GameController::index($id);
-});
-
-Route::patch('/games/{id}/', function (Request $request, $id) {
-    return GameController::update($request, $id);
-});
-
-Route::delete('/games/{id}/', function ($id) {
-    return GameController::delete($id);
-});
-*/
 /*
 Route relative to the friend invitation
 */

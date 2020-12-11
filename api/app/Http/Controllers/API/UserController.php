@@ -4,15 +4,13 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Validator;
-
-
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -20,7 +18,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        print("hey");
+        return User::all();
     }
 
     /**
@@ -32,10 +30,13 @@ class UserController extends Controller
     public static function store(Request $request)
     {
         $inputs = $request->only(["name", "password", "email"]);
-        $user = User::where('name', '=', $inputs['name'])
-            ->orWhere('email', '=', $inputs['email'])->exists();
 
-        if ($user == null) {
+        $validator = Validator::make($inputs, [
+            "name" => "unique:users",
+            "email" => "unique:users",
+        ]);
+
+        if (!$validator->fails()) {
             if (sizeof($inputs) < 3) {
                 return response()->json(['error' => 'missing parameter'], 400);
             } else {
@@ -88,16 +89,15 @@ class UserController extends Controller
         
     
         if (!$validator->fails()) {
-            if (!empty($inputs)) {
-                
-
+            if (!empty($inputs) && $user != null) {
                 $user->update($inputs);
                 return response()->json(['success' => 'true', 'user' => User::find($id)], 200);
-                //return $this->show($id);
             }
         }else{
             return response()->json(['success' => 'false', 'message' => 'duplicate username or email'], 400);
         }
+
+        return response()->json(['success' => 'false', 'message' => 'test'], 400);
     }
 
     /**
