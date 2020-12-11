@@ -5,7 +5,6 @@ import {Deck} from "./Cards/Deck";
 import {Player} from "./Player/Player";
 import {Team} from "./Team/Team";
 
-const MAXSCORE = 157;
 const WINNERSCORE = 5;
 
 export class GameBoard {
@@ -54,15 +53,22 @@ export class GameBoard {
 
             
         });
-        
+
         if(this.playedCards.length === 32) {
-            console.log("winner is " + winner);
             if(this.team1.getPlayers().find(player => player.getName() === winner)) {
                 this.team1.setScore(WINNERSCORE);
             } else {
                 this.team2.setScore(WINNERSCORE);
             }
+
+            // this.deck = new Deck();
+            // this.deck.shuffleDeck();
+            // this.giveCards();
         }
+
+        // if(this.team1.getScore() >= 1000 || this.team2.getScore() >= 1000) {
+        //     this.deck= new Deck();
+        // }
     }
 
     public getScores() {

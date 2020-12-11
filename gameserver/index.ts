@@ -1,28 +1,23 @@
-import {CARD_COLOR} from "./Game/GameBoard/Cards/CardColor";
 import {Game} from "./Game/Game";
 import * as Socketio  from "socket.io";
 import {CARDS} from "./Game/GameBoard/Cards/Cards";
 import { GameStates} from "./Game/GameStates";
-import {Deck} from "./Game/GameBoard/Cards/Deck";
+import { kMaxLength } from "buffer";
 
-function chooseTrumpColor(){
-    return CARD_COLOR.CLUBS // TO CHANGE
-}
-
+const MAX_SCORE = 1000;
 const MAX_GAME_PLAYERS = 4;
 const io = require("socket.io")();
 
 let players = Array<string>();
 let gameList = Array<Game>();
 let game: Game;
-let trumpColor = chooseTrumpColor();
 let playerMap = new Map();
 let roomNumber = 0;
 
-io.on("connect", async (socket: Socketio.Socket) => {
-    io.send("Connected !");
+io.on("connect", (socket: Socketio.Socket) => {
+    let rowFinished= 0;
 
-    socket.on("PlayerJoin", (playerName: string) => {
+    socket.on("PlayerJoin", async (playerName: string) => {
         playerMap.set(playerName, socket.id);
 
         console.log("Player: " + playerName + " join");
@@ -54,13 +49,50 @@ io.on("connect", async (socket: Socketio.Socket) => {
         }
     });
         
-    socket.on("playCard", (playerName: string, card: CARDS) => {
+    socket.on("playCard", async (playerName: string, card: CARDS) => {
         game.playCard(playerName, card);
         let nextPlayerName = game.getGameBoard().getPlayers()[game.getPlayerTurn()].getName();
         io.to(playerMap.get(nextPlayerName)).emit("turn", "it's your turn to play a card");
         game.nextPlayerTurn();
-        console.log(game.getGameBoard().getScores());
         });
+
+
+    socket.on("emptyDeck", async () => {
+        rowFinished++;
+        if (rowFinished === MAX_GAME_PLAYERS) {
+            let scores = game.getGameBoard().getScores();
+            console.log(scores);
+            if(scores[0] >= MAX_SCORE || scores[1] >= MAX_SCORE) {
+                io.in("room"+game.getRoomNumber()).emit("announcement", "game is finished!");
+                let victoryMessage = "";
+                if (scores[0] >= MAX_SCORE) {
+                    victoryMessage = "team1 won the game!";
+                } else {
+                    victoryMessage = "team2 won the game!";
+                }
+                io.in("room"+game.getRoomNumber()).emit("announcement", victoryMessage);
+            } else {
+                io.in("room" + game.getRoomNumber()).emit("announcement", "new row in comming, cards will be distributed");
+                io.in("room" + game.getRoomNumber()).emit("scores", scores);
+                game.getGameBoard().getDeck().provideNewDeck();
+                game.getGameBoard().giveCards();
+                game.getGameBoard().getPlayers().forEach(player => {
+                io.to(playerMap.get(player.getName()))
+                    .emit("cards", player.getCards());
+                console.log(player.getCards());
+                });
+                rowFinished = 0;
+                let nextPlayerName = game.getGameBoard().getPlayers()[game.getPlayerTurn()].getName();
+                io.to(playerMap.get(nextPlayerName)).emit("turn", "it's your turn to play a card");
+                game.nextPlayerTurn();
+            }
+        } else {
+            let nextPlayerName = game.getGameBoard().getPlayers()[game.getPlayerTurn()].getName();
+            io.to(playerMap.get(nextPlayerName)).emit("turn", "it's your turn to play a card");
+            game.nextPlayerTurn();
+        }
+        
+    });
 });
 
 io.listen(3000);

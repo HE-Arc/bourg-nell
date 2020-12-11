@@ -21,6 +21,12 @@ export class Deck{
         return this.deck;
     }
 
+    public provideNewDeck(){
+        this.deck = new Array<CARDS>();
+        this.fillCardSet();
+        this.shuffleDeck();
+    }
+
     public shuffleDeck(){
         let shuffledDeck = new Array<CARDS>();
         while(this.deck.length){
