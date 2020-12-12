@@ -3,6 +3,12 @@ import * as Socketio  from "socket.io";
 import {CARDS} from "./Game/GameBoard/Cards/Cards";
 import { GameStates} from "./Game/GameStates";
 
+function nextTurn() {
+    let nextPlayerName = game.getGameBoard().getPlayers()[game.getPlayerTurn()].getName();
+    io.to(playerMap.get(nextPlayerName)).emit("turn", "it's your turn to play a card");
+    game.nextPlayerTurn();
+}
+
 const MAX_SCORE = 1000;
 const MAX_GAME_PLAYERS = 4;
 const io = require("socket.io")();
@@ -40,9 +46,7 @@ io.on("connect", (socket: Socketio.Socket) => {
                     .emit("cards", player.getCards());
                 console.log(player.getCards());
             });
-            let nextPlayerName = game.getGameBoard().getPlayers()[game.getPlayerTurn()].getName();
-            io.to(playerMap.get(nextPlayerName)).emit("turn", "it's your turn to play a card");
-            game.nextPlayerTurn();
+            nextTurn();
             players = new Array<string>();
             roomNumber++;
         }
@@ -50,9 +54,7 @@ io.on("connect", (socket: Socketio.Socket) => {
         
     socket.on("playCard", async (playerName: string, card: CARDS) => {
         game.playCard(playerName, card);
-        let nextPlayerName = game.getGameBoard().getPlayers()[game.getPlayerTurn()].getName();
-        io.to(playerMap.get(nextPlayerName)).emit("turn", "it's your turn to play a card");
-        game.nextPlayerTurn();
+        nextTurn();
         });
 
 
@@ -84,14 +86,10 @@ io.on("connect", (socket: Socketio.Socket) => {
                 console.log(player.getCards());
                 });
                 rowFinished = 0;
-                let nextPlayerName = game.getGameBoard().getPlayers()[game.getPlayerTurn()].getName();
-                io.to(playerMap.get(nextPlayerName)).emit("turn", "it's your turn to play a card");
-                game.nextPlayerTurn();
+                nextTurn();
             }
         } else {
-            let nextPlayerName = game.getGameBoard().getPlayers()[game.getPlayerTurn()].getName();
-            io.to(playerMap.get(nextPlayerName)).emit("turn", "it's your turn to play a card");
-            game.nextPlayerTurn();
+            nextTurn();
         }
         
     });
