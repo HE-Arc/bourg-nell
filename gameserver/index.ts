@@ -68,10 +68,10 @@ io.on("connect", (socket: Socketio.Socket) => {
                 io.in("room"+game.getRoomNumber()).emit("announcement", "game is finished!");
                 let victoryMessage = "";
                 if (team1Score >= MAX_SCORE) {
-                    victoryMessage = teams[0].getPlayers() + " won the game!";
+                    victoryMessage = teams[0].getPlayers().forEach(player => player.getName() + " ") + " won the game!";
                     game.setState(GameStates.WON_TEAM1);
                 } else {
-                    victoryMessage = teams[1].getPlayers() + " won the game!";
+                    victoryMessage = teams[1].getPlayers().forEach(player => player.getName() + " ") + " won the game!";
                     game.setState(GameStates.WON_TEAM2);
                 }
                 io.in("room"+game.getRoomNumber()).emit("announcement", victoryMessage);
