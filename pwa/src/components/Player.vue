@@ -1,7 +1,7 @@
 <template>
     <div :class="displayClass" :pos="'pos-'+pos" card-elevation="2">
-        <Avatar md5hash="78d172c9cbb993794d2e9021fce57d68" status="playing"/>
-        <h3>Luca Laissue</h3>
+        <Avatar :md5hash="imgPath" status="playing"/>
+        <h3>{{name}}</h3>
     </div>
 </template>
 
@@ -23,6 +23,14 @@
             pos: {
                 type: String,
                 required: true
+            },
+            name: {
+                type: String,
+                required: true
+            },
+            imgPath: {
+                type: String,
+                required: false
             }
         },
         computed: { 

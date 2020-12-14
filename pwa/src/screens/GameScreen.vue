@@ -16,9 +16,9 @@
             <PlayingCard v-if="playerTopPlayedCard !== null" :card="playerTopPlayedCard" playedDirection="top" :fold="fold"/>
             <PlayingCard v-if="playedCard !== null" :card="playedCard" playedDirection="bottom" :fold="fold"/>
         </div>
-        <Player :playing="player1Playing" pos="right"/>
-        <Player :playing="player2Playing" pos="top"/>
-        <Player :playing="player3Playing" pos="left"/>
+        <Player :playing="player1Playing" name="luca" imgPath="78d172c9cbb993794d2e9021fce57d68" pos="right"/>
+        <Player :playing="player2Playing" name="ugo" imgPath="78d172c9cbb993794d2e9021fce57d68" pos="top"/>
+        <Player :playing="player3Playing" name="robin" imgPath="78d172c9cbb993794d2e9021fce57d68" pos="left"/>
         <div class="score card" card-elvation="1">
             <h3>Score</h3>
             <div>
