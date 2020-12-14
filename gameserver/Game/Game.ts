@@ -32,6 +32,10 @@ export class Game {
     //     this.trumpColor = trumpColor;
     // }
 
+    public getTrumpColor() {
+        return this.trumpColor;
+    }
+
     public getGameBoard() {
         return this.gameBoard;
     }

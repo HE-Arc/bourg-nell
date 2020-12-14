@@ -2,11 +2,31 @@ import {Game} from "./Game/Game";
 import * as Socketio  from "socket.io";
 import {CARDS} from "./Game/GameBoard/Cards/Cards";
 import { GameStates} from "./Game/GameStates";
+import {Deck} from "./Game/GameBoard/Cards/Deck";
 
 function nextTurn() {
     let nextPlayerName = game.getGameBoard().getPlayers()[game.getPlayerTurn()].getName();
     io.to(playerMap.get(nextPlayerName)).emit("turn", "it's your turn to play a card");
     game.nextPlayerTurn();
+}
+
+function checkPossibleMove(cardPlayed: CARDS, playerName: string) {
+    let mainColor = Deck.findCardColor(playedCard[0]);
+    let cardColor = Deck.findCardColor(cardPlayed);
+    if (cardColor === mainColor) {
+        playedCard.push(cardPlayed)
+        return true;
+    } else {
+        let moveIsPossible = false;
+        game.getGameBoard().getPlayerByName(playerName).getCards().forEach(card => {
+            if (Deck.findCardColor(card) === (mainColor || game.getTrumpColor())) {
+                return false
+            } else {
+                moveIsPossible = true;
+            }
+        })
+        return moveIsPossible;
+    }
 }
 
 const MAX_SCORE = 1000;
@@ -18,16 +38,21 @@ let gameList = Array<Game>();
 let game: Game;
 let playerMap = new Map();
 let roomNumber = 0;
+let playedCard = Array<CARDS>();
 
 io.on("connect", (socket: Socketio.Socket) => {
     let rowFinished= 0;
+    console.log("A connection occur ! ")
 
-    socket.on("PlayerJoin", async (playerName: string) => {
+
+    socket.on("playerJoin", async (playerName: string) => {
         playerMap.set(playerName, socket.id);
 
         console.log("Player: " + playerName + " join");
         players.push(playerName);
         socket.join("room" + roomNumber);
+
+        io.in("room"+roomNumber).emit("announcement", playerName + " join!")
 
         if(players.length === MAX_GAME_PLAYERS) {
             console.log("game is starting in room n°" + roomNumber);
@@ -52,11 +77,35 @@ io.on("connect", (socket: Socketio.Socket) => {
         }
     });
         
-    socket.on("playCard", async (playerName: string, card: CARDS) => {
-        game.playCard(playerName, card);
-        nextTurn();
-        });
+    socket.on("playCard", async (card: CARDS) => {
+        let playerName = "";
+        playerMap.forEach((sock, name) => {
+            if (socket.id === sock) {
+                playerName = name;
+            }
+        })
+        console.log(playerName);
+        console.log(card);
+        let playStatement = false;
+        if (checkPossibleMove(card, playerName)) {
+            console.log("move possible")
+            playedCard.push(card)
+            game.playCard(playerName, card);
+            playStatement = true;
+            io.in("room"+game.getRoomNumber()).emit("cardPlayed", {playerName, card})
+        } else {
+            console.log(game.getGameBoard().getPlayerByName(playerName).getCards())
+            console.log(game.getGameBoard().getPlayers())
+            console.log("impossible move")
+            playStatement = false;
+        }
+        io.to(playerMap.get(game.getGameBoard().getPlayerByName(playerName)))
+            .emit("possibleMove", playStatement, card)
+    });
 
+    socket.on("nextTurn", () => {
+        nextTurn();
+    })
 
     socket.on("emptyDeck", async () => {
         rowFinished++;
@@ -86,6 +135,7 @@ io.on("connect", (socket: Socketio.Socket) => {
                 console.log(player.getCards());
                 });
                 rowFinished = 0;
+                playedCard = [];
                 nextTurn();
             }
         } else {

@@ -28,6 +28,7 @@ export class Player {
             this.cards.splice(index, 1); // delete the card from the card list
         } else {
             throw new Error(card + " doesn't exist in " + this.name +" deck");
+            //console.log(card)
         }
         console.log(this.name + " played: " + CARDS[card]);
         return result;
