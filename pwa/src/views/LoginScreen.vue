@@ -1,15 +1,18 @@
 <template>
     <div id="root" class="login screen">
         <div class="login-form">
-            <form>
+            <form @submit.prevent="login">
                 <h4>Welcome back !</h4>
                 <label for="username">Username</label>
-                <div class="input-error">
-                    <input name="username" tabindex="1" type="text" placeholder="Username" />
+                <div v-if="connectError" class="input-error">
+                    <input v-model="username" name="username" tabindex="1" type="text" placeholder="Username" />
                     <span class="error">Invalid username or password</span>
                 </div>
+                <div v-else>
+                    <input v-model="username" name="username" tabindex="1" type="text" placeholder="Username" />
+                </div>
                 <label for="password">Password</label>
-                <input name="password" type="password" tabindex="2" placeholder="Password" />
+                <input v-model="password" name="password" type="password" tabindex="2" placeholder="Password" />
                 <input name="remember-me" tabindex="3" type="checkbox">
                 <label for="remember-me">Remember Username</label>
                 <input tabindex="4" type="submit" name="submit" value="Sign in">
@@ -21,11 +24,24 @@
 <script>
     export default {
         name: "LoginScreen",
-        mounted() {
-            this.$store.dispatch("fetchAuthUser", {
-                email: "test@gmail.com",
-                password: "test"
-            });
+        data() {
+            return {
+                username: "",
+                password: "",
+                connectError: false
+            }
+        },
+        methods: {
+            login() {
+                this.$store.dispatch("fetchAuthUser", {
+                    email: this.username,
+                    password: this.password
+                }).then(() => {
+                    console.log("Connected !");
+                }).catch(() => {
+                    this.connectError = true 
+                });
+            }
         }
     }
 </script>
