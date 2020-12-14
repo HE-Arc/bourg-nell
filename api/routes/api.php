@@ -64,7 +64,7 @@ Route::middleware('auth')->post('users/logout', function (Request $request) {
     return LoginController::logout($request);
 });
 
-Route::middleware('auth')->get('/games/by-user/{id}/', function (int $id) {
+Route::middleware('auth')->get('/games/by-user/{id}', function (int $id) {
     return GameController::getByUser($id);
 });
 
