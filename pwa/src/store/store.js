@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import axios from 'axios'
 
 Vue.use(Vuex)
-axios.defaults.baseURL = "http://localhost:8000"
+axios.defaults.baseURL = "https://bourgnell.srvz-webapp.he-arc.ch"
 
 export default new Vuex.Store({
     state: {
@@ -31,13 +31,15 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        fetchAuthUser(context) {
-            axios.defaults.headers.common["Authorization"] = "Bearer " + context.state.token
-
+        fetchAuthUser(context, data) {
             return new Promise((resolve, reject) => {
-                axios.get("/user")
+                axios.post("/users/login", {
+                    password: data.password,
+                    email: data.email
+                })
                     .then(response => {
-                        context.commit("currentUser", response.data)
+                        console.log(response);
+                        context.commit("retrieveToken", response.data.token)
                         resolve(response)
                     })
                     .catch(error => {

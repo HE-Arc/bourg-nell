@@ -1,6 +1,7 @@
 <template>
     <div>
-        <AccountScreen :userId="1"/>
+        <AccountScreen v-if="connected" :userId="1"/>
+        <LoginScreen v-else/>
         <Navigation/>
     </div>
 </template>
@@ -8,6 +9,7 @@
 <script>
 
 import AccountScreen from './views/AccountScreen';
+import LoginScreen from './views/LoginScreen';
 import Navigation from './components/Navigation';
 
 export default {
@@ -15,7 +17,13 @@ export default {
     name: 'App',
     components: {
         AccountScreen,
-        Navigation
+        Navigation,
+        LoginScreen,
+    },
+    computed: {
+        connected() {
+            return this.$store.getters.loggedIn;
+        }
     }
 }
 </script>
