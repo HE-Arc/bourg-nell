@@ -59,24 +59,21 @@
         bottom: -35px;
         left: 50%;
         display: inline-block;
-        margin: 0 10px;
         overflow: hidden;
+        box-shadow: 0 0 5px rgba(0,0,0,.3);
+        background: transparent;
         width: 70px;
-        box-shadow: 0 0 20px rgba(0,0,0,.3);
         transition: box-shadow 250ms, transform 250ms, bottom 250ms;
         transform-origin: center 500%;
         transform: translateX(-50%) scale(1);
         border-radius: 8px;
+        margin: 0;
+        line-height: 0;
 
         img
         {
             width: 100%;
         }
-
-        &.fold-bottom { bottom: -50%; animation: fold-bottom 1s ease-in; }
-        &.fold-left { left: -50%; animation: fold-left 1s ease-in; }
-        &.fold-right { left: 150%; animation: fold-right 1s ease-in; }
-        &.fold-top { bottom: 150%; animation: fold-top 1s ease-in; }
     }
 
     .player-cards
