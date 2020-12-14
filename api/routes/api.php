@@ -42,7 +42,6 @@ Route::any('error', function () {
 Route relative to the user
 */
 //create a user 
-
 Route::post('users/create', function (Request $request) {
     return LoginController::create($request);
 });
