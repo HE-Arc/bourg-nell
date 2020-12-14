@@ -17,6 +17,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 /*
+Test route
+*/
+Route::get('/', function(){
+    return "Hello World";
+});
+
+/*
 User admin route
 */
 Route::middleware('auth')->apiResource('users-admin', UserController::class);
