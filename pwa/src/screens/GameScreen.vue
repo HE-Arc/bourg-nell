@@ -3,9 +3,11 @@
         <div class="player-cards">
             <PlayingCard 
                 v-for="card in ownCards"
+                @played="playCard($event)"
                 :key="card"
                 :card="card"
                 :handPosition="getCardHandPosition(card)"
+                :lang="lang"
             />
         </div>
         <div class="playing-mat">
@@ -17,6 +19,18 @@
         <Player :playing="player1Playing" pos="right"/>
         <Player :playing="player2Playing" pos="top"/>
         <Player :playing="player3Playing" pos="left"/>
+        <div class="score card" card-elvation="1">
+            <h3>Score</h3>
+            <div>
+                <h6>Luca + Robin</h6>
+                <div>{{myTeamScore}}</div>
+            </div>
+            <div>
+                <h6>Luca + Robin</h6>
+                <div>{{theirTeamScore}}</div>
+            </div>
+
+        </div>
     </div>
 </template>
 
@@ -41,9 +55,12 @@ export default {
             playerLeftPlayedCard: null,
             playerTopPlayedCard: null,
             playedCard: null,
-
+            folding: false,
+            lang: "fr",
+            myTeamScore: 0,
+            theirTeamScore: 0,
             fold: null,
-            currentPlayerPlaying: 1
+            currentPlayerPlaying: 0
             //socket: io("ws://localhost:3000")
         }
     },
@@ -51,24 +68,6 @@ export default {
         // Connect to server
         //socket.on("turn", this.onPlayCard)
         //socket.on("cards", this.getCards)
-        setTimeout(() => {
-            this.playerRightPlayedCard = 39;
-            this.currentPlayerPlaying = 2;
-        }, 1000)
-        setTimeout(() => {
-            this.playerTopPlayedCard = 71;
-            this.currentPlayerPlaying = 3;
-        }, 2000)
-        setTimeout(() => {
-            this.playerLeftPlayedCard = 24;
-            this.currentPlayerPlaying = 0;
-        }, 3000)
-        setTimeout(() => {
-            this.playCard(39);
-        }, 4000)
-        setTimeout(() => {
-            this.foldCards("top");
-        }, 5000)
     },
     computed: {
         player1Playing() {return this.currentPlayerPlaying == 1},
@@ -102,6 +101,7 @@ export default {
         },
         foldCards(direction)
         {
+            this.folding = true;
             this.fold = direction;
             setTimeout(() => {
                 this.playerRightPlayedCard = null;
@@ -109,7 +109,8 @@ export default {
                 this.playerTopPlayedCard = null;
                 this.playedCard = null;
                 this.fold = null;
-            }, 800)
+                this.folding = false;
+            }, 1000)
         },
         getCardHandPosition(card)
         {
@@ -117,8 +118,28 @@ export default {
             return 9 - this.ownCards.length + (index * 2);
         },
         playCard(card) {
-            this.ownCards.splice(this.ownCards.indexOf(card), 1);
-            this.playedCard = card;
+            if(this.currentPlayerPlaying == 0 && !this.folding && this.playedCard === null)
+            {
+                this.ownCards.splice(this.ownCards.indexOf(card), 1);
+                this.playedCard = card;
+
+                setTimeout(() => {
+                    this.playerRightPlayedCard = 39;
+                    this.currentPlayerPlaying = 2;
+                }, 1000)
+                setTimeout(() => {
+                    this.playerTopPlayedCard = 71;
+                    this.currentPlayerPlaying = 3;
+                }, 2000)
+                setTimeout(() => {
+                    this.playerLeftPlayedCard = 24;
+                    this.currentPlayerPlaying = 0;
+                }, 3000)
+                setTimeout(() => {
+                    this.foldCards("bottom");
+                    this.myTeamScore += 20;
+                }, 5000)
+            }
         }
         
     }

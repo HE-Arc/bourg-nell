@@ -1,5 +1,5 @@
 <template>
-    <div :class="displayClass"><img :src="imgName" alt=""></div>
+    <div @click="emitPlayed" :class="displayClass"><img :src="imgName" alt=""></div>
 </template>
 
 <script>
@@ -52,6 +52,11 @@
                 if(!this.handPosition) return "";
 
                 return `index-${this.handPosition}`;
+            },
+            emitPlayed()
+            {
+                console.log("clicked");
+                this.$emit("played", this.card);
             }
         }
     }
