@@ -19,4 +19,8 @@ export class Team {
         this.score += score;
     }
 
+    public getPlayers() {
+        return [this.player1, this.player2];
+    }
+
 }

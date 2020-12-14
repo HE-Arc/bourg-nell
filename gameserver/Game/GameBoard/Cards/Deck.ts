@@ -21,6 +21,12 @@ export class Deck{
         return this.deck;
     }
 
+    public provideNewDeck(){
+        this.deck = new Array<CARDS>();
+        this.fillCardSet();
+        this.shuffleDeck();
+    }
+
     public shuffleDeck(){
         let shuffledDeck = new Array<CARDS>();
         while(this.deck.length){
@@ -35,9 +41,5 @@ export class Deck{
 
     static findCardValue(card: CARDS): CARD_VALUE {
         return card & 0b00001111;
-    }
-
-    static findCard(card: CARDS){
-        return card & 0b00000000;
     }
 }

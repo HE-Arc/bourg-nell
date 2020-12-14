@@ -1,7 +1,7 @@
-import { CARD_COLOR } from "./CardColor";
-import { CARDS } from "./Cards";
-import { CARD_VALUE } from "./CardValue";
-import { Deck } from "./Deck"
+import {CARD_COLOR} from "./CardColor";
+import {CARDS} from "./Cards";
+import {CARD_VALUE} from "./CardValue";
+import {Deck} from "./Deck"
 
 let basicScore = {} as any;
 basicScore[CARD_VALUE.SIX] = 0;
