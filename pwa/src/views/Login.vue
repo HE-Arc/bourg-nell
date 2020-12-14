@@ -33,11 +33,12 @@
         },
         methods: {
             login() {
-                this.$store.dispatch("fetchAuthUser", {
+                this.$store.dispatch("retrieveToken", {
                     email: this.username,
                     password: this.password
                 }).then(() => {
                     console.log("Connected !");
+                    this.$router.push({ name: "account" })
                 }).catch(() => {
                     this.connectError = true 
                 });

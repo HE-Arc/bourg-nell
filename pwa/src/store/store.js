@@ -18,7 +18,7 @@ export default new Vuex.Store({
     },
     mutations: {
         retrieveToken(state, token) {
-            state.token = token
+            state.token = token;
         },
         destroyToken(state) {
             state.token = null
@@ -31,24 +31,34 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        fetchAuthUser(context, data) {
+        fetchAuthUser(context) {
+            axios.defaults.headers.common["Authorization"] = "Bearer " + context.state.token
             return new Promise((resolve, reject) => {
-                axios.post("/users/login", {
-                    password: data.password,
-                    email: data.email
-                })
+                axios.get("/users/me")
                     .then(response => {
-                        console.log(response);
-                        context.commit("retrieveToken", response.data.token)
-                        resolve(response)
+                        context.commit("updateUser", response.data);
+                        resolve(response);
                     })
                     .catch(error => {
-                        reject(error)
+                        reject(error);
+                    });
+            })
+        },
+        fetchAuthUserGames(context) {
+            axios.defaults.headers.common["Authorization"] = "Bearer " + context.state.token
+            return new Promise((resolve, reject) => {
+                axios.get("/games/me")
+                    .then(response => {
+                        context.commit("updateGames", response.data);
+                        resolve(response);
                     })
+                    .catch(error => {
+                        reject(error);
+                    });
             })
         },
         fetchUser(context, userId) {
-            //axios.defaults.headers.common["Authorization"] = "Bearer " + context.state.token
+            axios.defaults.headers.common["Authorization"] = "Bearer " + context.state.token
             return new Promise((resolve, reject) => {
                 axios.get(`/users/${userId}`)
                     .then(response => {
@@ -61,7 +71,7 @@ export default new Vuex.Store({
             })
         },
         fetchGames(context, userId) {
-            //axios.defaults.headers.common["Authorization"] = "Bearer " + context.state.token
+            axios.defaults.headers.common["Authorization"] = "Bearer " + context.state.token
             return new Promise((resolve, reject) => {
                 axios.get(`/games/by-user/${userId}`)
                     .then(response => {
@@ -73,28 +83,12 @@ export default new Vuex.Store({
                     })
             })
         },
-        register(context, data) {
-            return new Promise((resolve, reject) => {
-                axios.post("/register", {
-                    name: data.name,
-                    email: data.email,
-                    password: data.password,
-                    password_confirmation: data.password_confirmation,
-                })
-                .then(response => {
-                    resolve(response)
-                })
-                .catch(error => {
-                    reject(error)
-                })
-            })
-        },
         destroyToken(context) {
             axios.defaults.headers.common["Authorization"] = "Bearer " + context.state.token
 
             if (context.getters.loggedIn) {
                 return new Promise((resolve, reject) => {
-                    axios.post("/logout")
+                    axios.post("/users/logout")
                         .then(response => {
                             localStorage.removeItem("access_token")
                             context.commit("destroyToken")
@@ -110,21 +104,20 @@ export default new Vuex.Store({
         },
         retrieveToken(context, credentials) {
             return new Promise((resolve, reject) => {
-                axios.post("/login", {
-                    username: credentials.username,
+                axios.post("/users/login", {
                     password: credentials.password,
+                    email: credentials.email
                 })
-                .then(response => {
-                    const token = response.data.access_token
-                    
-                    localStorage.setItem("access_token", token)
-                    context.commit("retrieveToken", token)
-                    resolve(response)
-                })
-                .catch(error => {
-                    reject(error)
-                })
-            })
+                    .then(response => {
+                        console.log(response);
+                        context.commit("retrieveToken", response.data.token)
+                        localStorage.setItem("access_token", response.data.token);
+                        resolve(response)
+                    })
+                    .catch(error => {
+                        reject(error)
+                    })
+            });
         }
     },
     modules: { }

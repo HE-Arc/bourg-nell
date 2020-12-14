@@ -22,22 +22,31 @@ export default {
         Avatar,
         HistoryItem
     },
-    props: {
-        userId: {
-            type: Number,
-            required: true
-        }
-    },
     mounted () {
+        console.log(this.$store.state.token);
         this.loadUser();
         this.loadGames();
     },
     methods: {
         loadUser() {
-            this.$store.dispatch("fetchUser", this.userId);
+            if(this.$route.params.id)
+            {
+                this.$store.dispatch("fetchUser", this.$route.params.id);
+            }
+            else
+            {
+                this.$store.dispatch("fetchAuthUser");
+            }
         },
         loadGames() {
-            this.$store.dispatch("fetchGames", this.userId);
+            if(this.$route.params.id)
+            {
+                this.$store.dispatch("fetchGames", this.$route.params.id);
+            }
+            else
+            {
+                this.$store.dispatch("fetchAuthUserGames");
+            }
         }
     },
     computed: {
