@@ -1,0 +1,285 @@
+@keyframes play-card-left
+{
+    from { left: 0; }
+    to { left: 50%; }
+}
+@keyframes play-card-right
+{
+    from { left: 100%; }
+    to { left: 50%; }
+}
+@keyframes play-card-top
+{
+    from { bottom: 100%; }
+    to { bottom: 50%; }
+}
+@keyframes play-card-bottom
+{
+    from { bottom: 0%; }
+    to { bottom: 50%; }
+}
+
+@keyframes fold-left
+{
+    0% {left: 50%}
+    25% {left: 50%; transform: translate(-50%, -50%) scale(.8);}
+    50% {left: 50%; transform: translate(-50%, -50%) scale(.8);}
+    100% {left: -50%;}
+}
+@keyframes fold-right
+{
+    0% {left: 50%}
+    25% {left: 50%; transform: translate(-50%, -50%) scale(.8);}
+    50% {left: 50%; transform: translate(-50%, -50%) scale(.8);}
+    100% {left: 150%;}
+}
+@keyframes fold-top
+{
+    0% {bottom: 50%}
+    25% {bottom: 50%; transform: translate(-50%, -50%) scale(.8);}
+    50% {bottom: 50%; transform: translate(-50%, -50%) scale(.8);}
+    100% {bottom: 150%;}
+}
+@keyframes fold-bottom
+{
+    0% {bottom: 50%}
+    25% {bottom: 50%; transform: translate(-50%, -50%) scale(.8);}
+    50% {bottom: 50%; transform: translate(-50%, -50%) scale(.8);}
+    100% {bottom: -50%;}
+}
+
+.game.screen
+{
+    padding: 0;
+
+    .playing-card
+    {
+        position: fixed;
+        z-index: 2;
+        bottom: -35px;
+        left: 50%;
+        display: inline-block;
+        margin: 0 10px;
+        overflow: hidden;
+        width: 70px;
+        box-shadow: 0 0 20px rgba(0,0,0,.3);
+        transition: box-shadow 250ms, transform 250ms, bottom 250ms;
+        transform-origin: center 500%;
+        transform: translateX(-50%) scale(1);
+        border-radius: 8px;
+
+        img
+        {
+            width: 100%;
+        }
+
+        &.fold-bottom { bottom: -50%; animation: fold-bottom 1s ease-in; }
+        &.fold-left { left: -50%; animation: fold-left 1s ease-in; }
+        &.fold-right { left: 150%; animation: fold-right 1s ease-in; }
+        &.fold-top { bottom: 150%; animation: fold-top 1s ease-in; }
+    }
+
+    .player-cards
+    {
+        .playing-card
+        {
+            &.index-0 { transform: translateX(-50%) rotate(-20deg);}
+            &.index-1 { transform: translateX(-50%) rotate(-17.5deg);}
+            &.index-2 { transform: translateX(-50%) rotate(-15deg);}
+            &.index-3 { transform: translateX(-50%) rotate(-12.5deg);}
+            &.index-4 { transform: translateX(-50%) rotate(-10deg)}
+            &.index-5 { transform: translateX(-50%) rotate(-7.5deg);}
+            &.index-6 { transform: translateX(-50%) rotate(-5deg)}
+            &.index-7 { transform: translateX(-50%) rotate(-2.5deg);}
+            &.index-8 { transform: translateX(-50%) rotate(0deg)}
+            &.index-9 { transform: translateX(-50%) rotate(2.5deg);}
+            &.index-10 { transform: translateX(-50%) rotate(5deg)}
+            &.index-11 { transform: translateX(-50%) rotate(7.5deg);}
+            &.index-12 { transform: translateX(-50%) rotate(10deg)}
+            &.index-13 { transform: translateX(-50%) rotate(12.5deg);}
+            &.index-14 { transform: translateX(-50%) rotate(15deg)}
+            &.index-15 { transform: translateX(-50%) rotate(17.5deg);}
+            &.index-16 { transform: translateX(-50%) rotate(20deg)}
+
+            &:hover
+            {
+                bottom: -5px;
+                cursor: pointer;
+            }
+        }
+    }
+
+    .trump-selection-modal
+    {
+        position: fixed;
+        z-index: 9999 !important;
+        bottom: 0;
+        left: 0;
+        top: 0;
+        right: 0;
+        background: rgba(0,0,0,.2);
+
+        .choice-modal
+        {
+            margin: 48px auto 0 auto;
+            max-width: 600px;
+            text-align: center;
+
+            h2
+            {
+                margin-bottom: 32px;
+            }
+
+            button
+            {
+                margin-top: 16px;
+            }
+
+            .choices
+            {
+                display: flex;
+                justify-content: space-around;
+                
+                img
+                {
+                    width: 100px;
+                    cursor: pointer;
+                    box-shadow: 0 0 5px rgba(0,0,0, .2);
+                    border-radius: 8px;
+                }
+            }
+        }
+    }
+    
+    .player
+    {
+        position: fixed;
+        z-index: 3;
+        padding: 8px;
+        
+        h3
+        {
+            font-size: .7em;
+        }
+        
+        .avatar
+        {
+            width: 30px;
+            height: 30px;
+            &:after
+            {
+                transform: scale(0);
+                transition: transform 250ms;
+            }
+        }
+
+        &.playing
+        {
+            .avatar
+            {
+                &:after
+                {
+                    transform: scale(1);
+                }
+            }
+        }
+
+        &[pos="pos-right"]
+        {
+            right: 0;
+            top: 30%;
+            transform: translateY(-50%);
+        }
+        &[pos="pos-left"]
+        {
+            left: 0;
+            top: 30%;
+            transform: translateY(-50%);
+        }
+        &[pos="pos-top"]
+        {
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+        }
+    }
+
+    .score
+    {
+        position: fixed;
+        z-index: 3;
+        bottom: 0;
+        right: 0;
+
+        * {
+            font-size: .7em;
+        }
+
+        > div
+        {
+            padding: 8px 0;
+        }
+    }
+
+    .playing-mat
+    {
+        background: #D93E38;
+        position: fixed;
+        z-index: 1;
+        top: 8%;
+        left: 8%;
+        right: 10%;
+        bottom: 0;
+        border-radius: 30px;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        box-shadow: 0 0 2px rgba(0,0,0,.3);
+
+        .playing-card
+        {
+            position: fixed;
+            bottom: 50%;
+            left: 50%;
+
+            &.left { transform: translate(-150%, -50%) scale(.8); animation: play-card-left 750ms ease-in-out;}
+            &.right { transform: translate(50%, -50%) scale(.8); animation: play-card-right 750ms ease-in-out;}
+            &.top { transform: translate(-50%, -100%) scale(.8); animation: play-card-top 750ms ease-in-out;}
+            &.bottom { transform: translate(-50%, 0) scale(.8); animation: play-card-bottom 750ms ease-in-out;}
+
+            &.fold-bottom { bottom: -50%; animation: fold-bottom 1s ease-in; }
+            &.fold-left { left: -50%; animation: fold-left 1s ease-in; }
+            &.fold-right { left: 150%; animation: fold-right 1s ease-in; }
+            &.fold-top { bottom: 150%; animation: fold-top 1s ease-in; }
+        }
+    }
+}
+
+@media screen and (min-width: 800px)
+{
+    .game.screen
+    {
+        .playing-card
+        {
+            width: 150px;
+        }
+
+        .player
+        {
+            h3
+            {
+                font-size: 1em;
+            }
+            .avatar
+            {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        .score {
+            * {
+                font-size: 1em;
+            }
+        }
+    }
+}
