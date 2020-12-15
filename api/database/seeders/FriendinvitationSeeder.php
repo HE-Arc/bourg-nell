@@ -14,6 +14,7 @@ class FriendinvitationSeeder extends Seeder
      */
     public function run()
     {
+        
         $friendInvitation = new Friendinvitation();
 
         $randVal = rand(1, 60);
@@ -21,5 +22,6 @@ class FriendinvitationSeeder extends Seeder
         $friendInvitation->requested = 60 - $randVal;
 
         $friendInvitation->save();
+        
     }
 }
