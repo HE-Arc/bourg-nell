@@ -77,7 +77,6 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-
         $inputs = $request->only(["name", "password", "email"]);
 
         $validator = Validator::make($inputs, [
