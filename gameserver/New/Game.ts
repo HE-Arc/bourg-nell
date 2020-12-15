@@ -5,6 +5,8 @@ import { Deck } from "./Deck";
 import {Player} from "./Player";
 import {CARD_VALUE} from "./CardValue";
 
+const ROUND_SIZE = 9;
+
 export class Game
 {
     private players = new Array<Player>();
@@ -115,7 +117,9 @@ export class Game
         
         this.roomBroadcast("currentTrump", this.currentTrumpColor);
 
-        for(let i = 0; i < 9; ++i) // Todo remove magic number
+        let allFoldsFromTeam1 = true;
+        let allFoldsFromTeam2 = true;
+        for(let roundIndex = 0; roundIndex < ROUND_SIZE; ++roundIndex)
         {
             let startId = this.currentPlayerIndex;
 
@@ -146,7 +150,22 @@ export class Game
 
             this.addTeamScoreOfPlayer(foldPlayerIndex, score);
 
-            if(i == 8) this.addTeamScoreOfPlayer(foldPlayerIndex, 5);
+            // Check Match
+            if(foldPlayerIndex % 2 == 0)
+            {
+                allFoldsFromTeam2 = false;
+            }
+            else
+            {
+                allFoldsFromTeam1 = false;
+            }
+
+            if(roundIndex == ROUND_SIZE - 1)
+            {
+                this.addTeamScoreOfPlayer(foldPlayerIndex, 5);
+                if(allFoldsFromTeam1) this.scoreTeam1 += 100;
+                if(allFoldsFromTeam2) this.scoreTeam2 += 100;
+            }
 
             this.roomBroadcast("scoreTeam1", this.scoreTeam1);
             this.roomBroadcast("scoreTeam2", this.scoreTeam2);
