@@ -49,7 +49,7 @@
             },
             indexPosition()
             {
-                if(!this.handPosition) return "";
+                if(this.handPosition === undefined) return "";
 
                 return `index-${this.handPosition}`;
             },

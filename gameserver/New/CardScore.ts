@@ -6,7 +6,7 @@ import {Deck} from "./Deck"
 let basicScore = {} as any;
 basicScore[CARD_VALUE.SIX] = 0;
 basicScore[CARD_VALUE.SEVEN] = 0;
-basicScore[CARD_VALUE.EIGHT] = 0;
+basicScore[CARD_VALUE.EIGHT] = 0;  
 basicScore[CARD_VALUE.NINE] = 0;
 basicScore[CARD_VALUE.TEN] = 10;
 basicScore[CARD_VALUE.JACK] = 2;

@@ -18,6 +18,11 @@
     from { bottom: 0%; }
     to { bottom: 50%; }
 }
+@keyframes loading-dot
+{
+    from { opacity: 1; transform: translate(-50%, -50%) scale(0); }
+    to { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+}
 
 @keyframes fold-left
 {
@@ -106,47 +111,6 @@
         }
     }
 
-    .trump-selection-modal
-    {
-        position: fixed;
-        z-index: 9999 !important;
-        bottom: 0;
-        left: 0;
-        top: 0;
-        right: 0;
-        background: rgba(0,0,0,.2);
-
-        .choice-modal
-        {
-            margin: 48px auto 0 auto;
-            max-width: 600px;
-            text-align: center;
-
-            h2
-            {
-                margin-bottom: 32px;
-            }
-
-            button
-            {
-                margin-top: 16px;
-            }
-
-            .choices
-            {
-                display: flex;
-                justify-content: space-around;
-                
-                img
-                {
-                    width: 100px;
-                    cursor: pointer;
-                    box-shadow: 0 0 5px rgba(0,0,0, .2);
-                    border-radius: 8px;
-                }
-            }
-        }
-    }
     
     .player
     {
@@ -230,7 +194,7 @@
         border-radius: 30px;
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;
-        box-shadow: 0 0 2px rgba(0,0,0,.3);
+        box-shadow: var(--lvl2-elevation-box-shadow);
 
         .playing-card
         {
@@ -247,6 +211,64 @@
             &.fold-left { left: -50%; animation: fold-left 1s ease-in; }
             &.fold-right { left: 150%; animation: fold-right 1s ease-in; }
             &.fold-top { bottom: 150%; animation: fold-top 1s ease-in; }
+        }
+    }
+
+    .modal
+    {
+        position: fixed;
+        z-index: 9999 !important;
+        bottom: 0;
+        left: 0;
+        top: 0;
+        right: 0;
+        background: rgba(0,0,0,.2);
+
+        &.trump-selection
+        {
+            .choice-modal
+            {
+                margin: 48px auto 0 auto;
+                max-width: 600px;
+                text-align: center;
+
+                h2
+                {
+                    margin-bottom: 32px;
+                }
+
+                button
+                {
+                    margin-top: 16px;
+                }
+
+                .choices
+                {
+                    display: flex;
+                    justify-content: space-around;
+                    
+                    img
+                    {
+                        width: 100px;
+                        cursor: pointer;
+                        box-shadow: 0 0 5px rgba(0,0,0, .2);
+                        border-radius: 8px;
+                    }
+                }
+            }
+        }
+
+        &.loading
+        {
+            img
+            {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 400px;
+                animation: loading-dot 1s infinite;
+            }
         }
     }
 }
