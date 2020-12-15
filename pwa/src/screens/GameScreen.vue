@@ -66,6 +66,9 @@ import CurrentTrump from "../components/GameScreen/CurrentTrump";
 import Score from "../components/GameScreen/Score";
 import {CARD_COLOR} from "../cards/CardColor";
 
+const PLAYERS_PER_GAME = 4;
+const MAX_CARDS_IN_HAND = 9;
+
 export default {
     // Todo : Load games from server
     name: 'GameScreen',
@@ -147,12 +150,12 @@ export default {
     methods: {
         relativeIndex(index)
         {
-            return (4 + index - this.myId ) % 4;
+            return (PLAYERS_PER_GAME + index - this.myId ) % PLAYERS_PER_GAME;
         },
         getCardHandPosition(card)
         {
             let index = this.ownCards.indexOf(card);
-            return 9 - this.ownCards.length + (index * 2);
+            return MAX_CARDS_IN_HAND - this.ownCards.length + (index * 2);
         },
 
         // You playe a card
