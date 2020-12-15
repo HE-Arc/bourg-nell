@@ -7,13 +7,13 @@
     {
         position: fixed;
         z-index: 2;
-        bottom: -35px;
+        bottom: -20px;
         left: 50%;
         display: inline-block;
         overflow: hidden;
         box-shadow: 0 0 5px rgba(0,0,0,.3);
         background: transparent;
-        width: 70px;
+        width: 50px;
         transition: box-shadow 250ms, transform 250ms, bottom 250ms;
         transform-origin: center 500%;
         transform: translateX(-50%) scale(1);
@@ -247,32 +247,43 @@
     }
 }
 
+@media screen and (min-width: 600px)
+{
+    .game.screen
+    {
+        .playing-card { width: 70px;}
+        .player
+        {
+            h3 { font-size: 1em; }
+        }
+        .score { * { font-size: 1em; } }
+    }
+}
+
 @media screen and (min-width: 800px)
 {
     .game.screen
     {
-        .playing-card
-        {
-            width: 150px;
-        }
-
+        .playing-card { width: 100px; }
         .player
         {
-            h3
-            {
-                font-size: 1em;
-            }
-            .avatar
-            {
-                width: 50px;
-                height: 50px;
-            }
+            .avatar { width: 50px; height: 50px; }
         }
+    }
+}
 
-        .score {
-            * {
-                font-size: 1em;
-            }
-        }
+@media screen and (min-width: 1000px)
+{
+    .game.screen
+    {
+        .playing-card { width: 130px; }
+    }
+}
+
+@media screen and (min-width: 1200px)
+{
+    .game.screen
+    {
+        .playing-card { width: 150px; }
     }
 }
