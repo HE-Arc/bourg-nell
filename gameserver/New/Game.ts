@@ -99,7 +99,7 @@ export class Game
         {
             this.firstTrump = false;
             this.players.forEach((player, index) => {
-                if(player.getCards().includes(CARDS.SEVEN_DIAMOND))
+                if(player.getCards().includes(CARDS.SEVEN_DIAMONDS))
                 {
                     this.currentPlayerIndex = index;
                 }
