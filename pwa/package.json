@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "tsc && npm run less && vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "less": "lessc src/style/main.less public/main.min.css"
+    "less": "lessc -x src/style/main.less public/main.min.css"
   },
   "dependencies": {
     "axios": "^0.21.0",
