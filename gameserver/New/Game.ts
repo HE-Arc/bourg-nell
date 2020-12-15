@@ -3,9 +3,16 @@ import {CARDS} from "./Cards";
 import { findCardScore } from "./CardScore";
 import { Deck } from "./Deck";
 import {Player} from "./Player";
-import {CARD_VALUE} from "./CardValue";
 
 const ROUND_SIZE = 9;
+const BONUS_POINTS_LAST_FOLD = 5;
+const BONUS_POINTS_MATCH = 100;
+const PLAYERS_PER_GAME = 4;
+const OPPOSITE_PLAYER_OFFSET = 2;
+const TEAM_COUNT = 2;
+
+const FOLD_DELAY_MS = 2500;
+const NEW_ROUND_DELAY_MS = 1500;
 
 export class Game
 {
@@ -74,10 +81,12 @@ export class Game
 
     addTeamScoreOfPlayer(playerIndex: number, score: number)
     {
-        if(playerIndex % 2 == 0)
+        // Player in team 1
+        if(playerIndex % TEAM_COUNT == 0)
         {
             this.scoreTeam1 += score;
         }
+        // Player in team 2
         else
         {
             this.scoreTeam2 += score;
@@ -114,7 +123,7 @@ export class Game
         catch
         {
             this.roomBroadcast("playerPassed", this.currentPlayerIndex);
-            this.currentTrumpColor = await this.players[(this.currentPlayerIndex + 2) % 4].chooseTrump(true);
+            this.currentTrumpColor = await this.players[(this.currentPlayerIndex + OPPOSITE_PLAYER_OFFSET) % PLAYERS_PER_GAME].chooseTrump(true);
         }
         
         this.roomBroadcast("currentTrump", this.currentTrumpColor);
@@ -148,12 +157,12 @@ export class Game
                 return s1 + findCardScore(s2, this.currentTrumpColor);
             }, 0);
 
-            await this.wait(2000);
+            await this.wait(FOLD_DELAY_MS);
 
             this.addTeamScoreOfPlayer(foldPlayerIndex, score);
 
             // Check Match
-            if(foldPlayerIndex % 2 == 0)
+            if(foldPlayerIndex % TEAM_COUNT == 0)
             {
                 allFoldsFromTeam2 = false;
             }
@@ -164,9 +173,12 @@ export class Game
 
             if(roundIndex == ROUND_SIZE - 1)
             {
-                this.addTeamScoreOfPlayer(foldPlayerIndex, 5);
-                if(allFoldsFromTeam1) this.scoreTeam1 += 100;
-                if(allFoldsFromTeam2) this.scoreTeam2 += 100;
+                // Last fold winner wins 5 more points
+                this.addTeamScoreOfPlayer(foldPlayerIndex, BONUS_POINTS_LAST_FOLD);
+
+                // Add bonus points in case of match
+                if(allFoldsFromTeam1) this.scoreTeam1 += BONUS_POINTS_MATCH;
+                if(allFoldsFromTeam2) this.scoreTeam2 += BONUS_POINTS_MATCH;
             }
 
             // Notify score and winner of current fold
@@ -179,7 +191,7 @@ export class Game
             this.currentPlayerIndex = foldPlayerIndex;
         }
 
-        await this.wait(1000);
+        await this.wait(NEW_ROUND_DELAY_MS);
     }
 
     nextPlayer()
