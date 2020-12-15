@@ -9,3 +9,67 @@
         opacity: 0;
     }
 }
+@keyframes play-card-left
+{
+    from { left: 0; }
+    to { left: 50%; }
+}
+@keyframes play-card-right
+{
+    from { left: 100%; }
+    to { left: 50%; }
+}
+@keyframes play-card-top
+{
+    from { bottom: 100%; }
+    to { bottom: 50%; }
+}
+@keyframes play-card-bottom
+{
+    from { bottom: 0%; }
+    to { bottom: 50%; }
+}
+@keyframes loading-dot
+{
+    from { opacity: 1; transform: translate(-50%, -50%) scale(0); }
+    to { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes fold-left
+{
+    0% {left: 50%}
+    25% {left: 50%; transform: translate(-50%, -50%) scale(.8);}
+    50% {left: 50%; transform: translate(-50%, -50%) scale(.8);}
+    100% {left: -50%;}
+}
+@keyframes fold-right
+{
+    0% {left: 50%}
+    25% {left: 50%; transform: translate(-50%, -50%) scale(.8);}
+    50% {left: 50%; transform: translate(-50%, -50%) scale(.8);}
+    100% {left: 150%;}
+}
+@keyframes fold-top
+{
+    0% {bottom: 50%}
+    25% {bottom: 50%; transform: translate(-50%, -50%) scale(.8);}
+    50% {bottom: 50%; transform: translate(-50%, -50%) scale(.8);}
+    100% {bottom: 150%;}
+}
+@keyframes fold-bottom
+{
+    0% {bottom: 50%}
+    25% {bottom: 50%; transform: translate(-50%, -50%) scale(.8);}
+    50% {bottom: 50%; transform: translate(-50%, -50%) scale(.8);}
+    100% {bottom: -50%;}
+}
+@keyframes give
+{
+    from {bottom: 120%; left: -20%}
+    to {bottom: -35px; left: 50%}
+}
+@keyframes trump
+{
+    from {right: -50px; transform: scale(0);}
+    to {right: 8px; transform: scale(1);}
+}
