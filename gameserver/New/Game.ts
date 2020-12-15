@@ -53,6 +53,8 @@ export class Game
             this.roomBroadcast("player", i, this.players[i].getName());
         }
 
+        this.roomBroadcast("gameStart");
+
         let trumpMakerId = 0;
 
         while(this.scoreTeam1 < this.maxScore && this.scoreTeam2 < this.maxScore)
@@ -167,6 +169,7 @@ export class Game
                 if(allFoldsFromTeam2) this.scoreTeam2 += 100;
             }
 
+            // Notify score and winner of current fold
             this.roomBroadcast("scoreTeam1", this.scoreTeam1);
             this.roomBroadcast("scoreTeam2", this.scoreTeam2);
             this.roomBroadcast("fold", foldPlayerIndex);

@@ -6,7 +6,7 @@
 </template>
 
 <script>
-    import Avatar from "./Avatar";
+    import Avatar from "../Avatar";
 
     export default {
         name: "Player",

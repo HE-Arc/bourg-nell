@@ -88,9 +88,11 @@ export class Player
         if(cardColor == foldBaseColor) return true;
 
         // Subcut is not allowed
-        const cardIsBest = Math.max(...(currentFold.map(c => Deck.findCardPower(c, foldBaseColor, currentTrump)))) <= Deck.findCardPower(card, foldBaseColor, currentTrump);
+        const currentFoldCardPowers = currentFold.map(c => Deck.findCardPower(c, foldBaseColor, currentTrump));
+        const bestFoldCardPower = Math.max(...currentFoldCardPowers);
+        const cardIsBetter = bestFoldCardPower < Deck.findCardPower(card, foldBaseColor, currentTrump);
         const hasOnlyTrumpCards = !this.cards.some(c => Deck.findCardColor(c) != currentTrump);
-        if(!cardIsBest && foldIsCut && cardColor == currentTrump && !hasOnlyTrumpCards) return false;
+        if(!cardIsBetter && foldIsCut && cardColor == currentTrump && !hasOnlyTrumpCards) return false;
 
         // Allowed if card is trump
         if(cardColor == currentTrump) return true;

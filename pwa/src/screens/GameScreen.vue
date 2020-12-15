@@ -1,5 +1,6 @@
 <template>
     <div id="root" class="game screen">
+        <!-- Player cards -->
         <div class="player-cards">
             <PlayingCard 
                 v-for="card in ownCards"
@@ -10,33 +11,33 @@
                 :lang="lang"
             />
         </div>
+
+        <!-- Played Cards -->
         <div class="playing-mat">
             <PlayingCard v-if="playerLeftPlayedCard !== null" :card="playerLeftPlayedCard" playedDirection="left" :fold="fold"/>
             <PlayingCard v-if="playerRightPlayedCard !== null" :card="playerRightPlayedCard" playedDirection="right" :fold="fold"/>
             <PlayingCard v-if="playerTopPlayedCard !== null" :card="playerTopPlayedCard" playedDirection="top" :fold="fold"/>
             <PlayingCard v-if="playedCard !== null" :card="playedCard" playedDirection="bottom" :fold="fold"/>
         </div>
-        <Player :playing="player1Playing" :name="playerRightName" imgPath="78d172c9cbb993794d2e9021fce57d68" pos="right"/>
-        <Player :playing="player2Playing" :name="playerTopName" imgPath="78d172c9cbb993794d2e9021fce57d68" pos="top"/>
-        <Player :playing="player3Playing" :name="playerLeftName" imgPath="78d172c9cbb993794d2e9021fce57d68" pos="left"/>
 
-        <div class="score card" card-elevation="1">
-            <h3>Score</h3>
-            <div>
-                <h6>You &amp; {{playerTopName}}</h6>
-                <div>{{myTeamScore}}</div>
-            </div>
-            <div>
-                <h6>{{playerRightName}} &amp; {{playerLeftName}}</h6>
-                <div>{{theirTeamScore}}</div>
-            </div>
+        <!-- Other players -->
+        <Player :playing="player1Playing" :name="playerRightName || ''" imgPath="78d172c9cbb993794d2e9021fce57d68" pos="right"/>
+        <Player :playing="player2Playing" :name="playerTopName || ''" imgPath="78d172c9cbb993794d2e9021fce57d68" pos="top"/>
+        <Player :playing="player3Playing" :name="playerLeftName || ''" imgPath="78d172c9cbb993794d2e9021fce57d68" pos="left"/>
 
-        </div>
-
+        <!-- Current trump -->
         <CurrentTrump v-if="currentTrump" :currentTrump="currentTrump"/>
 
+        <!-- Score -->
+        <Score 
+            :partnerName="playerTopName || ''" 
+            :opponentPlayer1Name="playerRightName || ''" 
+            :opponentPlayer2Name="playerLeftName || ''" 
+            :myTeamScore="myTeamScore"
+            :theirTeamScore="theirTeamScore"
+        />
 
-
+        <!-- Trump selection modal -->
         <ChooseTrumpModal 
             v-if="showTrumpModal" 
 
@@ -49,19 +50,20 @@
             :allowPass="allowPass"
         /> 
 
-        <div v-if="!connected && allPlayerJoined" class="loading modal">
-            <img src="swisscross.png"/>
-        </div>
+        <!-- Loading Modal -->
+        <LoadingModal v-if="!connected || !gameStarted"/>
     </div>
 </template>
 
 <script>
 
 import io from "socket.io-client";
-import PlayingCard from "../components/PlayingCard";
-import Player from "../components/Player";
-import ChooseTrumpModal from "../components/ChooseTrumpModal";
-import CurrentTrump from "../components/CurrentTrump";
+import PlayingCard from "../components/GameScreen/PlayingCard";
+import Player from "../components/GameScreen/Player";
+import ChooseTrumpModal from "../components/GameScreen/ChooseTrumpModal";
+import LoadingModal from "../components/GameScreen/LoadingModal";
+import CurrentTrump from "../components/GameScreen/CurrentTrump";
+import Score from "../components/GameScreen/Score";
 import {CARD_COLOR} from "../cards/CardColor";
 
 export default {
@@ -71,7 +73,9 @@ export default {
         Player,
         PlayingCard,
         ChooseTrumpModal,
-        CurrentTrump
+        CurrentTrump,
+        LoadingModal,
+        Score
     },
     data()
     {
@@ -117,6 +121,8 @@ export default {
         this.socket.on("disconnect", () => {this.connected = false});
         this.socket.on("reconnect", () => {this.connected = true});
 
+        this.socket.on("gameStart", () => {this.gameStarted = true});
+
         this.socket.on("id", this.onId);
         this.socket.on("player", this.onPlayer);
         this.socket.on("cards", this.onCards);
@@ -137,8 +143,6 @@ export default {
         player1Playing() {return this.relativeIndex(this.currentPlayerPlaying) == 1},
         player2Playing() {return this.relativeIndex(this.currentPlayerPlaying) == 2},
         player3Playing() {return this.relativeIndex(this.currentPlayerPlaying) == 3},
-        allPlayerJoined() {return true; return this.player1 && this.player2 && this.player3},
-        currentTrump() {return CARD_COLOR.SPADES;}
     },
     methods: {
         relativeIndex(index)
@@ -248,7 +252,7 @@ export default {
             {
                 this.playerLeftPlayedCard = card;
             }
-        },
+        }
     }
 }
 </script>
