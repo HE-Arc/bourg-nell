@@ -5,7 +5,6 @@ import { Deck } from "./Deck";
 import {Player} from "./Player";
 import {CARD_VALUE} from "./CardValue";
 
-
 export class Game
 {
     private players = new Array<Player>();
@@ -16,6 +15,7 @@ export class Game
     private maxScore = 0;
 
     private playedCards = new Array<CARDS>();
+    private firstTrump = true;
     private currentTrumpColor = CARD_COLOR.SPADES;
 
     public constructor(players: Player[], maxScore = 1000)
@@ -23,6 +23,15 @@ export class Game
         this.players = players; 
         this.currentPlayerIndex = 0; 
         this.maxScore = maxScore;
+    }
+
+    async wait(timems: number): Promise<void>
+    {
+        return new Promise((s, r) => {
+            setTimeout(() => {
+                s();
+            }, timems);
+        });
     }
     
     private roomBroadcast(event: string, ...args: any[])
@@ -52,7 +61,6 @@ export class Game
             this.nextPlayer();
             trumpMakerId = this.currentPlayerIndex;
         }
-        const playedCard = await this.players[0].playCard();
     }
     
     private getCurrentPlayer()
@@ -82,8 +90,30 @@ export class Game
             player.setCards(deck.getDeck().splice(0, cardNumber));
         });                
 
+        // First round, player that has seven of diamonds chooses trump
+        if(this.firstTrump)
+        {
+            this.firstTrump = false;
+            this.players.forEach((player, index) => {
+                if(player.getCards().includes(CARDS.SEVEN_DIAMOND))
+                {
+                    this.currentPlayerIndex = index;
+                }
+            });
+        }
+
         // Choose trump
-        //this.currentTrumpColor = await this.getCurrentPlayer().chooseTrump();
+        try
+        {
+            this.currentTrumpColor = await this.getCurrentPlayer().chooseTrump();
+        }
+        catch
+        {
+            this.roomBroadcast("playerPassed", this.currentPlayerIndex);
+            this.currentTrumpColor = await this.players[(this.currentPlayerIndex + 2) % 4].chooseTrump(true);
+        }
+        
+        this.roomBroadcast("currentTrump", this.currentTrumpColor);
 
         for(let i = 0; i < 9; ++i) // Todo remove magic number
         {
@@ -116,9 +146,6 @@ export class Game
                 return currentCardValue
             });
 
-            console.log(this.playedCards);
-            console.log(cardScores);
-
             let bestCardIndex = -1;
             cardScores.reduce((s1, s2, i) => {
                 if(s2 > s1)
@@ -138,13 +165,20 @@ export class Game
             const score = this.playedCards.reduce((s1, s2) => {
                 return s1 + findCardScore(s2, this.currentTrumpColor);
             }, 0);
+
+            await this.wait(2000);
+
             this.addTeamScoreOfPlayer(foldPlayerIndex, score);
+            this.roomBroadcast("scoreTeam1", this.scoreTeam1);
+            this.roomBroadcast("scoreTeam2", this.scoreTeam2);
             this.roomBroadcast("fold", foldPlayerIndex);
 
             // Reset for next round
             this.playedCards = [];
             this.currentPlayerIndex = foldPlayerIndex;
         }
+
+        await this.wait(5000);
     }
 
     nextPlayer()

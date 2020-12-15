@@ -25,6 +25,10 @@ export class Player
         this.socket.emit("id", id)
     }
 
+    getCards() {
+        return this.cards;
+    }
+
     setCards(cards: Number[]) {
         this.cards = cards;
         this.socket.emit("cards", this.cards);
@@ -42,14 +46,22 @@ export class Player
         });
     }
 
-    async chooseTrump(): Promise<CARD_COLOR> {
+    async chooseTrump(passed = false): Promise<CARD_COLOR> {
         return new Promise((s,r) => {
-            this.socket.emit("chooseTrump");
-            let trumpCardCb = (card: CARD_COLOR) => {
-                this.socket.off("chooseTrump", trumpCardCb);
-                s(card);
+            this.socket.emit(passed ? "passed" : "chooseTrump");
+            let trumpCardCb = (color: CARD_COLOR) => {
+                this.socket.off("trump", trumpCardCb);
+                this.socket.off ("pass", passCb);
+                s(color);
             }
-            this.socket.on("chooseTrump", trumpCardCb)
+            let passCb = () => {
+                this.socket.off ("pass", passCb);
+                this.socket.off("trump", trumpCardCb);
+                r();
+            };
+
+            this.socket.on("trump", trumpCardCb);
+            if(!passed) { this.socket.on("pass", passCb); }
         });
     }
 }
