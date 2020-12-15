@@ -93,7 +93,7 @@ export class Game
         }
     }
 
-    async playRound()
+    private giveCards()
     {
         // Distribute new cards
         let deck = new Deck();
@@ -102,6 +102,11 @@ export class Game
         this.players.forEach(player => {
             player.setCards(deck.getDeck().splice(0, cardNumber));
         });                
+    }
+
+    async playRound()
+    {
+        this.giveCards();
 
         // First round, player that has seven of diamonds chooses trump
         if(this.firstTrump)
