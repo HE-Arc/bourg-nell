@@ -110,9 +110,9 @@ class GameController extends Controller
         $game = Game::find($id);
         if (!empty($game)) {
             $game->delete();
-            return response()->json(['success' => 'true', 'message' => 'game ' . $id . 'deleted'], 200);
+            return response()->json(['success' => true, 'message' => 'game ' . $id . 'deleted'], 200);
         } else {
-            return response()->json(['success' => 'false', 'message' => 'game ' . $id . ' does not exist'], 400);
+            return response()->json(['success' => false, 'message' => 'game ' . $id . ' does not exist'], 400);
         }
     }
 
@@ -124,6 +124,6 @@ class GameController extends Controller
             ->orWhere('player4', '=', $id)
             ->get();
 
-        return response($games, 200);
+        return response()->json(['success' => true, $games], 200);
     }
 }

@@ -35,7 +35,7 @@ Route::middleware('auth')->apiResource('games', GameController::class);
 
 //Error
 Route::any('error', function () {
-    return response()->json(["error" => "invalid token"], 400);
+    return response()->json(['success' => false, "error" => "invalid token"], 400);
 })->name('error');
 
 /*
@@ -67,6 +67,12 @@ Route::middleware('auth')->post('users/logout', function (Request $request) {
 Route::middleware('auth')->get('/games/by-user/{id}', function (int $id) {
     return GameController::getByUser($id);
 });
+
+/**
+ * 
+ * 
+ * 
+ */
 
 /*
 Route relative to the friend invitation

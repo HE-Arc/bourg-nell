@@ -45,10 +45,10 @@ class UserController extends Controller
                     'email' => $inputs['email'],
                     'password' => Hash::make($inputs['password']),
                 ]);
-                return response()->json(['user' => $user]);
+                return response()->json(['success' => true, 'user' => $user]);
             }
         } else {
-            return response()->json(['error' => 'user exists'], 400);
+            return response()->json(['success' => false, 'error' => 'user exists'], 400);
         }
     }
 
@@ -62,9 +62,9 @@ class UserController extends Controller
     {
         $user =  User::find($id);
         if (empty($user)) {
-            return response()->json(['id' => 'user ' . $id . ' does not exist'], 400);
+            return response()->json(['success' => true, 'id' => 'user ' . $id . ' does not exist'], 400);
         } else {
-            return response($user, 200);
+            return response()->json(['success' => true, $user], 200);
         }
     }
 
@@ -91,13 +91,11 @@ class UserController extends Controller
         if (!$validator->fails()) {
             if (!empty($inputs) && $user != null) {
                 $user->update($inputs);
-                return response()->json(['success' => 'true', 'user' => User::find($id)], 200);
+                return response()->json(['success' => true, 'user' => User::find($id)], 200);
             }
         }else{
-            return response()->json(['success' => 'false', 'message' => 'duplicate username or email'], 400);
+            return response()->json(['success' => false, 'message' => 'duplicate username or email'], 400);
         }
-
-        return response()->json(['success' => 'false', 'message' => 'test'], 400);
     }
 
     /**
@@ -108,12 +106,12 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $resDelete = User::find($id)->delete();
-        if ($resDelete == 0) {
-            return response()->json(['id' => 'user ' . $id . ' does not exist'], 400);
+        $user = User::find($id);
+        if (!empty($user)) {
+            $user->delete();
+            return response()->json(['success' => false, 'id' => 'user ' . $id . ' does not exist'], 400);
         } else {
-
-            return response()->json(['deleted' => 'user ' . $id], 200);
+            return response()->json(['success' => true, 'delete' => 'user ' . $id], 200);
         }
     }
 }
