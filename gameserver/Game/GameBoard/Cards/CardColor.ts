@@ -1,7 +1,0 @@
-export enum CARD_COLOR
-{
-    HEARTH  = 0b00010000,
-    DIAMOND = 0b00100000,
-    CLUBS   = 0b01000000,
-    SPADES  = 0b10000000
-}

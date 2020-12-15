@@ -30,7 +30,7 @@ export class Game
         this.players.forEach(p => p.getSocket().emit(event, ...args));
     }
 
-    start()
+    async playGame()
     {
         for(let i = 0; i < this.players.length; ++i)
         {
@@ -41,10 +41,7 @@ export class Game
         {
             this.roomBroadcast("player", i, this.players[i].getName());
         }
-    }
 
-    async playGame()
-    {
         let trumpMakerId = 0;
 
         while(this.scoreTeam1 < this.maxScore && this.scoreTeam2 < this.maxScore)
@@ -77,8 +74,16 @@ export class Game
 
     async playRound()
     {
+        // Distribute new cards
+        let deck = new Deck();
+        deck.shuffleDeck();
+        let cardNumber = deck.getDeck().length / this.players.length;
+        this.players.forEach(player => {
+            player.setCards(deck.getDeck().splice(0, cardNumber));
+        });                
+
         // Choose trump
-        this.currentTrumpColor = await this.getCurrentPlayer().chooseTrump();
+        //this.currentTrumpColor = await this.getCurrentPlayer().chooseTrump();
 
         for(let i = 0; i < 9; ++i) // Todo remove magic number
         {
@@ -88,7 +93,9 @@ export class Game
             while(this.playedCards.length < this.players.length)
             {
                 // currentPlayer Play
+                this.roomBroadcast("playerPlaying", this.currentPlayerIndex);
                 const card = await this.getCurrentPlayer().playCard();
+                this.roomBroadcast("playCard", this.currentPlayerIndex, card);
                 this.playedCards.push(card);
                 this.nextPlayer();
             }
@@ -100,14 +107,17 @@ export class Game
                 let currentCardColor = Deck.findCardColor(card);
                 let currentCardValue = Deck.findCardValue(card);
                 
-                if(currentCardColor === currentColor) return 0b00010000 + currentCardValue;
                 if(currentCardColor === this.currentTrumpColor)
                 {
                     if(currentCardValue == CARD_VALUE.NINE || currentCardValue == CARD_VALUE.JACK) currentCardValue += 0b00100000;
                     return 0b01000000 + currentCardValue;
                 }
-                return currentCardColor + currentCardValue
+                if(currentCardColor === currentColor) return 0b00010000 + currentCardValue;
+                return currentCardValue
             });
+
+            console.log(this.playedCards);
+            console.log(cardScores);
 
             let bestCardIndex = -1;
             cardScores.reduce((s1, s2, i) => {
@@ -129,19 +139,12 @@ export class Game
                 return s1 + findCardScore(s2, this.currentTrumpColor);
             }, 0);
             this.addTeamScoreOfPlayer(foldPlayerIndex, score);
+            this.roomBroadcast("fold", foldPlayerIndex);
 
             // Reset for next round
             this.playedCards = [];
             this.currentPlayerIndex = foldPlayerIndex;
         }
-
-        // Distribute new cards
-        let deck = new Deck();
-        deck.shuffleDeck();
-        let cardNumber = deck.getDeck().length / this.players.length;
-        this.players.forEach(player => {
-            player.setCards(deck.getDeck().splice(0, cardNumber));
-        });
     }
 
     nextPlayer()

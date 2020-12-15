@@ -3,7 +3,7 @@
         <div class="player-cards">
             <PlayingCard 
                 v-for="card in ownCards"
-                @played="playCard($event)"
+                @played="tryPlayCard($event)"
                 :key="card"
                 :card="card"
                 :handPosition="getCardHandPosition(card)"
@@ -67,9 +67,7 @@ export default {
     data()
     {
         return {
-            player1: null,
-            player2: null,
-            player3: null,
+            myId: 0,
             ownCards: [],
             playerRightPlayedCard: null,
             playerLeftPlayedCard: null,
@@ -96,41 +94,59 @@ export default {
         });
         this.socket.on("disconnect", () => {this.connected = false});
         this.socket.on("reconnect", () => {this.connected = true});
-        this.socket.on("announcement", message => {console.log(message);});
+
         this.socket.on("cards", this.giveCards);
-        this.socket.on("cardPlayed", this.cardPlayed);
-        this.socket.on("possibleMove", this.popCard);
+        this.socket.on("playCard", this.playCard);
+        this.socket.on("playerPlaying", (id) => {this.currentPlayerPlaying = id});
+        this.socket.on("id", this.onId);
+        this.socket.on("fold", this.foldCards)
     },
     computed: {
-        player1Playing() {return this.currentPlayerPlaying == 1},
-        player2Playing() {return this.currentPlayerPlaying == 2},
-        player3Playing() {return this.currentPlayerPlaying == 3},
+        player1Playing() {return this.relativeIndex(this.currentPlayerPlaying) == 1},
+        player2Playing() {return this.relativeIndex(this.currentPlayerPlaying) == 2},
+        player3Playing() {return this.relativeIndex(this.currentPlayerPlaying) == 3},
         allPlayerJoined() {return true; return this.player1 && this.player2 && this.player3}
     },
     methods: {
-        foldCards(direction)
+        relativeIndex(index)
         {
-            this.folding = true;
-            this.fold = direction;
-            setTimeout(() => {
-                this.playerRightPlayedCard = null;
-                this.playerLeftPlayedCard = null;
-                this.playerTopPlayedCard = null;
-                this.playedCard = null;
-                this.fold = null;
-                this.folding = false;
-            }, 1000)
+            return (4 + index - this.myId ) % 4;
         },
-        popCard(statement, card){
-            if(statement){
-                index = this.ownCards.indexOf(card)
-                if(index > -1){
-                    this.ownCards.splice(index, 1);
-                    this.socket.emit("nextTurn")
+        foldCards(playerWinning)
+        {
+            setTimeout(() => {
+                this.folding = true;
+                let relativePlayerWinning = this.relativeIndex(playerWinning);
+                if(relativePlayerWinning == 0)
+                {
+                    this.fold = "bottom";
                 }
-            } else {
-                console.log("wrong card")
-            }
+                else if(relativePlayerWinning == 1)
+                {
+                    this.fold = "right";
+                }
+                else if(relativePlayerWinning == 2)
+                {
+                    this.fold = "top";
+                }
+                else if(relativePlayerWinning == 3)
+                {
+                    this.fold = "left";
+                }
+                setTimeout(() => {
+                    this.playerRightPlayedCard = null;
+                    this.playerLeftPlayedCard = null;
+                    this.playerTopPlayedCard = null;
+                    this.playedCard = null;
+                    this.fold = null;
+                    this.folding = false;
+                }, 1000)
+            }, 2000);
+        },
+        onId(id)
+        {
+            console.log(id);
+            this.myId = id;
         },
         giveCards(cards)
         {
@@ -138,44 +154,35 @@ export default {
             console.log(cards);
             this.ownCards = cards.sort();
         },
-        cardPlayed(cardPlayedEvent)
-        {
-            let {playerName, card} = cardPlayedEvent;
-            console.log(playerName + " played: " + card);
-            this.playerRightPlayedCard = card;
-        },
         getCardHandPosition(card)
         {
             let index = this.ownCards.indexOf(card);
             return 9 - this.ownCards.length + (index * 2);
         },
-        playCard(card) {
-            console.log(card);
-            this.socket.emit("playCard", card);
-            //if(this.currentPlayerPlaying == 0 && !this.folding && this.playedCard === null)
-            //{
-                //this.ownCards.splice(this.ownCards.indexOf(card), 1);
-                //this.playedCard = card;
-
-                //setTimeout(() => {
-                    //this.playerRightPlayedCard = 39;
-                    //this.currentPlayerPlaying = 2;
-                //}, 1000)
-                //setTimeout(() => {
-                    //this.playerTopPlayedCard = 71;
-                    //this.currentPlayerPlaying = 3;
-                //}, 2000)
-                //setTimeout(() => {
-                    //this.playerLeftPlayedCard = 24;
-                    //this.currentPlayerPlaying = 0;
-                //}, 3000)
-                //setTimeout(() => {
-                    //this.foldCards("bottom");
-                    //this.myTeamScore += 20;
-                //}, 5000)
-            //}
+        tryPlayCard(card)
+        {
+            this.socket.emit("turnCard", card);
+        },
+        playCard(playerIndex, card) {
+            let relativeIndex = this.relativeIndex(playerIndex);
+            if(relativeIndex == 0)
+            {
+                this.ownCards.splice(this.ownCards.indexOf(card), 1);
+                this.playedCard = card;
+            }
+            else if(relativeIndex == 1)
+            {
+                this.playerRightPlayedCard = card;
+            }
+            else if(relativeIndex == 2)
+            {
+                this.playerTopPlayedCard = card;
+            }
+            else if(relativeIndex == 3)
+            {
+                this.playerLeftPlayedCard = card;
+            }
         }
-        
     }
 }
 </script>

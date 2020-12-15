@@ -25,12 +25,9 @@ export class Player
         this.socket.emit("id", id)
     }
 
-    emitCards() {
-        this.socket.emit("cards", this.cards);
-    }
-
     setCards(cards: Number[]) {
         this.cards = cards;
+        this.socket.emit("cards", this.cards);
     }
 
     async playCard(): Promise<CARDS>
@@ -38,10 +35,10 @@ export class Player
         return new Promise((s, r) => {
             this.socket.emit("yourTurn");
             let playedCardCb = (card: CARDS) => {
-                this.socket.off("playCard", playedCardCb);
+                this.socket.off("turnCard", playedCardCb);
                 s(card);
             }
-            this.socket.on("playCard", playedCardCb);
+            this.socket.on("turnCard", playedCardCb);
         });
     }
 
