@@ -1,4 +1,3 @@
-
 export enum CARD_COLOR
 {
     HEARTS   = 0b00010000,
