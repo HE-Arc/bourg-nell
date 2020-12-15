@@ -18,7 +18,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::all();
+        return response()->json(["success" => true, "users" => User::all()]);
     }
 
     /**
@@ -38,7 +38,7 @@ class UserController extends Controller
 
         if (!$validator->fails()) {
             if (sizeof($inputs) < 3) {
-                return response()->json(['error' => 'missing parameter'], 400);
+                return response()->json(["success" => false, 'error' => 'missing parameter'], 400);
             } else {
                 $user = User::create([
                     'name' => $inputs['name'],
@@ -109,9 +109,9 @@ class UserController extends Controller
         $user = User::find($id);
         if (!empty($user)) {
             $user->delete();
-            return response()->json(['success' => false, 'id' => 'user ' . $id . ' does not exist'], 400);
+            return response()->json(['success' => false, 'message' => 'user ' . $id . ' does not exist'], 400);
         } else {
-            return response()->json(['success' => true, 'delete' => 'user ' . $id], 200);
+            return response()->json(['success' => true, 'message' => 'user ' . $id . 'deleted'], 200);
         }
     }
 }

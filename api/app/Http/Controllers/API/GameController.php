@@ -17,7 +17,7 @@ class GameController extends Controller
      */
     public function index()
     {
-        return Game::all();
+        return response()->json(['success' => true, 'games' => Game::all()]);
     }
 
     /**
@@ -31,10 +31,10 @@ class GameController extends Controller
         $inputs  = $request->only(['player1', 'player2', 'player3', 'player4', 'scorelimit']);
 
         if (sizeof($inputs) < 5) {
-            return response()->json(['error' => 'missing parameter'], 400);
+            return response()->json(['success' => false, 'error' => 'missing parameter'], 400);
         } else {
             $game = Game::create($inputs);
-            return response()->json(['game' => $game], 200);
+            return response()->json(['success' => true, 'game' => $game], 200);
         }
     }
 
@@ -48,7 +48,7 @@ class GameController extends Controller
     {
         $game = Game::find($id);
         if (empty($game)) {
-            return response()->json(['id' => 'Game ' . $id . ' does not exist'], 400);
+            return response()->json(['success' => false, 'id' => 'Game ' . $id . ' does not exist'], 400);
         } else {
             return response($game, 200);
         }
@@ -64,38 +64,21 @@ class GameController extends Controller
     public function update(Request $request, $id)
     {
 
-        $inputs  = $request->only(['player1', 'player2', 'player3', 'player4', 'scorelimit', 'gamestate', 'scoreteam1', 'scoreteam2']);
+        $inputs  = $request->only(['scorelimit', 'gamestate', 'scoreteam1', 'scoreteam2']);
 
         $validator = Validator::make($inputs, [
-            'player1' => 'exists:users,id',
-            'player3' => 'exists:users,id',
-            'player2' => 'exists:users,id',
-            'player4' => 'exists:users,id',
             'gamestate' => 'between:0,4'
         ]);
 
         if (!$validator->fails()) {
-
             $game = Game::find($id);
-
-            $gamePlayer = [$game->player1, $game->player2, $game->player3, $game->player4];
-            $uniqueInputs = array_unique($inputs);
-
-            foreach($uniqueInputs as $key => $value){
-                if(strpos('player', $key) === false){
-                    if(in_array($value, $gamePlayer)){
-                        return response()->json(['success' => 'false', 'message' => 'duplicate user in game'], 400);
-                    }
-                }
-            }
-
 
             if (!empty($inputs) && $game != null) {
                 $game->update($inputs);
                 return $this->show($id);
             }
         }
-        return response()->json(['success' => 'false', 'message' => 'bad request'], 400);
+        return response()->json(['success' => false, 'message' => 'bad request'], 400);
     }
 
     /**
@@ -123,6 +106,6 @@ class GameController extends Controller
             ->orWhere('player4', '=', $id)
             ->get();
 
-        return response()->json(['success' => true, $games], 200);
+        return response()->json(['success' => true, "games" => $games], 200);
     }
 }
