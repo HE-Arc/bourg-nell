@@ -1,11 +1,13 @@
 import {CARDS} from "./Cards";
 import { CARD_COLOR } from "./CardColor";
+import { Deck } from "./Deck";
+import { CARD_VALUE } from "./CardValue";
 
 export class Player
 {
     private socket: SocketIO.Socket;
     private name: string;
-    private cards = new Array<Number>();
+    private cards = new Array<CARDS>();
 
     constructor(socket: SocketIO.Socket, name: string)
     {
@@ -29,18 +31,22 @@ export class Player
         return this.cards;
     }
 
-    setCards(cards: Number[]) {
+    setCards(cards: CARDS[]) {
         this.cards = cards;
         this.socket.emit("cards", this.cards);
     }
 
-    async playCard(): Promise<CARDS>
+    async playCard(currentFold: CARDS[], currentTrump: CARD_COLOR): Promise<CARDS>
     {
         return new Promise((s, r) => {
             this.socket.emit("yourTurn");
             let playedCardCb = (card: CARDS) => {
-                this.socket.off("turnCard", playedCardCb);
-                s(card);
+                if(this.isCardAllowed(card, currentTrump, currentFold))
+                {
+                    this.socket.off("turnCard", playedCardCb);
+                    this.cards.splice(this.cards.indexOf(card), 1);
+                    s(card);
+                }
             }
             this.socket.on("turnCard", playedCardCb);
         });
@@ -63,5 +69,41 @@ export class Player
             this.socket.on("trump", trumpCardCb);
             if(!passed) { this.socket.on("pass", passCb); }
         });
+    }
+
+    private isCardAllowed(card: CARDS, currentTrump: CARD_COLOR, currentFold: CARDS[])
+    {
+        // Player must have the card
+        if(!this.cards.includes(card)) return false;
+        
+        // If it is the first card to play all cards are possible
+        if(currentFold.length == 0) return true;
+
+        // Usefull values
+        const foldBaseColor = Deck.findCardColor(currentFold[0]);
+        const cardColor = Deck.findCardColor(card);
+        const foldIsCut = currentFold.some(c => Deck.findCardColor(c) == currentTrump) && foldBaseColor != currentTrump
+
+        // If the card follows the base fold color it is allowed
+        if(cardColor == foldBaseColor) return true;
+
+        // Subcut is not allowed
+        const cardIsBest = Math.max(...(currentFold.map(c => Deck.findCardPower(c, foldBaseColor, currentTrump)))) <= Deck.findCardPower(card, foldBaseColor, currentTrump);
+        const hasOnlyTrumpCards = !this.cards.some(c => Deck.findCardColor(c) != currentTrump);
+        if(!cardIsBest && foldIsCut && cardColor == currentTrump && !hasOnlyTrumpCards) return false;
+
+        // Allowed if card is trump
+        if(cardColor == currentTrump) return true;
+
+        // Your are allowed to play an other card if the only trump you have is the jack and the basecolor is the trump color
+        const onlyTrumpIsJack = !this.cards.filter(c => Deck.findCardColor(c) == currentTrump).some(c => Deck.findCardValue(c) != CARD_VALUE.JACK);
+        const didNotFollow = this.cards.some(c => Deck.findCardColor(c) == foldBaseColor);
+        if(didNotFollow && onlyTrumpIsJack && foldBaseColor == currentTrump) return true;
+
+        // If you have a card from the base color it is not allowed since you did not follow
+        if(didNotFollow) return false;
+
+        // You don't have a card from the base color, your card is allowed
+        return true;
     }
 }

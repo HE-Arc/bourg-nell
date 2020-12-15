@@ -124,7 +124,7 @@ export class Game
             {
                 // currentPlayer Play
                 this.roomBroadcast("playerPlaying", this.currentPlayerIndex);
-                const card = await this.getCurrentPlayer().playCard();
+                const card = await this.getCurrentPlayer().playCard(this.playedCards, this.currentTrumpColor);
                 this.roomBroadcast("playCard", this.currentPlayerIndex, card);
                 this.playedCards.push(card);
                 this.nextPlayer();
@@ -133,33 +133,9 @@ export class Game
             let currentColor = Deck.findCardColor(this.playedCards[0])
             
             // Best card values
-            let cardScores = this.playedCards.map((card) => {
-                let currentCardColor = Deck.findCardColor(card);
-                let currentCardValue = Deck.findCardValue(card);
-                
-                if(currentCardColor === this.currentTrumpColor)
-                {
-                    if(currentCardValue == CARD_VALUE.NINE || currentCardValue == CARD_VALUE.JACK) currentCardValue += 0b00100000;
-                    return 0b01000000 + currentCardValue;
-                }
-                if(currentCardColor === currentColor) return 0b00010000 + currentCardValue;
-                return currentCardValue
-            });
-
-            let bestCardIndex = -1;
-            cardScores.reduce((s1, s2, i) => {
-                if(s2 > s1)
-                {
-                    bestCardIndex = i;
-                    return s2;
-                }
-                else
-                {
-                    return s1;
-                }
-            }, 0);
+            let cardScores = this.playedCards.map(c => Deck.findCardPower(c, currentColor, this.currentTrumpColor));
+            let bestCardIndex = cardScores.indexOf(Math.max(...cardScores));
             let foldPlayerIndex = (bestCardIndex + startId) % this.players.length;
-
 
             // Increment score
             const score = this.playedCards.reduce((s1, s2) => {
