@@ -67,29 +67,28 @@ class GameController extends Controller
         $inputs  = $request->only(['player1', 'player2', 'player3', 'player4', 'scorelimit', 'gamestate', 'scoreteam1', 'scoreteam2']);
 
         $validator = Validator::make($inputs, [
-            'player1' => 'exists:games',
-            'player2' => 'exists:games',
-            'player3' => 'exists:games',
-            'player4' => 'exists:games',
+            'player1' => 'exists:users,id',
+            'player3' => 'exists:users,id',
+            'player2' => 'exists:users,id',
+            'player4' => 'exists:users,id',
             'gamestate' => 'between:0,4'
         ]);
 
         if (!$validator->fails()) {
 
             $game = Game::find($id);
-            /**
-             * Test if users exists and if users are duplicate in the request
-             */
-            $usersId = array();
-            foreach ($inputs as $key => $value) {
-                if (strpos($key, 'player') !== false) {
-                    if (in_array($value, $usersId)) {
+
+            $gamePlayer = [$game->player1, $game->player2, $game->player3, $game->player4];
+            $uniqueInputs = array_unique($inputs);
+
+            foreach($uniqueInputs as $key => $value){
+                if(strpos('player', $key) === false){
+                    if(in_array($value, $gamePlayer)){
                         return response()->json(['success' => 'false', 'message' => 'duplicate user in game'], 400);
-                    } else {
-                        array_push($usersId, $value);
                     }
                 }
             }
+
 
             if (!empty($inputs) && $game != null) {
                 $game->update($inputs);
