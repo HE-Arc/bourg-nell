@@ -1,0 +1,278 @@
+
+.game.screen
+{
+    padding: 0;
+
+    .playing-card
+    {
+        position: fixed;
+        z-index: 2;
+        bottom: -35px;
+        left: 50%;
+        display: inline-block;
+        overflow: hidden;
+        box-shadow: 0 0 5px rgba(0,0,0,.3);
+        background: transparent;
+        width: 70px;
+        transition: box-shadow 250ms, transform 250ms, bottom 250ms;
+        transform-origin: center 500%;
+        transform: translateX(-50%) scale(1);
+        border-radius: 8px;
+        margin: 0;
+        line-height: 0;
+
+        img
+        {
+            width: 100%;
+        }
+    }
+
+    .player-cards
+    {
+        .playing-card
+        {
+            animation: give 600ms ease-in-out;
+            animation-fill-mode: backwards;
+
+            &.index-0 { animation-delay: 0ms; transform: translateX(-50%) rotate(-20deg);}
+            &.index-1 { animation-delay: 50ms; transform: translateX(-50%) rotate(-17.5deg);}
+            &.index-2 { animation-delay: 100ms; transform: translateX(-50%) rotate(-15deg);}
+            &.index-3 { animation-delay: 150ms; transform: translateX(-50%) rotate(-12.5deg);}
+            &.index-4 { animation-delay: 200ms; transform: translateX(-50%) rotate(-10deg)}
+            &.index-5 { animation-delay: 250ms; transform: translateX(-50%) rotate(-7.5deg);}
+            &.index-6 { animation-delay: 300ms; transform: translateX(-50%) rotate(-5deg)}
+            &.index-7 { animation-delay: 350ms; transform: translateX(-50%) rotate(-2.5deg);}
+            &.index-8 { animation-delay: 400ms; transform: translateX(-50%) rotate(0deg)}
+            &.index-9 { animation-delay: 450ms; transform: translateX(-50%) rotate(2.5deg);}
+            &.index-10 { animation-delay: 500ms; transform: translateX(-50%) rotate(5deg)}
+            &.index-11 { animation-delay: 550ms; transform: translateX(-50%) rotate(7.5deg);}
+            &.index-12 { animation-delay: 600ms; transform: translateX(-50%) rotate(10deg)}
+            &.index-13 { animation-delay: 650ms; transform: translateX(-50%) rotate(12.5deg);}
+            &.index-14 { animation-delay: 700ms; transform: translateX(-50%) rotate(15deg)}
+            &.index-15 { animation-delay: 750ms; transform: translateX(-50%) rotate(17.5deg);}
+            &.index-16 { animation-delay: 800ms; transform: translateX(-50%) rotate(20deg)}
+
+            &:hover
+            {
+                bottom: -5px;
+                cursor: pointer;
+            }
+        }
+    }
+
+    
+    .player
+    {
+        position: fixed;
+        z-index: 3;
+        padding: 8px;
+        
+        h3
+        {
+            font-size: .7em;
+        }
+        
+        .avatar
+        {
+            width: 30px;
+            height: 30px;
+            &:after
+            {
+                transform: scale(0);
+                transition: transform 250ms;
+            }
+        }
+
+        &.playing
+        {
+            .avatar
+            {
+                &:after
+                {
+                    transform: scale(1);
+                }
+            }
+        }
+
+        &[pos="pos-right"]
+        {
+            right: 0;
+            top: 30%;
+            transform: translateY(-50%);
+        }
+        &[pos="pos-left"]
+        {
+            left: 0;
+            top: 30%;
+            transform: translateY(-50%);
+        }
+        &[pos="pos-top"]
+        {
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+        }
+    }
+
+    .score
+    {
+        position: fixed;
+        z-index: 3;
+        bottom: 0;
+        right: 0;
+
+        * {
+            font-size: .7em;
+        }
+
+        > div
+        {
+            padding: 8px 0;
+        }
+    }
+
+    .playing-mat
+    {
+        background: #D93E38;
+        position: fixed;
+        z-index: 1;
+        top: 8%;
+        left: 8%;
+        right: 10%;
+        bottom: 0;
+        border-radius: 30px;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        box-shadow: var(--lvl2-elevation-box-shadow);
+
+        .playing-card
+        {
+            position: fixed;
+            bottom: 50%;
+            left: 50%;
+
+            &.left { transform: translate(-150%, -50%) scale(.8); animation: play-card-left 750ms ease-in-out;}
+            &.right { transform: translate(50%, -50%) scale(.8); animation: play-card-right 750ms ease-in-out;}
+            &.top { transform: translate(-50%, -100%) scale(.8); animation: play-card-top 750ms ease-in-out;}
+            &.bottom { transform: translate(-50%, 0) scale(.8); animation: play-card-bottom 750ms ease-in-out;}
+
+            &.fold-bottom { bottom: -50%; animation: fold-bottom 1s ease-in; }
+            &.fold-left { left: -50%; animation: fold-left 1s ease-in; }
+            &.fold-right { left: 150%; animation: fold-right 1s ease-in; }
+            &.fold-top { bottom: 150%; animation: fold-top 1s ease-in; }
+        }
+    }
+
+    .current-trump
+    {
+        position: fixed;
+        z-index: 3;
+        top: 8px;
+        right: 8px;
+        padding: 0 20px;
+        background-color: white;
+        border-radius: 100%;
+        line-height: 0;
+        padding: 16px;
+        overflow: hidden;
+        box-sizing: content-box;
+        animation: trump 150ms;
+
+        width: 30px;
+        height: 30px;
+
+        img
+        {
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+    .modal
+    {
+        position: fixed;
+        z-index: 9999 !important;
+        bottom: 0;
+        left: 0;
+        top: 0;
+        right: 0;
+        background: rgba(0,0,0,.2);
+
+        &.trump-selection
+        {
+            .choice-modal
+            {
+                margin: 48px auto 0 auto;
+                max-width: 600px;
+                text-align: center;
+
+                h2
+                {
+                    margin-bottom: 32px;
+                }
+
+                button
+                {
+                    margin-top: 16px;
+                }
+
+                .choices
+                {
+                    display: flex;
+                    justify-content: space-around;
+                    
+                    img
+                    {
+                        width: 100px;
+                        cursor: pointer;
+                        box-shadow: 0 0 5px rgba(0,0,0, .2);
+                        border-radius: 8px;
+                    }
+                }
+            }
+        }
+
+        &.loading
+        {
+            img
+            {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 400px;
+                animation: loading-dot 1s infinite;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 800px)
+{
+    .game.screen
+    {
+        .playing-card
+        {
+            width: 150px;
+        }
+
+        .player
+        {
+            h3
+            {
+                font-size: 1em;
+            }
+            .avatar
+            {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        .score {
+            * {
+                font-size: 1em;
+            }
+        }
+    }
+}
