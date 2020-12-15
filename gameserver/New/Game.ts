@@ -145,6 +145,9 @@ export class Game
             await this.wait(2000);
 
             this.addTeamScoreOfPlayer(foldPlayerIndex, score);
+
+            if(i == 8) this.addTeamScoreOfPlayer(foldPlayerIndex, 5);
+
             this.roomBroadcast("scoreTeam1", this.scoreTeam1);
             this.roomBroadcast("scoreTeam2", this.scoreTeam2);
             this.roomBroadcast("fold", foldPlayerIndex);
@@ -154,7 +157,7 @@ export class Game
             this.currentPlayerIndex = foldPlayerIndex;
         }
 
-        await this.wait(5000);
+        await this.wait(1000);
     }
 
     nextPlayer()
