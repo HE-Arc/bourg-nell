@@ -88,7 +88,7 @@
                 }
             },
             displayScore() {
-                return this.gameObj.gamestate > 2;
+                return this.gameObj.gamestate >= 2;
             }
         },
         methods: {

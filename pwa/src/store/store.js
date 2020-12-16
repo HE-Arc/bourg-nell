@@ -33,7 +33,7 @@ export default new Vuex.Store({
     actions: {
         registerUser(context, user) {
             return new Promise((resolve, reject) => {
-                axios.post("/users-admin", {
+                axios.post("/users/create", {
                     name: user.name,
                     email: user.email,
                     password: user.password

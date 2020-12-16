@@ -6,7 +6,7 @@
         </div>
         <h3>Games</h3>
         <div class="games">
-            <HistoryItem v-for="item in games" :key="item.gameId" :gameObj="item" :opened="true"/>
+            <HistoryItem v-for="item in games" :key="item.gameId" :gameObj="item"/>
         </div>
     </div>
 </template>

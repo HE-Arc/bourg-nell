@@ -28,9 +28,31 @@
     {
         display: grid;
         margin-top: 16px;
-        grid-template-columns: auto auto auto;
+        grid-template-columns: repeat(1, auto);
         column-gap: 24px;
         row-gap: 24px;
 
+    }
+}
+
+@media screen and (min-width: 600px)
+{
+    .account.screen .games {
+        grid-template-columns: repeat(2, auto);
+
+        .history_item .hidden-content {
+            opacity: 1;
+            margin-top: 8px;
+            border-color: var(--divider-color);
+            padding: 8px 0;
+            max-height: 200px;
+        }
+    }
+}
+
+@media screen and (min-width: 900px)
+{
+    .account.screen .games {
+        grid-template-columns: repeat(3, auto);
     }
 }
