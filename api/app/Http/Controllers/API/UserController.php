@@ -32,12 +32,13 @@ class UserController extends Controller
         $inputs = $request->only(['name', 'password', 'email']);
 
         $validator = Validator::make($inputs, [
+            'name' => 'size:20',
             'email' => 'unique:users',
         ]);
 
         if (!$validator->fails()) {
             if (sizeof($inputs) < 3) {
-                return response()->json(['error' => 'missing parameter'], 400);
+                return response()->json(['error' => 'missing parameters'], 400);
             } else {
                 $user = User::create([
                     'name' => $inputs['name'],
@@ -48,7 +49,7 @@ class UserController extends Controller
                 return response()->json(['user' => $user]);
             }
         } else {
-            return response()->json(['error' => 'user exists'], 400);
+            return response()->json(['error' => 'user exists or name to long. max: 20 characters'], 400);
         }
     }
 
@@ -80,6 +81,7 @@ class UserController extends Controller
         $inputs = $request->only(['name', 'password', 'email']);
 
         $validator = Validator::make($inputs, [
+            'name' => 'size:20',
             'email' => 'unique:users',
         ]);
 
@@ -102,7 +104,7 @@ class UserController extends Controller
             $user->update($inputs);
             return response()->json(['user' => User::find($id)], 200);
         }else{
-            return response()->json(['message' => 'duplicate username or email'], 400);
+            return response()->json(['message' => 'duplicate username or email or name to long. max: 20 characters'], 400);
         }
     }
 
