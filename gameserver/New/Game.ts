@@ -1,8 +1,10 @@
+import { request } from "http";
 import { CARD_COLOR } from "./CardColor";
 import {CARDS} from "./Cards";
 import { findCardScore } from "./CardScore";
 import { Deck } from "./Deck";
 import {Player} from "./Player";
+import { State } from "./State";
 
 const ROUND_SIZE = 9;
 const BONUS_POINTS_LAST_FOLD = 5;
@@ -26,12 +28,34 @@ export class Game
     private playedCards = new Array<CARDS>();
     private firstTrump = true;
     private currentTrumpColor = CARD_COLOR.SPADES;
+    private id: string = "";
 
     public constructor(players: Player[], maxScore = 1000)
     {
         this.players = players; 
         this.currentPlayerIndex = 0; 
         this.maxScore = maxScore;
+
+    
+    }
+
+    async createGame()
+    {
+        // TODO put the result in game ID
+        //await fetch('/games', {
+            //method: 'POST',
+            //body: JSON.stringify({
+                //player1: this.players[0].getName(), 
+                //player2: this.players[1].getName(),
+                //player3: this.players[2].getName(),
+                //player4: this.players[3].getName(),
+                //scoreLimit: 1000,
+            //}),
+        //})
+    }
+
+    public setId(id: string) {
+        this.id = id;
     }
 
     async wait(timems: number): Promise<void>
@@ -59,10 +83,10 @@ export class Game
         {
             this.roomBroadcast("player", i, this.players[i].getName());
         }
-
         this.roomBroadcast("gameStart");
 
         let trumpMakerId = 0;
+        this.patchData(State.Playing);
 
         while(this.scoreTeam1 < this.maxScore && this.scoreTeam2 < this.maxScore)
         {
@@ -72,6 +96,10 @@ export class Game
             this.nextPlayer();
             trumpMakerId = this.currentPlayerIndex;
         }
+        // when the game is finished, set the game as finished
+        let wonState = (this.scoreTeam1 >= this.maxScore ? State.WonTeam1 : State.WonTeam2);
+        this.patchData(wonState)
+
     }
     
     private getCurrentPlayer()
@@ -181,6 +209,8 @@ export class Game
                 if(allFoldsFromTeam2) this.scoreTeam2 += BONUS_POINTS_MATCH;
             }
 
+            this.patchData(State.Playing);
+
             // Notify score and winner of current fold
             this.roomBroadcast("scoreTeam1", this.scoreTeam1);
             this.roomBroadcast("scoreTeam2", this.scoreTeam2);
@@ -197,5 +227,17 @@ export class Game
     nextPlayer()
     {
         this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
+    }
+
+    async patchData(state: State) {
+        // const res = await fetch('/game'+this.id, {
+            // method: "PATCH",
+            // body: JSON.stringify({
+                // scoreTeam1: this.scoreTeam1,
+                // scoreTeam2: this.scoreTeam2,
+                // gameState: state,
+            // }),
+        // })
+        // console.log(res)
     }
 }

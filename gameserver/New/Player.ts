@@ -1,3 +1,4 @@
+import fetch from "node-fetch";
 import {CARDS} from "./Cards";
 import { CARD_COLOR } from "./CardColor";
 import { Deck } from "./Deck";
@@ -6,19 +7,40 @@ import { CARD_VALUE } from "./CardValue";
 export class Player
 {
     private socket: SocketIO.Socket;
-    private name: string;
+    private token: string;
     private cards = new Array<CARDS>();
+
+    private id = 0;
+    private name = "";
 
     constructor(socket: SocketIO.Socket, name: string)
     {
         this.socket = socket;
-        this.name = name;
+        this.token = name;
+    }
+
+    async fetchInfo() {
+        let res = await fetch('https://bourgnell.srvz-webapp.he-arc.ch/users/me', {
+           headers: {
+               Authorization: `Bearer ${this.token}`,
+           } 
+        });
+
+        if(!res.ok) throw Error("Token invalid");
+
+        const body = await res.json();
+        this.id = body.id;
+        this.name = body.name;
     }
 
     getSocket() {
         return this.socket;
     }
     
+    getId() {
+        return this.id;
+    }
+
     getName() {
         return this.name;
     }

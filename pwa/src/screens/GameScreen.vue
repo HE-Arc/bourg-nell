@@ -51,7 +51,7 @@
         /> 
 
         <!-- Loading Modal -->
-        <LoadingModal v-if="!connected || !gameStarted"/>
+        <LoadingModal v-if="!connected || !gameStarted || !authSuccess"/>
     </div>
 </template>
 
@@ -107,6 +107,7 @@ export default {
 
             socket: null,
             connected: false,
+            authSuccess: false,
             gameStarted: false,
 
             showTrumpModal: false,
@@ -118,11 +119,14 @@ export default {
 
         // Handle connection
         this.socket.on("connect", () => {
-            this.connected = true
-            this.socket.emit("playerJoin", String(Math.floor(Math.random() * 1000)));
+            this.connected = true;
+            // Auth to gameserver 
+            this.socket.emit("playerJoin", "token here");
         });
         this.socket.on("disconnect", () => {this.connected = false});
         this.socket.on("reconnect", () => {this.connected = true});
+        this.socket.on("authSuccess", () => {this.authSuccess = true});
+        this.socket.on("authFailure", () => {this.authSuccess = false});
 
         this.socket.on("gameStart", () => {this.gameStarted = true});
 
