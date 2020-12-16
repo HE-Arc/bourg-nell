@@ -2,7 +2,7 @@
 import * as SocketIO  from "socket.io";
 import {Game} from "./New/Game";
 import {Player} from "./New/Player";
-import { State } from "./New/State";
+import {State} from "./New/State";
 import fetch from "node-fetch";
 
 async function authentification() {

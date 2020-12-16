@@ -4,7 +4,7 @@ import { findCardScore } from "./CardScore";
 import { Deck } from "./Deck";
 import {Player} from "./Player";
 import { State } from "./State";
-import fetch from "node-fetch";
+import {NetworkManager} from "./NetworkManager";
 
 const ROUND_SIZE = 9;
 const BONUS_POINTS_LAST_FOLD = 5;
@@ -41,27 +41,40 @@ export class Game
 
     async createGame()
     {
-        // TODO put the result in game ID
-        let res = await fetch('https://bourgnell.srvz-webapp.he-arc.ch/games', {
-            method: 'post', 
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${this.token}`
-            },
-            body: JSON.stringify({
-                player1: this.players[0].getID(), 
-                player2: this.players[1].getID(),
-                player3: this.players[2].getID(),
-                player4: this.players[3].getID(),
-                scorelimit: 1000,
-            }),
-        })
-        
-        if(!res.ok) throw Error("Can't create game")
+        let datas = {
+            player1: this.players[0].getID(), 
+            player2: this.players[1].getID(),
+            player3: this.players[2].getID(),
+            player4: this.players[3].getID(),
+            scorelimit: 1000,
+        }
+        let network = NetworkManager.getInstance();
 
-        const body = await res.json();
-        this.id = body.game.id;
+        network.updateDatas(
+            'https://bourgnell.srvz-webapp.he-arc.ch/games',
+            'post',
+            this.token,
+            datas
+        ).then((res) => {
+            this.id = res;
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
+
+    async patchData(state: State) {
+        let datas = {
+            scoreteam1: this.scoreTeam1,
+            scoreteam2: this.scoreTeam2,
+            gamestate: state
+        };
+        
+        NetworkManager.getInstance().updateDatas(
+            "https://bourgnell.srvz-webapp.he-arc.ch/games/"+this.id,
+            "patch",
+            this.token,
+            datas
+        )
     }
 
     public setId(id: string) {
@@ -84,6 +97,7 @@ export class Game
 
     async playGame()
     {
+        
         await this.createGame();
 
         this.patchData(State.Created);
@@ -100,7 +114,8 @@ export class Game
         this.roomBroadcast("gameStart");
 
         let trumpMakerId = 0;
-        this.patchData(State.Playing);
+
+        this.patchData(State.Playing)
 
         while(this.scoreTeam1 < this.maxScore && this.scoreTeam2 < this.maxScore)
         {
@@ -112,6 +127,7 @@ export class Game
         }
         // when the game is finished, set the game as finished
         let wonState = (this.scoreTeam1 >= this.maxScore ? State.WonTeam1 : State.WonTeam2);
+        
         this.patchData(wonState)
 
     }
@@ -223,7 +239,7 @@ export class Game
                 if(allFoldsFromTeam2) this.scoreTeam2 += BONUS_POINTS_MATCH;
             }
 
-            this.patchData(State.Playing);
+            this.patchData(State.Playing)
 
             // Notify score and winner of current fold
             this.roomBroadcast("scoreTeam1", this.scoreTeam1);
@@ -243,19 +259,5 @@ export class Game
         this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
     }
 
-    async patchData(state: State) {
-        const res = await fetch('https://bourgnell.srvz-webapp.he-arc.ch/games/'+this.id, {
-            method: "PATCH",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${this.token}`
-            },
-            body: JSON.stringify({
-                scoreteam1: this.scoreTeam1,
-                scoreteam2: this.scoreTeam2,
-                gamestate: state,
-            }),
-        })
-    }
+    
 }

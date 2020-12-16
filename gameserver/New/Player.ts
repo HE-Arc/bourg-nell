@@ -1,8 +1,8 @@
-import fetch from "node-fetch";
 import {CARDS} from "./Cards";
-import { CARD_COLOR } from "./CardColor";
-import { Deck } from "./Deck";
-import { CARD_VALUE } from "./CardValue";
+import {CARD_COLOR} from "./CardColor";
+import {Deck} from "./Deck";
+import {CARD_VALUE}  from "./CardValue";
+import {NetworkManager} from "./NetworkManager";
 
 export class Player
 {
@@ -20,17 +20,18 @@ export class Player
     }
 
     async fetchInfo() {
-        let res = await fetch('https://bourgnell.srvz-webapp.he-arc.ch/users/me', {
-           headers: {
-               Authorization: `Bearer ${this.token}`,
-           } 
+
+        let header = {Authorization: `Bearer ${this.token}`}
+
+        NetworkManager.getInstance().fetchInfo(
+            'https://bourgnell.srvz-webapp.he-arc.ch/users/me',
+            header
+        ).then((res) => {
+            this.id = res.id;
+            this.name = res.name;
+        }).catch((error) => {
+            console.log(error);
         });
-
-        if(!res.ok) throw Error("Token invalid");
-
-        const body = await res.json();
-        this.id = body.id;
-        this.name = body.name;
     }
 
     getID() {
