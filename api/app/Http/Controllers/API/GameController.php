@@ -48,14 +48,9 @@ class GameController extends Controller
      */
     public function show($id)
     {
-        /*
-        $games = GameController::getGamesJoinUser()->where('gameid', '=', $id)->get();
-        $tmp = collect($games);
-        print_r($tmp);
-        $processedGame = GameController::processGames($games);
-        */
+        $games = GameController::getGamesJoinUser()->where('games.id', '=', $id)->get();
+        $game = GameController::reduceGames($games);
 
-        $game = Game::find($id);
         if (empty($game)) {
             return response()->json(['id' => 'game ' . $id . ' does not exist'], 400);
         } else {
@@ -138,7 +133,7 @@ class GameController extends Controller
                 'scoreteam2',
                 'users.name',
                 'users.id as userid',
-                'users.profilpicturepath',
+                'users.gravatar',
                 'games.created_at',
                 'games.updated_at'
             );
@@ -146,29 +141,34 @@ class GameController extends Controller
 
     public static function processGames($games){
         $processedGames = $games->groupBy('gameid')->values()->map(function ($groupedGames) {
-            return collect($groupedGames->reduce(function ($carry, $item) {
-                if ($carry == null) {
-                    $carry = $item;
-                }
-
-                $userObj = [
-                    'id' => $item->userid,
-                    'name' => $item->name,
-                    'profilpicturepath' => $item->profilpicturepath
-                ];
-
-                if ($item->userid == $item->player1) {
-                    $carry->player1 = $userObj;
-                } else if ($item->userid == $item->player2) {
-                    $carry->player2 = $userObj;
-                } else if ($item->userid == $item->player3) {
-                    $carry->player3 = $userObj;
-                } else if ($item->userid == $item->player4) {
-                    $carry->player4 = $userObj;
-                }
-                return $carry;
-            }))->except(['name', 'userid', 'profilpicturepath']);
+            return GameController::reduceGames($groupedGames);
         });
         return $processedGames;
+    }
+
+
+    public static function reduceGames($games){
+        return collect($games->reduce(function ($carry, $item) {
+            if ($carry == null) {
+                $carry = $item;
+            }
+
+            $userObj = [
+                'id' => $item->userid,
+                'name' => $item->name,
+                'gravatar' => $item->gravatar
+            ];
+
+            if ($item->userid == $item->player1) {
+                $carry->player1 = $userObj;
+            } else if ($item->userid == $item->player2) {
+                $carry->player2 = $userObj;
+            } else if ($item->userid == $item->player3) {
+                $carry->player3 = $userObj;
+            } else if ($item->userid == $item->player4) {
+                $carry->player4 = $userObj;
+            }
+            return $carry;
+        }))->except(['name', 'userid', 'gravatar']);
     }
 }

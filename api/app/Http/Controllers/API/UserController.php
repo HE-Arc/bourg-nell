@@ -43,6 +43,7 @@ class UserController extends Controller
                     'name' => $inputs['name'],
                     'email' => $inputs['email'],
                     'password' => Hash::make($inputs['password']),
+                    'gravatar' => md5($inputs['email'])
                 ]);
                 return response()->json(['user' => $user]);
             }
@@ -76,26 +77,30 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $inputs = $request->only(['name', 'password', 'email', 'profilpicturepath']);
+        $inputs = $request->only(['name', 'password', 'email']);
 
         $validator = Validator::make($inputs, [
-            'name' => 'unique:users',
             'email' => 'unique:users',
         ]);
 
         $user = User::find($id);
 
-        if(array_key_exists("password", $inputs)){
+        if(array_key_exists('password', $inputs)){
             $hash = Hash::make($inputs['password']);
             $inputs['password'] = $hash;
         }
+
+        if(array_key_exists('email', $inputs)){
+            $hash = md5($inputs['email']);
+            $inputs['gravatar'] = $hash;
+        }
         
-    
-        if (!$validator->fails()) {
-            if (!empty($inputs) && $user != null) {
-                $user->update($inputs);
-                return response()->json(['user' => User::find($id)], 200);
-            }
+        print_r($inputs);
+
+        if (!$validator->fails() && !empty($inputs) && $user != null) {
+            
+            $user->update($inputs);
+            return response()->json(['user' => User::find($id)], 200);
         }else{
             return response()->json(['message' => 'duplicate username or email'], 400);
         }
@@ -112,9 +117,9 @@ class UserController extends Controller
         $user = User::find($id);
         if (!empty($user)) {
             $user->delete();
-            return response()->json(['message' => 'user ' . $id . ' does not exist'], 400);
-        } else {
             return response()->json(['message' => 'user ' . $id . 'deleted'], 200);
+        } else {
+            return response()->json(['message' => 'user ' . $id . ' does not exist'], 400);
         }
     }
 }

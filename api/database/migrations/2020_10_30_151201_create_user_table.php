@@ -19,7 +19,7 @@ class CreateUserTable extends Migration
             $table->string("name");
             $table->string("email")->unique();
             $table->string("password");
-            $table->string("profilpicturepath")->default("/picture/base.png");
+            $table->string("gravatar")->default("/picture/base.png");
             $table->rememberToken();
             $table->timestamps();
         });
