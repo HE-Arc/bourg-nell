@@ -76,7 +76,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $inputs = $request->only(['name', 'password', 'email']);
+        $inputs = $request->only(['name', 'password', 'email', 'profilpicturepath']);
 
         $validator = Validator::make($inputs, [
             'name' => 'unique:users',
