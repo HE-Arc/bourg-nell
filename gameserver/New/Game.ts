@@ -29,34 +29,39 @@ export class Game
     private firstTrump = true;
     private currentTrumpColor = CARD_COLOR.SPADES;
     private id: string = "";
+    private token = "";
 
-    public constructor(players: Player[], maxScore = 1000)
+    public constructor(players: Player[], token: string, maxScore = 1000)
     {
         this.players = players; 
         this.currentPlayerIndex = 0; 
         this.maxScore = maxScore;
-
-    
+        this.token = token;
     }
 
     async createGame()
     {
         // TODO put the result in game ID
-        let res = await fetch('/games', {
-            method: 'POST',
+        let res = await fetch('https://bourgnell.srvz-webapp.he-arc.ch/games', {
+            method: 'POST', 
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${this.token}`
+            },
             body: JSON.stringify({
-                player1: this.players[0].getName(), 
-                player2: this.players[1].getName(),
-                player3: this.players[2].getName(),
-                player4: this.players[3].getName(),
+                player1: this.players[0].getID(), 
+                player2: this.players[1].getID(),
+                player3: this.players[2].getID(),
+                player4: this.players[3].getID(),
                 scoreLimit: 1000,
             }),
         })
         
-        //if(!res.ok) throw Error("Can't create game")
+        if(!res.ok) throw Error("Can't create game")
 
-        //const body = await res.json();
-        //this.id = body.id;
+        const body = await res.json();
+        this.id = body.id;
     }
 
     public setId(id: string) {
@@ -79,6 +84,10 @@ export class Game
 
     async playGame()
     {
+        await this.createGame();
+
+        this.patchData(State.Created);
+
         for(let i = 0; i < this.players.length; ++i)
         {
             this.players[i].emitID(i);
@@ -235,14 +244,19 @@ export class Game
     }
 
     async patchData(state: State) {
-        // const res = await fetch('/game'+this.id, {
-            // method: "PATCH",
-            // body: JSON.stringify({
-                // scoreTeam1: this.scoreTeam1,
-                // scoreTeam2: this.scoreTeam2,
-                // gameState: state,
-            // }),
-        // })
-        // console.log(res)
+        const res = await fetch('https://bourgnell.srvz-webapp.he-arc.ch/games/'+this.id, {
+            method: "PATCH",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${this.token}`
+            },
+            body: JSON.stringify({
+                scoreteam1: this.scoreTeam1,
+                scoreteam2: this.scoreTeam2,
+                gamestate: state,
+            }),
+        })
+        console.log(res)
     }
 }

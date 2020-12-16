@@ -50,7 +50,7 @@ io.on("connect", (socket: SocketIO.Socket) => {
 
         if(newPlayers.length == 4)
         {
-            const game = new Game(newPlayers);
+            const game = new Game(newPlayers, serverToken);
 
             game.patchData(State.Created);
             game.playGame();
@@ -63,6 +63,7 @@ authentification().then((tok) => {
     serverToken = tok;
     io.listen(3000);
     console.log("Listening on port 3000")
+    console.log(serverToken)
 }).catch((error) => {
     console.log(error);
 })

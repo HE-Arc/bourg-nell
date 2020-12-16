@@ -33,6 +33,10 @@ export class Player
         this.name = body.name;
     }
 
+    getID() {
+        return this.id;
+    }
+
     getSocket() {
         return this.socket;
     }
