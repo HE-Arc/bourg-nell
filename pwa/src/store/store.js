@@ -31,6 +31,21 @@ export default new Vuex.Store({
         }
     },
     actions: {
+        registerUser(context, user) {
+            return new Promise((resolve, reject) => {
+                axios.post("/users-admin", {
+                    name: user.name,
+                    email: user.email,
+                    password: user.password
+                })
+                    .then(response => {
+                        resolve();
+                    })
+                    .catch(error => {
+                        reject(error);
+                    });
+            })
+        },
         fetchAuthUser(context) {
             axios.defaults.headers.common["Authorization"] = "Bearer " + context.state.token
             return new Promise((resolve, reject) => {
