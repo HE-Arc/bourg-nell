@@ -4,12 +4,12 @@
             <div class="score-header">
                 <div class="gamestatus">{{gameStatusText}}</div>
                 <div class="date">
-                    <span>{{gameObj.creationDate.toLocaleDateString()}}</span>
+                    <span>{{new Date(gameObj.created_at).toLocaleDateString()}}</span>
                 </div>
             </div>
             <div v-if="displayScore" class="gameresult">
-                <div class="myscore">{{gameObj.scoreTeam1}}</div>
-                <div class="theirscore">{{gameObj.scoreTeam2}}</div>
+                <div class="myscore">{{gameObj.scoreteam1}}</div>
+                <div class="theirscore">{{gameObj.scoreteam2}}</div>
             </div>
             <div v-else class="gameresult">
                 <div class="myscore"><span class="score-placeholder"></span></div>
@@ -50,6 +50,10 @@
             gameObj: {
                 type: Object,
                 required: true
+            },
+            opened: {
+                type: Boolean,
+                required: false
             }
         },
         data(){
@@ -60,20 +64,20 @@
         computed: { 
             historyItemClass() {
                 let classStr = "";
-                switch(this.gameObj.gameState)
+                switch(this.gameObj.gamestate)
                 {
                     case 2: classStr = "playing"; break;
                     case 3: classStr = "won"; break;
                     case 4: classStr = "lost"; break;
                 }
-                if(this.expanded)
+                if(this.expanded || this.opened)
                 {
                     classStr += " open";
                 }
                 return `card history_item ${classStr}`;
             },
             gameStatusText() {
-                switch(this.gameObj.gameState)
+                switch(this.gameObj.gamestate)
                 {
                     case 0: return "Game created";
                     case 1: return "Game aborted";
@@ -84,7 +88,7 @@
                 }
             },
             displayScore() {
-                return this.gameObj.gameState > 2;
+                return this.gameObj.gamestate > 2;
             }
         },
         methods: {
