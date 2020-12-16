@@ -7,7 +7,6 @@
 
 <script>
 
-import AccountScreen from './screens/AccountScreen';
 import Navigation from './components/Navigation';
 
 export default {
