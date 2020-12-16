@@ -138,7 +138,9 @@ class GameController extends Controller
                 'scoreteam2',
                 'users.name',
                 'users.id as userid',
-                'users.profilpicturepath'
+                'users.profilpicturepath',
+                'games.created_at',
+                'games.updated_at'
             );
     }
 
