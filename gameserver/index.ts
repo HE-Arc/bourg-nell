@@ -3,10 +3,31 @@ import * as SocketIO  from "socket.io";
 import {Game} from "./New/Game";
 import {Player} from "./New/Player";
 import { State } from "./New/State";
+import fetch from "node-fetch";
+
+async function authentification() {
+    let res = await fetch('https://bourgnell.srvz-webapp.he-arc.ch/users/login', {
+        method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "email": "robin",
+                "password": "test"
+            }),
+    });    
+
+    if(!res.ok) throw Error("Bad user");
+    const body = await res.json();
+    return body.token;
+}
 
 const io = require("socket.io")();
 
 let newPlayers = new Array<Player>();
+
+let token = "";
 
 io.on("connect", (socket: SocketIO.Socket) => {
     console.log("A connection occur ! ");
@@ -37,5 +58,10 @@ io.on("connect", (socket: SocketIO.Socket) => {
         }
     });
 });
-
-io.listen(3000);
+authentification().then((tok) => {
+    token = tok;
+    io.listen(3000);
+    console.log("Listening on port 3000")
+}).catch((error) => {
+    console.log(error);
+})
