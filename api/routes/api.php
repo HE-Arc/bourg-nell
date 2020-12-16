@@ -55,7 +55,6 @@ Route::post('users/login', function (Request $request) {
 //get current user
 Route::middleware('auth')->get('users/me', function () {
     $user = auth()->user();
-    print('hey');
     return response()->json(['me' => $user], 200);
 });
 
