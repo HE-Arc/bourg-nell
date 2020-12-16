@@ -42,16 +42,16 @@ export class Game
     async createGame()
     {
         // TODO put the result in game ID
-        //let res = await fetch('/games', {
-        //    method: 'POST',
-        //    body: JSON.stringify({
-        //        player1: this.players[0].getName(), 
-        //        player2: this.players[1].getName(),
-        //        player3: this.players[2].getName(),
-        //        player4: this.players[3].getName(),
-        //        scoreLimit: 1000,
-        //    }),
-        //})
+        let res = await fetch('/games', {
+            method: 'POST',
+            body: JSON.stringify({
+                player1: this.players[0].getName(), 
+                player2: this.players[1].getName(),
+                player3: this.players[2].getName(),
+                player4: this.players[3].getName(),
+                scoreLimit: 1000,
+            }),
+        })
         
         //if(!res.ok) throw Error("Can't create game")
 

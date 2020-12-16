@@ -27,7 +27,7 @@ const io = require("socket.io")();
 
 let newPlayers = new Array<Player>();
 
-let token = "";
+let serverToken = "";
 
 io.on("connect", (socket: SocketIO.Socket) => {
     console.log("A connection occur ! ");
@@ -58,8 +58,9 @@ io.on("connect", (socket: SocketIO.Socket) => {
         }
     });
 });
+
 authentification().then((tok) => {
-    token = tok;
+    serverToken = tok;
     io.listen(3000);
     console.log("Listening on port 3000")
 }).catch((error) => {
