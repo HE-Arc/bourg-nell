@@ -50,6 +50,10 @@
             gameObj: {
                 type: Object,
                 required: true
+            },
+            opened: {
+                type: Boolean,
+                required: false
             }
         },
         data(){
@@ -66,7 +70,7 @@
                     case 3: classStr = "won"; break;
                     case 4: classStr = "lost"; break;
                 }
-                if(this.expanded)
+                if(this.expanded || this.opened)
                 {
                     classStr += " open";
                 }

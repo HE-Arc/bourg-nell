@@ -1,11 +1,13 @@
 <template>
-    <div id="root" class="account screen">
+    <div id="root" class="account screen hasnav hasmaxwidth">
         <div class="account-header">
-            <Avatar md5hash="78d172c9cbb993794d2e9021fce57d68" status="online"/>
-            <h2>{{username}}</h2>
+            <Avatar md5hash="78d172c9cbb993794d2e9021fce57d68" />
+            <h2>{{name}}</h2>
         </div>
         <h3>Games</h3>
-        <HistoryItem v-for="item in games" :key="item.gameId" :gameObj="item"/>
+        <div class="games">
+            <HistoryItem v-for="item in games" :key="item.gameId" :gameObj="item" :opened="true"/>
+        </div>
     </div>
 </template>
 
@@ -24,21 +26,20 @@ export default {
     },
     mounted () {
         console.log(this.$store.state.token);
-        this.loadUser();
-        this.loadGames();
+        this.loadUser().then(() => this.loadGames());
     },
     methods: {
-        loadUser() {
+        async loadUser() {
             if(this.$route.params.id)
             {
-                this.$store.dispatch("fetchUser", this.$route.params.id);
+                await this.$store.dispatch("fetchUser", this.$route.params.id);
             }
             else
             {
-                this.$store.dispatch("fetchAuthUser");
+                await this.$store.dispatch("fetchAuthUser");
             }
         },
-        loadGames() {
+        async loadGames() {
             if(this.$route.params.id)
             {
                 this.$store.dispatch("fetchGames", this.$route.params.id);
@@ -50,8 +51,8 @@ export default {
         }
     },
     computed: {
-        username() {
-            return this.$store.state.currentShownUser.username;
+        name() {
+            return this.$store.state.currentShownUser.name;
         },
         games() {
             return this.$store.state.currentShownUserGames;

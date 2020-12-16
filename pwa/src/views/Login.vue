@@ -1,5 +1,5 @@
 <template>
-    <div id="root" class="login screen">
+    <div id="root" class="login screen hasmaxwidth">
         <div class="login-form">
             <form @submit.prevent="login">
                 <h4>Welcome back !</h4>

@@ -143,8 +143,12 @@ body {
   padding: 0;
   margin: 0;
 }
-body.hasnav {
+.hasnav {
   padding-bottom: calc(32px + 2rem + 24px + 4px + 8px);
+}
+.hasmaxwidth {
+  margin: 0 auto;
+  max-width: 1200px;
 }
 h1,
 h2,
@@ -248,8 +252,10 @@ button:hover {
   display: flex;
   z-index: 1;
   bottom: 0;
-  left: 0;
-  right: 0;
+  width: 100%;
+  max-width: 1200px;
+  left: 50%;
+  transform: translateX(-50%);
   background: var(--lvl3-elevation-background-color);
   box-shadow: var(--lvl3-elevation-shadow);
   border-top-left-radius: var(--base-border-radius);
@@ -489,8 +495,12 @@ button:hover {
 .account.screen > h3 {
   margin: 24px 0 16px 0;
 }
-.account.screen > .history_item:not(:first-of-type) {
+.account.screen .games {
+  display: grid;
   margin-top: 16px;
+  grid-template-columns: auto auto auto;
+  column-gap: 24px;
+  row-gap: 24px;
 }
 .login.screen form input[type="text"],
 .login.screen form input[type="password"],
