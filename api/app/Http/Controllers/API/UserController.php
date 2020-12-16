@@ -18,7 +18,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return response()->json(["success" => true, "users" => User::all()]);
+        return response()->json(['success' => true, 'users' => User::all()]);
     }
 
     /**
@@ -29,16 +29,16 @@ class UserController extends Controller
      */
     public static function store(Request $request)
     {
-        $inputs = $request->only(["name", "password", "email"]);
+        $inputs = $request->only(['name', 'password', 'email']);
 
         $validator = Validator::make($inputs, [
-            "name" => "unique:users",
-            "email" => "unique:users",
+            'name' => 'unique:users',
+            'email' => 'unique:users',
         ]);
 
         if (!$validator->fails()) {
             if (sizeof($inputs) < 3) {
-                return response()->json(["success" => false, 'error' => 'missing parameter'], 400);
+                return response()->json(['success' => false, 'error' => 'missing parameter'], 400);
             } else {
                 $user = User::create([
                     'name' => $inputs['name'],
@@ -62,9 +62,9 @@ class UserController extends Controller
     {
         $user =  User::find($id);
         if (empty($user)) {
-            return response()->json(['success' => true, 'id' => 'user ' . $id . ' does not exist'], 400);
+            return response()->json(['success' => false, 'id' => 'user ' . $id . ' does not exist'], 400);
         } else {
-            return response()->json(['success' => true, $user], 200);
+            return response()->json(['success' => true, 'user' => $user], 200);
         }
     }
 
@@ -77,14 +77,19 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $inputs = $request->only(["name", "password", "email"]);
+        $inputs = $request->only(['name', 'password', 'email']);
 
         $validator = Validator::make($inputs, [
-            "name" => "unique:users",
-            "email" => "unique:users",
+            'name' => 'unique:users',
+            'email' => 'unique:users',
         ]);
 
         $user = User::find($id);
+
+        if(array_key_exists("password", $inputs)){
+            $hash = Hash::make($inputs['password']);
+            $inputs['password'] = $hash;
+        }
         
     
         if (!$validator->fails()) {

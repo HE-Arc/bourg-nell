@@ -13,7 +13,6 @@ class CreateFriendTable extends Migration
      */
     public function up()
     {   
-        /*
         Schema::disableForeignKeyConstraints();
         Schema::create('friends', function (Blueprint $table) {
             $table->foreignId("user1")->references("id")->on("users")->onDelete('cascade')->onUpdate('cascade');
@@ -21,7 +20,6 @@ class CreateFriendTable extends Migration
             $table->timestamps();
         });
         Schema::enableForeignKeyConstraints();
-        */
     }
 
     /**
