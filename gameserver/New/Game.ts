@@ -1,10 +1,10 @@
-import { request } from "http";
 import { CARD_COLOR } from "./CardColor";
 import {CARDS} from "./Cards";
 import { findCardScore } from "./CardScore";
 import { Deck } from "./Deck";
 import {Player} from "./Player";
 import { State } from "./State";
+import fetch from "node-fetch";
 
 const ROUND_SIZE = 9;
 const BONUS_POINTS_LAST_FOLD = 5;
@@ -43,7 +43,7 @@ export class Game
     {
         // TODO put the result in game ID
         let res = await fetch('https://bourgnell.srvz-webapp.he-arc.ch/games', {
-            method: 'POST', 
+            method: 'post', 
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -54,14 +54,14 @@ export class Game
                 player2: this.players[1].getID(),
                 player3: this.players[2].getID(),
                 player4: this.players[3].getID(),
-                scoreLimit: 1000,
+                scorelimit: 1000,
             }),
         })
         
         if(!res.ok) throw Error("Can't create game")
 
         const body = await res.json();
-        this.id = body.id;
+        this.id = body.game.id;
     }
 
     public setId(id: string) {
@@ -257,6 +257,5 @@ export class Game
                 gamestate: state,
             }),
         })
-        console.log(res)
     }
 }
