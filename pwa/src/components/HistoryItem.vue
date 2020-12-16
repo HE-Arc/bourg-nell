@@ -20,17 +20,17 @@
             <h4>Players</h4>
             <div class="players">
                 <div class="player">
-                    <Avatar md5hash="78d172c9cbb993794d2e9021fce57d68"/>
-                    <span>Luca</span>
+                    <Avatar :md5hash="gameObj.player1.gravatar"/>
+                    <span>{{gameObj.player1.name}}</span>
                 </div><div class="player">
-                    <Avatar md5hash="78d172c9cbb993794d2e9021fce57d68"/>
-                    <span>Luca</span>
+                    <Avatar :md5hash="gameObj.player2.gravatar"/>
+                    <span>{{gameObj.player2.name}}</span>
                 </div><div class="player">
-                    <Avatar md5hash="78d172c9cbb993794d2e9021fce57d68"/>
-                    <span>Luca</span>
+                    <Avatar :md5hash="gameObj.player3.gravatar"/>
+                    <span>{{gameObj.player3.name}}</span>
                 </div><div class="player">
-                    <Avatar md5hash="78d172c9cbb993794d2e9021fce57d68"/>
-                    <span>Luca</span>
+                    <Avatar :md5hash="gameObj.player4.gravatar"/>
+                    <span>{{gameObj.player4.name}}</span>
                 </div>
             </div>
         </div>

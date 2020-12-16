@@ -51,7 +51,7 @@ export default new Vuex.Store({
             return new Promise((resolve, reject) => {
                 axios.get("/users/me")
                     .then(response => {
-                        context.commit("updateUser", response.data);
+                        context.commit("updateUser", response.data.me);
                         resolve(response);
                     })
                     .catch(error => {
@@ -114,7 +114,7 @@ export default new Vuex.Store({
                             context.commit("destroyToken")
                             reject(error)
                         })
-                })
+                });
             }
         },
         retrieveToken(context, credentials) {

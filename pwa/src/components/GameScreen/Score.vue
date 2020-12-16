@@ -2,11 +2,11 @@
     <div class="score card" card-elevation="1">
         <h3>Score</h3>
         <div>
-            <h6>You &amp; {{partnerName}}</h6>
+            <h6>You &amp; <br/> {{partnerName.substr(0, 10)}}</h6>
             <div>{{myTeamScore}}</div>
         </div>
         <div>
-            <h6>{{opponentPlayer1Name}} &amp; {{opponentPlayer2Name}}</h6>
+            <h6>{{opponentPlayer1Name.substr(0, 10)}} &amp; <br/> {{opponentPlayer2Name.substr(0, 10)}}</h6>
             <div>{{theirTeamScore}}</div>
         </div>
     </div>

@@ -1,7 +1,7 @@
 <template>
     <div id="root" class="account screen hasnav hasmaxwidth">
         <div class="account-header">
-            <Avatar md5hash="78d172c9cbb993794d2e9021fce57d68" />
+            <Avatar :md5hash="profilePicture" />
             <h2>{{name}}</h2>
         </div>
         <h3>Games</h3>
@@ -53,6 +53,9 @@ export default {
     computed: {
         name() {
             return this.$store.state.currentShownUser.name;
+        },
+        profilePicture() {
+            return this.$store.state.currentShownUser.gravatar;
         },
         games() {
             return this.$store.state.currentShownUserGames;
