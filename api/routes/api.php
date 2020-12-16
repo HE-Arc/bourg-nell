@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 |
 | Here is where you can register API routes for your application. These
 | routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
+| is assigned the 'api' middleware group. Enjoy building your API!
 |
 */
 
@@ -20,13 +20,13 @@ use Illuminate\Support\Facades\Route;
 Test route
 */
 Route::get('/', function(){
-    return "Hello World";
+    return 'Hello World';
 });
 
 /*
 User admin route
 */
-Route::middleware('auth')->apiResource('users-admin', UserController::class);
+Route::middleware('auth')->apiResource('users-admin', UserController::class)->except('index');
 
 /*
 Game route
@@ -35,7 +35,7 @@ Route::middleware('auth')->apiResource('games', GameController::class);
 
 //Error
 Route::any('error', function () {
-    return response()->json(['success' => false, "error" => "invalid token"], 400);
+    return response()->json(['error' => 'invalid token'], 400);
 })->name('error');
 
 /*
@@ -48,7 +48,7 @@ Route::post('users/create', function (Request $request) {
 
 //login a user (get token)
 Route::post('users/login', function (Request $request) {
-    $credentials = $request->only(["email", "password"]);
+    $credentials = $request->only(['email', 'password']);
     return LoginController::login($credentials);
 });
 
@@ -56,7 +56,7 @@ Route::post('users/login', function (Request $request) {
 Route::middleware('auth')->get('users/me', function () {
     $user = auth()->user();
 
-    return $user;
+    return response()->jsons(['me' => $user], 200);
 });
 
 //logout

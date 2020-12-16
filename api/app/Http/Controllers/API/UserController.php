@@ -18,7 +18,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return response()->json(['success' => true, 'users' => User::all()]);
+        return response()->json(['users' => User::all()]);
     }
 
     /**
@@ -32,23 +32,22 @@ class UserController extends Controller
         $inputs = $request->only(['name', 'password', 'email']);
 
         $validator = Validator::make($inputs, [
-            'name' => 'unique:users',
             'email' => 'unique:users',
         ]);
 
         if (!$validator->fails()) {
             if (sizeof($inputs) < 3) {
-                return response()->json(['success' => false, 'error' => 'missing parameter'], 400);
+                return response()->json(['error' => 'missing parameter'], 400);
             } else {
                 $user = User::create([
                     'name' => $inputs['name'],
                     'email' => $inputs['email'],
                     'password' => Hash::make($inputs['password']),
                 ]);
-                return response()->json(['success' => true, 'user' => $user]);
+                return response()->json(['user' => $user]);
             }
         } else {
-            return response()->json(['success' => false, 'error' => 'user exists'], 400);
+            return response()->json(['error' => 'user exists'], 400);
         }
     }
 
@@ -62,9 +61,9 @@ class UserController extends Controller
     {
         $user =  User::find($id);
         if (empty($user)) {
-            return response()->json(['success' => false, 'id' => 'user ' . $id . ' does not exist'], 400);
+            return response()->json(['id' => 'user ' . $id . ' does not exist'], 400);
         } else {
-            return response()->json(['success' => true, 'user' => $user], 200);
+            return response()->json(['user' => $user], 200);
         }
     }
 
@@ -95,10 +94,10 @@ class UserController extends Controller
         if (!$validator->fails()) {
             if (!empty($inputs) && $user != null) {
                 $user->update($inputs);
-                return response()->json(['success' => true, 'user' => User::find($id)], 200);
+                return response()->json(['user' => User::find($id)], 200);
             }
         }else{
-            return response()->json(['success' => false, 'message' => 'duplicate username or email'], 400);
+            return response()->json(['message' => 'duplicate username or email'], 400);
         }
     }
 
@@ -113,9 +112,9 @@ class UserController extends Controller
         $user = User::find($id);
         if (!empty($user)) {
             $user->delete();
-            return response()->json(['success' => false, 'message' => 'user ' . $id . ' does not exist'], 400);
+            return response()->json(['message' => 'user ' . $id . ' does not exist'], 400);
         } else {
-            return response()->json(['success' => true, 'message' => 'user ' . $id . 'deleted'], 200);
+            return response()->json(['message' => 'user ' . $id . 'deleted'], 200);
         }
     }
 }

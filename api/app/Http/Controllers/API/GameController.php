@@ -6,6 +6,7 @@ use App\Models\Game;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class GameController extends Controller
@@ -17,7 +18,8 @@ class GameController extends Controller
      */
     public function index()
     {
-        return response()->json(['success' => true, 'games' => Game::all()]);
+        $id = auth()->user()->id;
+        return GameController::getByUser($id);
     }
 
     /**
@@ -31,10 +33,10 @@ class GameController extends Controller
         $inputs  = $request->only(['player1', 'player2', 'player3', 'player4', 'scorelimit']);
 
         if (sizeof($inputs) < 5) {
-            return response()->json(['success' => false, 'error' => 'missing parameter'], 400);
+            return response()->json(['error' => 'missing parameter'], 400);
         } else {
             $game = Game::create($inputs);
-            return response()->json(['success' => true, 'game' => $game], 200);
+            return response()->json(['game' => $game], 200);
         }
     }
 
@@ -46,11 +48,18 @@ class GameController extends Controller
      */
     public function show($id)
     {
+        /*
+        $games = GameController::getGamesJoinUser()->where('gameid', '=', $id)->get();
+        $tmp = collect($games);
+        print_r($tmp);
+        $processedGame = GameController::processGames($games);
+        */
+
         $game = Game::find($id);
         if (empty($game)) {
-            return response()->json(['success' => false, 'id' => 'Game ' . $id . ' does not exist'], 400);
+            return response()->json(['id' => 'game ' . $id . ' does not exist'], 400);
         } else {
-            return response($game, 200);
+            return response()->json(['game' => $game], 200);
         }
     }
 
@@ -63,7 +72,6 @@ class GameController extends Controller
      */
     public function update(Request $request, $id)
     {
-
         $inputs  = $request->only(['scorelimit', 'gamestate', 'scoreteam1', 'scoreteam2']);
 
         $validator = Validator::make($inputs, [
@@ -78,7 +86,7 @@ class GameController extends Controller
                 return $this->show($id);
             }
         }
-        return response()->json(['success' => false, 'message' => 'bad request'], 400);
+        return response()->json(['message' => 'bad request'], 400);
     }
 
     /**
@@ -92,20 +100,73 @@ class GameController extends Controller
         $game = Game::find($id);
         if (!empty($game)) {
             $game->delete();
-            return response()->json(['success' => true, 'message' => 'game ' . $id . 'deleted'], 200);
+            return response()->json(['message' => 'game ' . $id . 'deleted'], 200);
         } else {
-            return response()->json(['success' => false, 'message' => 'game ' . $id . ' does not exist'], 400);
+            return response()->json(['message' => 'game ' . $id . ' does not exist'], 400);
         }
     }
 
     public static function getByUser($id)
     {
-        $games = Game::where('player1', '=', $id)
+        $games = GameController::getGamesJoinUser()->where('player1', '=', $id)
             ->orWhere('player2', '=', $id)
             ->orWhere('player3', '=', $id)
             ->orWhere('player4', '=', $id)
             ->get();
+        
+        $processedGames = GameController::processGames($games);
+    
+        return response()->json(["games" => $processedGames], 200);
+    }
 
-        return response()->json(['success' => true, "games" => $games], 200);
+    public static function getGamesJoinUser(){
+        return DB::table('games')
+            ->join('users', function ($join) {
+                $join->on('games.player1', '=', 'users.id')
+                    ->orOn('games.player2', '=', 'users.id')
+                    ->orOn('games.player3', '=', 'users.id')
+                    ->orOn('games.player4', '=', 'users.id');
+            })->select(
+                'games.id as gameid',
+                'player1',
+                'player2',
+                'player3',
+                'player4',
+                'gamestate',
+                'scorelimit',
+                'scoreteam1',
+                'scoreteam2',
+                'users.name',
+                'users.id as userid',
+                'users.profilpicturepath'
+            );
+    }
+
+    public static function processGames($games){
+        $processedGames = $games->groupBy('gameid')->values()->map(function ($groupedGames) {
+            return collect($groupedGames->reduce(function ($carry, $item) {
+                if ($carry == null) {
+                    $carry = $item;
+                }
+
+                $userObj = [
+                    'id' => $item->userid,
+                    'name' => $item->name,
+                    'profilpicturepath' => $item->profilpicturepath
+                ];
+
+                if ($item->userid == $item->player1) {
+                    $carry->player1 = $userObj;
+                } else if ($item->userid == $item->player2) {
+                    $carry->player2 = $userObj;
+                } else if ($item->userid == $item->player3) {
+                    $carry->player3 = $userObj;
+                } else if ($item->userid == $item->player4) {
+                    $carry->player4 = $userObj;
+                }
+                return $carry;
+            }))->except(['name', 'userid', 'profilpicturepath']);
+        });
+        return $processedGames;
     }
 }
