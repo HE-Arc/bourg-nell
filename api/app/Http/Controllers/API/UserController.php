@@ -32,7 +32,7 @@ class UserController extends Controller
         $inputs = $request->only(['name', 'password', 'email']);
 
         $validator = Validator::make($inputs, [
-            'name' => 'size:20',
+            'name' => 'max:20',
             'email' => 'unique:users',
         ]);
 

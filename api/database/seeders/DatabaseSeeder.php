@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $user = new UserSeeder();
+        $user->createAdminUser();
         for($i = 0; $i <= 60; $i++){
             $user->run();
         }

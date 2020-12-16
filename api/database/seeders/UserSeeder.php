@@ -24,4 +24,14 @@ class UserSeeder extends Seeder
         $u->gravatar = md5($u->email);
         $u->save();
     }
+
+    public function createAdminUser(){
+        $adminUser = new User();
+        $adminUser->name = "admin";
+        $adminUser->password = Hash::make("adminpassword");
+        $adminUser->email = "test@gmail.com";
+        $adminUser->gravatar = md5($adminUser->email);
+        $adminUser->isadmin = true;
+        $adminUser->save();
+    }
 }
