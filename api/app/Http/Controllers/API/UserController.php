@@ -42,8 +42,8 @@ class UserController extends Controller
             } else {
                 $user = User::create([
                     'name' => $inputs['name'],
-                    'email' => $inputs['email'],
-                    'password' => Hash::make($inputs['password']),
+                    'email' => strtolower(trim($inputs['email'])),
+                    'password' => Hash::make(trim($inputs['password'])), 
                     'gravatar' => md5($inputs['email'])
                 ]);
                 return response()->json(['user' => $user]);
@@ -63,7 +63,7 @@ class UserController extends Controller
     {
         $user =  User::find($id);
         if (empty($user)) {
-            return response()->json(['id' => 'user ' . $id . ' does not exist'], 400);
+            return response()->json(['message' => 'user ' . $id . ' does not exist'], 400);
         } else {
             return response()->json(['user' => $user], 200);
         }
@@ -90,23 +90,23 @@ class UserController extends Controller
             $user = User::find($id);
 
             if (array_key_exists('password', $inputs)) {
-                $hash = Hash::make($inputs['password']);
+                $hash = Hash::make(trim($inputs['password']));
                 $inputs['password'] = $hash;
             }
 
             if (array_key_exists('email', $inputs)) {
                 $hash = md5($inputs['email']);
                 $inputs['gravatar'] = $hash;
+                $email = strtolower(trim($inputs['email']));
+                $inputs['email'] = $email;
             }
-
-            print_r($inputs);
 
             if (!$validator->fails() && !empty($inputs) && $user != null) {
 
                 $user->update($inputs);
                 return response()->json(['user' => User::find($id)], 200);
             } else {
-                return response()->json(['message' => 'duplicate username or email or name to long. max: 20 characters'], 400);
+                return response()->json(['message' => 'duplicate email or name to long. max: 20 characters'], 400);
             }
         } else {
             return response()->json(['message' => 'access denied to update this user'], 400);

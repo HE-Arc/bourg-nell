@@ -20,7 +20,9 @@ use Illuminate\Support\Facades\Route;
 Test route
 */
 Route::get('/', function(){
-    return 'Hello World';
+    return 'Welcome on the Bourg-Nell API ! <br> 
+            To know everything about how it works, take a look here : <br>
+            <a href="https://github.com/HE-Arc/bourg-nell/wiki/Api-specifications">GitHub Wiki</a>';
 });
 
 /*
