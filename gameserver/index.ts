@@ -1,18 +1,12 @@
-//import {Game} from "./Game/Game";
 import * as SocketIO  from "socket.io";
 import {Game} from "./New/Game";
 import {Player} from "./New/Player";
 import {State} from "./New/State";
-import fetch from "node-fetch";
-import { NetworkManager } from "./New/NetworkManager";
-
-
+import { CONFIG } from "./config";
 
 const io = require("socket.io")();
 
 let newPlayers = new Array<Player>();
-
-let serverToken = NetworkManager.getInstance().getToken();
 
 io.on("connect", (socket: SocketIO.Socket) => {
     console.log("A connection occur ! ");
@@ -35,7 +29,7 @@ io.on("connect", (socket: SocketIO.Socket) => {
 
         if(newPlayers.length == 4)
         {
-            const game = new Game(newPlayers, serverToken);
+            const game = new Game(newPlayers);
 
             game.patchData(State.Created);
             game.playGame();
@@ -43,3 +37,6 @@ io.on("connect", (socket: SocketIO.Socket) => {
         }
     });
 });
+
+console.log(`listening on port: ${CONFIG.port}`);
+io.listen(CONFIG.port)

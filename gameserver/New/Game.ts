@@ -5,6 +5,7 @@ import { Deck } from "./Deck";
 import {Player} from "./Player";
 import { State } from "./State";
 import {NetworkManager} from "./NetworkManager";
+import CONFIG from "../config";
 
 const ROUND_SIZE = 9;
 const BONUS_POINTS_LAST_FOLD = 5;
@@ -29,14 +30,12 @@ export class Game
     private firstTrump = true;
     private currentTrumpColor = CARD_COLOR.SPADES;
     private id: string = "";
-    private token = "";
 
-    public constructor(players: Player[], token: string, maxScore = 1000)
+    public constructor(players: Player[], maxScore = 1000)
     {
         this.players = players; 
         this.currentPlayerIndex = 0; 
         this.maxScore = maxScore;
-        this.token = token;
     }
 
     async createGame()
@@ -51,15 +50,15 @@ export class Game
         let network = NetworkManager.getInstance();
 
         network.updateDatas(
-            'https://bourgnell.srvz-webapp.he-arc.ch/games',
+            CONFIG.api +'games',
             'post',
-            this.token,
             datas
-        ).then((res) => {
-            this.id = res;
-        }).catch((error) => {
-            console.log(error);
-        });
+            ).then((res) => {
+                this.id = res;
+            }).catch((error) => {
+                console.log(error);
+            }
+        );
     }
 
     async patchData(state: State) {
@@ -70,9 +69,8 @@ export class Game
         };
         
         NetworkManager.getInstance().updateDatas(
-            "https://bourgnell.srvz-webapp.he-arc.ch/games/"+this.id,
+            CONFIG.api + this.id,
             "patch",
-            this.token,
             datas
         )
     }
@@ -128,7 +126,9 @@ export class Game
         // when the game is finished, set the game as finished
         let wonState = (this.scoreTeam1 >= this.maxScore ? State.WonTeam1 : State.WonTeam2);
         
-        this.patchData(wonState)
+        this.patchData(wonState);
+        
+        this.roomBroadcast("gameWin", wonState)
 
     }
     
@@ -258,6 +258,4 @@ export class Game
     {
         this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
     }
-
-    
 }

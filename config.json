@@ -1,0 +1,8 @@
+{
+    "server": {
+        "email": "gameserver@he-arc.ch",
+        "password": "gameserver",
+        "port": 3000
+    },
+    "api": "https://bourgnell.srvz-webapp.he-arc.ch/"
+}
