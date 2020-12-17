@@ -36,10 +36,8 @@
                     email: this.username,
                     password: this.password
                 }).then(() => {
-                    console.log("Connected !");
                     this.$router.push({ name: "account" })
                 }).catch(() => {
-                    console.log("error !");
                     this.connectErrors = ["Invalid username or password"];
                 });
             }

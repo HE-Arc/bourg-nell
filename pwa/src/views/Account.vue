@@ -6,7 +6,7 @@
         </div>
         <h3>Games</h3>
         <div class="games">
-            <HistoryItem v-for="item in games" :key="item.gameId" :gameObj="item"/>
+            <HistoryItem @loadUser="loadUser" v-for="item in games" :key="item.gameId" :gameObj="item"/>
         </div>
     </div>
 </template>
@@ -17,48 +17,74 @@ import Avatar from '../components/Avatar';
 import HistoryItem from '../components/HistoryItem';
 
 export default {
-    // Todo : Load user
-    // Todo : Load games from server
     name: 'App',
     components: {
         Avatar,
         HistoryItem
     },
+    data() {
+        return {
+            loading: true,
+        }
+    },
     mounted () {
-        console.log(this.$store.state.token);
-        this.loadUser().then(() => this.loadGames());
+        this.load();
     },
     methods: {
-        async loadUser() {
-            if(this.$route.params.id)
+        async load()
+        {
+            this.loading = true;
+            if(!this.isAccount)
             {
                 await this.$store.dispatch("fetchUser", this.$route.params.id);
-            }
-            else
-            {
-                await this.$store.dispatch("fetchAuthUser");
-            }
-        },
-        async loadGames() {
-            if(this.$route.params.id)
-            {
-                this.$store.dispatch("fetchGames", this.$route.params.id);
+                await this.$store.dispatch("fetchGames", this.$route.params.id);
             }
             else
             {
                 this.$store.dispatch("fetchAuthUserGames");
             }
+            this.loading = false;
+        },
+        async loadUser(userId)
+        {
+            if(userId != this.currentUser.id)
+            {
+                await this.$router.push({ name: "user-account", params: {id: userId} });
+                await this.load();
+            }
         }
     },
     computed: {
+        isAccount()
+        {
+            return !Boolean(this.$route.params.id);
+        },
+        currentUser()
+        {
+            if(this.isAccount)
+            {
+                return this.$store.state.authUser;
+            }
+            else
+            {
+                return this.$store.state.currentShownUser;
+            }
+        },
         name() {
-            return this.$store.state.currentShownUser.name;
+            return this.currentUser.name;
         },
         profilePicture() {
-            return this.$store.state.currentShownUser.gravatar;
+            return this.currentUser.gravatar;
         },
         games() {
-            return this.$store.state.currentShownUserGames;
+            if(this.isAccount)
+            {
+                return this.$store.state.authUserGames;
+            }
+            else
+            {
+                return this.$store.state.currentShownUserGames;
+            }
         }
     }
 }

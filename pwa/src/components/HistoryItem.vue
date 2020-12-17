@@ -19,16 +19,16 @@
         <div class="hidden-content">
             <h4>Players</h4>
             <div class="players">
-                <div class="player">
+                <div @click="load(gameObj.player1.id)" class="player">
                     <Avatar :md5hash="gameObj.player1.gravatar"/>
                     <span>{{gameObj.player1.name}}</span>
-                </div><div class="player">
+                </div><div @click="load(gameObj.player2.id)" class="player">
                     <Avatar :md5hash="gameObj.player2.gravatar"/>
                     <span>{{gameObj.player2.name}}</span>
-                </div><div class="player">
+                </div><div @click="load(gameObj.player3.id)" class="player">
                     <Avatar :md5hash="gameObj.player3.gravatar"/>
                     <span>{{gameObj.player3.name}}</span>
-                </div><div class="player">
+                </div><div @click="load(gameObj.player4.id)" class="player">
                     <Avatar :md5hash="gameObj.player4.gravatar"/>
                     <span>{{gameObj.player4.name}}</span>
                 </div>
@@ -94,6 +94,9 @@
         methods: {
             toggleExpand() {
                 this.expanded = !this.expanded;
+            },
+            load(userId) {
+                this.$emit("loadUser", userId);
             }
         }
     }
