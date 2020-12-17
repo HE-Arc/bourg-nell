@@ -13,6 +13,9 @@
                 <input tabindex="4" type="submit" name="submit" value="Sign in">
             </form>
         </div>
+        <div>
+            Dont't have an account ? <router-link to="register">create one now !</router-link>
+        </div>
     </div>
 </template>
 

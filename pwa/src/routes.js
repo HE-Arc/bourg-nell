@@ -1,4 +1,5 @@
 import Login from './views/Login.vue';
+import Logout from './views/Logout.vue';
 import Account from './views/Account.vue';
 import AccountCreation from './views/AccountCreation.vue';
 import Game from './views/Game.vue';
@@ -13,6 +14,14 @@ const routes = [
         }
     },
     {
+        path: '/logout',
+        name: 'logout',
+        component: Logout,
+        meta: {
+            requiresAuth: true, // Only accessible by logged users
+        }
+    },
+    {
         path: '/register',
         name: 'register',
         component: AccountCreation,
@@ -21,7 +30,6 @@ const routes = [
         }
     },
     {
-        
         path: '/play',
         name: 'game',
         component: Game,
