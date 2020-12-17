@@ -1,9 +1,9 @@
 <template>
     <div class="current-trump card" card-elevation="1">
-        <img v-if="isHearts" src="/img/hearts.png" alt="">
-        <img v-if="isSpades" src="/img/spades.png" alt="">
-        <img v-if="isDiamonds" src="/img/diamonds.png" alt="">
-        <img v-if="isClubs" src="/img/clubs.png" alt="">
+        <img v-if="isHearts" src="../../assets/hearts.png" alt="">
+        <img v-if="isSpades" src="../../assets/spades.png" alt="">
+        <img v-if="isDiamonds" src="../../assets/diamonds.png" alt="">
+        <img v-if="isClubs" src="../../assets/clubs.png" alt="">
     </div>
 </template>
 
