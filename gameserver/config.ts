@@ -1,4 +1,4 @@
-const confFile: any = require("../config.json");
+const confFile: any = require("./config.json");
 
 export const CONFIG = 
 {
