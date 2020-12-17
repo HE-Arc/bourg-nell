@@ -16,6 +16,10 @@ const TEAM_COUNT = 2;
 const FOLD_DELAY_MS = 2500;
 const NEW_ROUND_DELAY_MS = 1500;
 
+/**
+ * @class Game
+ * Representation of a current game session
+ */
 export class Game
 {
     private players = new Array<Player>();
@@ -37,6 +41,10 @@ export class Game
         this.maxScore = maxScore;
     }
 
+    /**
+     * @function createGame
+     * create a game entry in database with all the players in game and the score limit 
+     */
     async createGame()
     {
         let datas = {
@@ -60,6 +68,11 @@ export class Game
         );
     }
 
+    /**
+     * @function patchData
+     * @param state state of the game when this function is called
+     * Update database entrys at each turn, to update the scores and the state during a match
+     */
     async patchData(state: State) {
         let datas = {
             scoreteam1: this.scoreTeam1,
@@ -74,10 +87,20 @@ export class Game
         )
     }
 
+    /**
+     * @function setID
+     * @param id id of the game
+     * set the id of the game
+     */
     public setId(id: string) {
         this.id = id;
     }
 
+    /**
+     * @function wait
+     * @param timems duration in ms
+     * make a pause for a given amount of time
+     */
     async wait(timems: number): Promise<void>
     {
         return new Promise((s, r) => {
@@ -87,11 +110,21 @@ export class Game
         });
     }
     
+    /**
+     * @function roomBroadcast
+     * @param event event you want to broadcast
+     * @param args all other param to send in function of the event
+     * broadcast to all players in game a event
+     */
     private roomBroadcast(event: string, ...args: any[])
     {
         this.players.forEach(p => p.getSocket().emit(event, ...args));
     }
 
+    /**
+     * @function playGame
+     * create and run a game until the end
+     */
     async playGame()
     {
         
@@ -131,11 +164,22 @@ export class Game
 
     }
     
+    /**
+     * @function getCurrentPlayer
+     * @returns current player's turn
+     * return the current player's turn
+     */
     private getCurrentPlayer()
     {
         return this.players[this.currentPlayerIndex];
     }
 
+    /**
+     * @function addTeamScoreOfPlayer
+     * @param playerIndex index of the winner
+     * @param score score to add
+     * increment the score of the team that won the fold in function of the player index
+     */
     addTeamScoreOfPlayer(playerIndex: number, score: number)
     {
         // Player in team 1
@@ -150,6 +194,10 @@ export class Game
         }
     }
 
+    /**
+     * @function playRound
+     * play a round: give cards to players and is executing until no more cards are in the game
+     */
     async playRound()
     {
         // Distribute new cards
@@ -253,6 +301,10 @@ export class Game
         await this.wait(NEW_ROUND_DELAY_MS);
     }
 
+    /**
+     * @function nextPlayer
+     * give the next player index 
+     */
     nextPlayer()
     {
         this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
