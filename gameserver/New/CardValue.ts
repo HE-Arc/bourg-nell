@@ -1,3 +1,7 @@
+/**
+ * @enum CARD_VALUE
+ * represent the numbers on the cards.
+ */
 export enum CARD_VALUE
 {
     SIX    = 0b00000000,
