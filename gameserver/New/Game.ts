@@ -134,7 +134,7 @@ export class Game
 
         for(let i = 0; i < this.players.length; ++i)
         {
-            this.players[i].emitID(i);
+            this.players[i].emitID();
         }
 
         for(let i = 0; i < this.players.length; ++i)

@@ -4,6 +4,10 @@ import {Deck} from "./Deck";
 import {CARD_VALUE}  from "./CardValue";
 import {NetworkManager} from "./NetworkManager";
 
+/**
+ * @class Player
+ * Representation of an ingame player
+ */
 export class Player
 {
     private socket: SocketIO.Socket;
@@ -18,6 +22,10 @@ export class Player
         this.token = name;
     }
 
+    /**
+     * @function fetchInfo
+     * retrieve the name and the id of the player if his token is authorized
+     */
     async fetchInfo() {
         let header = {Authorization: `Bearer ${this.token}`}
 
@@ -32,30 +40,51 @@ export class Player
         });
     }
 
+    /**
+     * @function getID
+     * @returns return the player's id
+     */
     getID() {
         return this.id;
     }
 
+    /**
+     * @function getSocket
+     * @returns return the socket linked to the player
+     */
     getSocket() {
         return this.socket;
     }
-    
-    getId() {
-        return this.id;
-    }
 
+    /**
+     * @function getName
+     * @returns return the player's name
+     */
     getName() {
         return this.name;
     }
 
-    emitID(id: number) {
-        this.socket.emit("id", id)
+    /**
+     * @function emitID
+     * Emit the current player id to the client
+     */
+    emitID() {
+        this.socket.emit("id", this.id)
     }
 
+    /**
+     * @function getCards
+     * @returns return actual player's cards
+     */
     getCards() {
         return this.cards;
     }
 
+    /**
+     * @function setCards
+     * @param cards player's cards
+     * give new cards to the player, emit these cards to the client
+     */
     setCards(cards: CARDS[]) {
         this.cards = cards;
         this.socket.emit("cards", this.cards);
@@ -66,6 +95,12 @@ export class Player
         this.socket.emit("disconnect");
     }
 
+    /**
+     * @function playCard
+     * @param currentFold current card on the "table"
+     * @param currentTrump current trump color
+     * Emit a played card to the client, pop the played card of player's deck
+     */
     async playCard(currentFold: CARDS[], currentTrump: CARD_COLOR): Promise<CARDS> {
         return new Promise((s, r) => {
             this.socket.emit("yourTurn");
@@ -81,6 +116,11 @@ export class Player
         });
     }
 
+    /**
+     * @function chooseTrump
+     * @param passed boolean that check if the trump was already passed
+     * Permit the player to choose the raw trumpCard, if the player want, he can pass to his mate, but only one time per raw
+     */
     async chooseTrump(passed = false): Promise<CARD_COLOR> {
         return new Promise((s,r) => {
             this.socket.emit(passed ? "passed" : "chooseTrump");
@@ -100,6 +140,13 @@ export class Player
         });
     }
 
+    /**
+     * @function isCardAllowed
+     * @param card current played card
+     * @param currentTrump current trump card
+     * @param currentFold fold of played card
+     * Check if in function of the precedent card, the move is allowed
+     */
     private isCardAllowed(card: CARDS, currentTrump: CARD_COLOR, currentFold: CARDS[]) {
         // Player must have the card
         if(!this.cards.includes(card)) return false;
