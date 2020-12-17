@@ -1,11 +1,34 @@
-import fetch from "node-fetch";
+import fetch, { Response } from "node-fetch";
 
 export class NetworkManager {
 
     private static instance: NetworkManager;
+    private token = "";
 
     constructor() {
+        this.authentification();
+    }
 
+    getToken() {
+        return this.token;
+    }
+
+    async authentification() {
+        const response = await fetch('https://bourgnell.srvz-webapp.he-arc.ch/users/login', {
+            method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "email": "robin",
+                    "password": "test"
+                }),
+        });
+        
+        if(!response.ok) throw Error("Invalid Credentials");
+        const body = await response.json();
+        this.token = body.token;
     }
 
     static getInstance() {
@@ -24,9 +47,11 @@ export class NetworkManager {
                 Authorization: `Bearer ${token}`
             },
             body : JSON.stringify(body),
-        });
+        })
 
-        if (methodType.toLowerCase() == 'post') {
+        if (res.status == 401) {
+            this.authentification();
+        } else if (methodType.toLowerCase() == 'post') {
             const body = await res.json();
             return body.game.id;
         }
@@ -39,8 +64,12 @@ export class NetworkManager {
 
         if (!res.ok) throw new Error("Invalid token");
 
-        const body = await res.json();
-        return body;
+        if (res.status == 401) {
+            this.authentification();
+        } else {
+            const body = await res.json();
+            return body;
+        }
     }
 
 }

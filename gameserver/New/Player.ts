@@ -13,14 +13,12 @@ export class Player
     private id = 0;
     private name = "";
 
-    constructor(socket: SocketIO.Socket, name: string)
-    {
+    constructor(socket: SocketIO.Socket, name: string) {
         this.socket = socket;
         this.token = name;
     }
 
     async fetchInfo() {
-
         let header = {Authorization: `Bearer ${this.token}`}
 
         NetworkManager.getInstance().fetchInfo(
@@ -63,8 +61,7 @@ export class Player
         this.socket.emit("cards", this.cards);
     }
 
-    async playCard(currentFold: CARDS[], currentTrump: CARD_COLOR): Promise<CARDS>
-    {
+    async playCard(currentFold: CARDS[], currentTrump: CARD_COLOR): Promise<CARDS> {
         return new Promise((s, r) => {
             this.socket.emit("yourTurn");
             let playedCardCb = (card: CARDS) => {
@@ -98,8 +95,7 @@ export class Player
         });
     }
 
-    private isCardAllowed(card: CARDS, currentTrump: CARD_COLOR, currentFold: CARDS[])
-    {
+    private isCardAllowed(card: CARDS, currentTrump: CARD_COLOR, currentFold: CARDS[]) {
         // Player must have the card
         if(!this.cards.includes(card)) return false;
         
