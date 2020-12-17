@@ -24,7 +24,7 @@ export class Player
         let header = {Authorization: `Bearer ${this.token}`}
 
         NetworkManager.getInstance().fetchInfo(
-            CONFIG +'users/me',
+            CONFIG.api +'users/me',
             header
         ).then((res) => {
             this.id = res.id;

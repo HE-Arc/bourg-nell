@@ -31,7 +31,7 @@ export class NetworkManager {
      * Connect the server to the database.
      */
     async authentification() {
-        const response = await fetch(CONFIG.api +'login', {
+        const response = await fetch(CONFIG.api +'users/login', {
             method: "POST",
                 headers: {
                     'Accept': 'application/json',
