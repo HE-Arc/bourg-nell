@@ -53,7 +53,7 @@
         <LoadingModal v-if="!connected || !gameStarted"/>
 
         <!-- Loading Modal -->
-        <GameWinModal v-if="showWinModal" gameState="3" :scoreTeam1="myTeamScore" :scoreTeam2="theirTeamScore" />
+        <GameWinModal v-if="showWinModal" :win="gameWin" :scoreTeam1="myTeamScore" :scoreTeam2="theirTeamScore" />
     </div>
 </template>
 
@@ -71,6 +71,8 @@ import {CARD_COLOR} from "../cards/CardColor";
 
 const PLAYERS_PER_GAME = 4;
 const MAX_CARDS_IN_HAND = 9;
+const WON_TEAM1_GAMESTATE = 3;
+const WON_TEAM2_GAMESTATE = 4;
 
 export default {
     // Todo : Load games from server
@@ -91,7 +93,7 @@ export default {
             ownCards: [],
             playedCard: null,
 
-            currentPlayerPlaying: 0,
+            currentPlayerPlaying: -1,
             currentTrump: null,
 
             playerRightPlayedCard: null,
@@ -117,11 +119,12 @@ export default {
             showTrumpModal: false,
             allowPass: true,
 
-            showWinModal: false
+            showWinModal: false,
+            gameWin: false,
         }
     },
     mounted() {
-        this.socket = io("ws://localhost:3000");
+        this.socket = io("wss://bourgnell2.srvz-webapp.he-arc.ch");
 
         // Handle connection
         this.socket.on("connect", () => {
@@ -235,6 +238,9 @@ export default {
         onScoreTeam2(score) {if(this.myId % 2 != 0) this.myTeamScore = score; else this.theirTeamScore = score},
 
         onGameWin(gameState) {
+            
+            this.gameWin =  (this.myId % 2 == 0 && gameState == WON_TEAM1_GAMESTATE) ||
+                            (this.myId % 2 != 0 && gameState == WON_TEAM2_GAMESTATE)
             this.showWinModal = true; 
         },
 
