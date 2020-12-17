@@ -30,13 +30,18 @@ class GameController extends Controller
      */
     public function store(Request $request)
     {
-        $inputs  = $request->only(['player1', 'player2', 'player3', 'player4', 'scorelimit']);
+        $currentUser = auth()->user();
+        if ($currentUser->isadmin) {
+            $inputs  = $request->only(['player1', 'player2', 'player3', 'player4', 'scorelimit']);
 
-        if (sizeof($inputs) < 5) {
-            return response()->json(['error' => 'missing parameter'], 400);
+            if (sizeof($inputs) < 5) {
+                return response()->json(['error' => 'missing parameter'], 400);
+            } else {
+                $game = Game::create($inputs);
+                return response()->json(['game' => $game], 200);
+            }
         } else {
-            $game = Game::create($inputs);
-            return response()->json(['game' => $game], 200);
+            return response()->json(['message' => 'access denied to create a game'], 400);
         }
     }
 
@@ -67,21 +72,26 @@ class GameController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $inputs  = $request->only(['scorelimit', 'gamestate', 'scoreteam1', 'scoreteam2']);
+        $currentUser = auth()->user();
+        if ($currentUser->isadmin) {
+            $inputs  = $request->only(['scorelimit', 'gamestate', 'scoreteam1', 'scoreteam2']);
 
-        $validator = Validator::make($inputs, [
-            'gamestate' => 'between:0,4'
-        ]);
+            $validator = Validator::make($inputs, [
+                'gamestate' => 'between:0,4'
+            ]);
 
-        if (!$validator->fails()) {
-            $game = Game::find($id);
+            if (!$validator->fails()) {
+                $game = Game::find($id);
 
-            if (!empty($inputs) && $game != null) {
-                $game->update($inputs);
-                return $this->show($id);
+                if (!empty($inputs) && $game != null) {
+                    $game->update($inputs);
+                    return $this->show($id);
+                }
             }
+            return response()->json(['message' => 'bad request'], 400);
+        } else {
+            return response()->json(['message' => 'access denied to update this game'], 400);
         }
-        return response()->json(['message' => 'bad request'], 400);
     }
 
     /**
@@ -92,12 +102,17 @@ class GameController extends Controller
      */
     public function destroy($id)
     {
-        $game = Game::find($id);
-        if (!empty($game)) {
-            $game->delete();
-            return response()->json(['message' => 'game ' . $id . 'deleted'], 200);
+        $currentUser = auth()->user();
+        if ($currentUser->isadmin) {
+            $game = Game::find($id);
+            if (!empty($game)) {
+                $game->delete();
+                return response()->json(['message' => 'game ' . $id . ' deleted'], 200);
+            } else {
+                return response()->json(['message' => 'game ' . $id . ' does not exist'], 400);
+            }
         } else {
-            return response()->json(['message' => 'game ' . $id . ' does not exist'], 400);
+            return response()->json(['message' => 'access denied to delete this game'], 400);
         }
     }
 
@@ -108,13 +123,14 @@ class GameController extends Controller
             ->orWhere('player3', '=', $id)
             ->orWhere('player4', '=', $id)
             ->get();
-        
+
         $processedGames = GameController::processGames($games);
-    
+
         return response()->json(["games" => $processedGames], 200);
     }
 
-    public static function getGamesJoinUser(){
+    public static function getGamesJoinUser()
+    {
         return DB::table('games')
             ->join('users', function ($join) {
                 $join->on('games.player1', '=', 'users.id')
@@ -139,7 +155,8 @@ class GameController extends Controller
             );
     }
 
-    public static function processGames($games){
+    public static function processGames($games)
+    {
         $processedGames = $games->groupBy('gameid')->values()->map(function ($groupedGames) {
             return GameController::reduceGames($groupedGames);
         });
@@ -147,7 +164,8 @@ class GameController extends Controller
     }
 
 
-    public static function reduceGames($games){
+    public static function reduceGames($games)
+    {
         return collect($games->reduce(function ($carry, $item) {
             if ($carry == null) {
                 $carry = $item;

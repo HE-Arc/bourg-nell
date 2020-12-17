@@ -78,33 +78,38 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $inputs = $request->only(['name', 'password', 'email']);
+        $currentUser = auth()->user();
+        if ($currentUser->isadmin or $currentUser->id == $id) {
+            $inputs = $request->only(['name', 'password', 'email']);
 
-        $validator = Validator::make($inputs, [
-            'name' => 'size:20',
-            'email' => 'unique:users',
-        ]);
+            $validator = Validator::make($inputs, [
+                'name' => 'size:20',
+                'email' => 'unique:users',
+            ]);
 
-        $user = User::find($id);
+            $user = User::find($id);
 
-        if(array_key_exists('password', $inputs)){
-            $hash = Hash::make($inputs['password']);
-            $inputs['password'] = $hash;
-        }
+            if (array_key_exists('password', $inputs)) {
+                $hash = Hash::make($inputs['password']);
+                $inputs['password'] = $hash;
+            }
 
-        if(array_key_exists('email', $inputs)){
-            $hash = md5($inputs['email']);
-            $inputs['gravatar'] = $hash;
-        }
-        
-        print_r($inputs);
+            if (array_key_exists('email', $inputs)) {
+                $hash = md5($inputs['email']);
+                $inputs['gravatar'] = $hash;
+            }
 
-        if (!$validator->fails() && !empty($inputs) && $user != null) {
-            
-            $user->update($inputs);
-            return response()->json(['user' => User::find($id)], 200);
-        }else{
-            return response()->json(['message' => 'duplicate username or email or name to long. max: 20 characters'], 400);
+            print_r($inputs);
+
+            if (!$validator->fails() && !empty($inputs) && $user != null) {
+
+                $user->update($inputs);
+                return response()->json(['user' => User::find($id)], 200);
+            } else {
+                return response()->json(['message' => 'duplicate username or email or name to long. max: 20 characters'], 400);
+            }
+        } else {
+            return response()->json(['message' => 'access denied to update this user'], 400);
         }
     }
 
@@ -116,12 +121,17 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::find($id);
-        if (!empty($user)) {
-            $user->delete();
-            return response()->json(['message' => 'user ' . $id . 'deleted'], 200);
+        $currentUser = auth()->user();
+        if ($currentUser->isadmin) {
+            $user = User::find($id);
+            if (!empty($user)) {
+                $user->delete();
+                return response()->json(['message' => 'user ' . $id . ' deleted'], 200);
+            } else {
+                return response()->json(['message' => 'user ' . $id . ' does not exist'], 400);
+            }
         } else {
-            return response()->json(['message' => 'user ' . $id . ' does not exist'], 400);
+            return response()->json(['message' => 'access denied to delete this user'], 400);
         }
     }
 }
