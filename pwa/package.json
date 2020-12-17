@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "tsc && npm run less && vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "less": "lessc -x src/style/main.less public/main.min.css"
+    "less": "lessc -x src/style/themes/base.less public/light.theme.css && lessc -x src/style/themes/dark.less public/dark.theme.css && lessc -x src/style/main.less public/main.min.css"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.32",

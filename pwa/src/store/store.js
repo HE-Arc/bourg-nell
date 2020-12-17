@@ -8,6 +8,7 @@ axios.defaults.baseURL = "https://bourgnell.srvz-webapp.he-arc.ch"
 export default new Vuex.Store({
     state: {
         token: localStorage.getItem('access_token') || null,
+        theme: localStorage.getItem('theme') || 'light',
         authUser: {},
         authUserGames: [],
         currentShownUser: {name: "unknown"},
@@ -45,6 +46,12 @@ export default new Vuex.Store({
         },
         updateGames(state, games) {
             state.currentShownUserGames = games;
+        },
+        toggleTheme(state) {
+
+            if(state.theme == "light") state.theme = "dark";
+            else if(state.theme == "dark") state.theme = "light";
+            localStorage.setItem("theme", state.theme);
         }
     },
     actions: {

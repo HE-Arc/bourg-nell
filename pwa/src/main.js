@@ -5,10 +5,18 @@ import store from './store/store'
 import routes from './routes'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPlayCircle, faSadCry } from '@fortawesome/free-regular-svg-icons'
-import { faSpinner, faSignOutAlt, faArrowLeft, faUser, faShareAlt} from '@fortawesome/free-solid-svg-icons'
+import {
+    faSpinner,
+    faSignOutAlt,
+    faArrowLeft,
+    faUser,
+    faShareAlt,
+    faMoon
+} from '@fortawesome/free-solid-svg-icons';
+
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
  
-library.add(faSadCry, faSpinner, faPlayCircle, faUser, faSignOutAlt, faArrowLeft, faShareAlt);
+library.add(faSadCry, faSpinner, faPlayCircle, faUser, faSignOutAlt, faArrowLeft, faShareAlt, faMoon);
  
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 

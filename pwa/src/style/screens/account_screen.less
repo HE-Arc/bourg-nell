@@ -29,30 +29,6 @@
 
         }
 
-        .action-buttons > *,
-        .action-buttons > *:visited,
-        .back-button {
-            cursor: pointer;
-            display: block;
-            color: var(--secondary-text-color);
-            border-radius: 100%;
-            box-sizing: content-box;
-            width: 32px;
-            height: 32px;
-            text-align: center;
-            line-height: 32px;
-            font-size: 32px;
-            margin-left: 8px;
-            transition: background-color 250ms;
-
-            &:hover {
-                
-                background: var(--divider-color);
-            }
-        }
-        .back-button {
-            margin: 0 8px 0 0;
-        }
     }
 
     > h3
@@ -76,7 +52,8 @@
         max-width: 1200px;
         left: 50%;
         transform: translateX(-50%);
-        bottom: 12px;
+        padding: 12px;
+        bottom: 0;
         display: flex;
         align-items: flex-end;
         flex-direction: column;
@@ -85,6 +62,7 @@
         {
             cursor: pointer;
             border-radius: 100%;
+            color: var(--secondary-text-color);
             box-shadow: var(--lvl3-elevation-shadow);
             font-size: 50px;
             text-align: center;

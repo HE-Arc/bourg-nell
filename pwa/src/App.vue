@@ -1,5 +1,6 @@
 <template>
     <div>
+        <link rel="stylesheet" :href="`/${theme}.theme.css`"/>
         <router-view :key="$route.fullPath"></router-view>
     </div>
 </template>
@@ -17,6 +18,9 @@ export default {
     computed: {
         connected() {
             return this.$store.getters.loggedIn;
+        },
+        theme() {
+            return this.$store.state.theme;
         }
     }
 }

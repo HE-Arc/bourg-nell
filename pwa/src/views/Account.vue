@@ -1,22 +1,26 @@
 <template>
-    <div id="root" class="account screen hasnav hasmaxwidth">
-        <div class="account-header">
-            <div @click="navigateBack" class="card back-button">
+    <div id="root" class="account screen hasnav hasmaxwidth hasfab">
+        <div class="card navigation" card-elevation="3">
+            <div @click="navigateBack" class="card back-button left">
                 <font-awesome-icon icon="arrow-left"/>
             </div>
+            <div class="separator"></div>
+            <div @click="toggleTheme" class="card back-button right">
+                <font-awesome-icon icon="moon"/>
+            </div>
+            <div v-if="isAccount" @click="share" class="card right">
+                <font-awesome-icon icon="share-alt"/>
+            </div>
+            <router-link v-if="isAccount" to="/logout" class="card right">
+                <font-awesome-icon icon="sign-out-alt"/>
+            </router-link>
+            <router-link v-else to="/" class="card right">
+                <font-awesome-icon icon="user"/>
+            </router-link>
+        </div>
+        <div class="account-header">
             <Avatar :md5hash="profilePicture" />
             <h2>{{name}}</h2>
-            <div class="action-buttons">
-                <div v-if="isAccount" @click="share" class="card">
-                    <font-awesome-icon icon="share-alt"/>
-                </div>
-                <router-link v-if="isAccount" to="/logout" class="card">
-                    <font-awesome-icon icon="sign-out-alt"/>
-                </router-link>
-                <router-link v-else to="/" class="card">
-                    <font-awesome-icon icon="user"/>
-                </router-link>
-            </div>
         </div>
         <h3>Games</h3>
         <NoGames v-if="!games.length && !loading"/>
@@ -79,6 +83,10 @@ export default {
         navigateBack()
         {
             this.$router.back();
+        },
+        toggleTheme()
+        {
+            this.$store.commit("toggleTheme");
         },
         share()
         {
