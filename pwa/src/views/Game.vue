@@ -119,7 +119,7 @@ export default {
         // Handle connection
         this.socket.on("connect", () => {
             this.connected = true
-            this.socket.emit("playerJoin", String(Math.floor(Math.random() * 1000)));
+            this.socket.emit("playerJoin", this.$store.state.token);
         });
         this.socket.on("disconnect", () => {this.connected = false});
         this.socket.on("reconnect", () => {this.connected = true});

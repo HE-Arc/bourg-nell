@@ -3,18 +3,13 @@
         <div class="login-form">
             <form @submit.prevent="login">
                 <h4>Welcome back !</h4>
+
                 <label for="username">Username</label>
-                <div v-if="connectError" class="input-error">
-                    <input v-model="username" name="username" tabindex="1" type="text" placeholder="Username" />
-                    <span class="error">Invalid username or password</span>
-                </div>
-                <div v-else>
-                    <input v-model="username" name="username" tabindex="1" type="text" placeholder="Username" />
-                </div>
+                <TextInputWithError v-model="username" :errors="connectErrors" name="username" tabindex="1" type="text" placeholder="Username"/>
+
                 <label for="password">Password</label>
-                <input v-model="password" name="password" type="password" tabindex="2" placeholder="Password" />
-                <input name="remember-me" tabindex="3" type="checkbox">
-                <label for="remember-me">Remember Username</label>
+                <TextInputWithError v-model="password" name="password" tabindex="2" type="password" placeholder="Password"/>
+
                 <input tabindex="4" type="submit" name="submit" value="Sign in">
             </form>
         </div>
@@ -22,13 +17,17 @@
 </template>
 
 <script>
+    import TextInputWithError from "../components/InputWithError";
     export default {
         name: "LoginScreen",
+        components: {
+            TextInputWithError
+        },
         data() {
             return {
                 username: "",
                 password: "",
-                connectError: false
+                connectErrors: []
             }
         },
         methods: {
@@ -40,7 +39,8 @@
                     console.log("Connected !");
                     this.$router.push({ name: "account" })
                 }).catch(() => {
-                    this.connectError = true 
+                    console.log("error !");
+                    this.connectErrors = ["Invalid username or password"];
                 });
             }
         }

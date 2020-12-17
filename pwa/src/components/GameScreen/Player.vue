@@ -1,7 +1,7 @@
 <template>
     <div :class="displayClass" :pos="'pos-'+pos" card-elevation="2">
         <Avatar :md5hash="imgPath" status="playing"/>
-        <h3>{{name}}</h3>
+        <h3>{{name.substr(0, 10)}}</h3>
     </div>
 </template>
 

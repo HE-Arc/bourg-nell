@@ -31,12 +31,27 @@ export default new Vuex.Store({
         }
     },
     actions: {
+        registerUser(context, user) {
+            return new Promise((resolve, reject) => {
+                axios.post("/users/create", {
+                    name: user.name,
+                    email: user.email,
+                    password: user.password
+                })
+                    .then(response => {
+                        resolve();
+                    })
+                    .catch(error => {
+                        reject(error);
+                    });
+            })
+        },
         fetchAuthUser(context) {
             axios.defaults.headers.common["Authorization"] = "Bearer " + context.state.token
             return new Promise((resolve, reject) => {
                 axios.get("/users/me")
                     .then(response => {
-                        context.commit("updateUser", response.data);
+                        context.commit("updateUser", response.data.me);
                         resolve(response);
                     })
                     .catch(error => {
@@ -99,7 +114,7 @@ export default new Vuex.Store({
                             context.commit("destroyToken")
                             reject(error)
                         })
-                })
+                });
             }
         },
         retrieveToken(context, credentials) {
