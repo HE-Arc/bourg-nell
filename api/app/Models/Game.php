@@ -20,6 +20,7 @@ class Game extends Model
         'player3',
         'player4',
         'gamestate',
+        'scorelimit',
         'scoreteam1',
         'scoreteam2'
     ];

@@ -16,17 +16,16 @@ class LoginController extends Controller
     {
         $token = auth()->attempt($credentials);
 
-
         if($token){
             return response()->json(['token' => $token], 200);
         }
         
-        return response()->json(['error' => 'invalid credentials'], 200);
+        return response()->json(['error' => 'invalid credentials'], 400);
     }
 
-    public static function logout(Request $request){
+    public static function logout(){
         auth()->logout();
-        return response()->json(['success' => true, 'message' => 'logout'], 200);
+        return response()->json(['message' => 'logout'], 200);
     }
 }
 

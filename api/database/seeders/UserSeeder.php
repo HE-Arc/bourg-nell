@@ -16,12 +16,22 @@ class UserSeeder extends Seeder
      * @return void
      */
     public function run()
-    {
+    {   
         $u = new User();
         $u->name = Str::random(10);
-        $u->password = "1234";
+        $u->password = Hash::make("1234");
         $u->email = "test" . Str::random(5) . "@gmail.com";
-        $u->profilpicturepath = "/pictures/" . Str::random(5) . ".png";
+        $u->gravatar = md5($u->email);
         $u->save();
+    }
+
+    public function createAdminUser(){
+        $adminUser = new User();
+        $adminUser->name = "admin";
+        $adminUser->password = Hash::make("adminpassword");
+        $adminUser->email = "test@gmail.com";
+        $adminUser->gravatar = md5($adminUser->email);
+        $adminUser->isadmin = true;
+        $adminUser->save();
     }
 }

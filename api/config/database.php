@@ -43,6 +43,8 @@ return [
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
 
+        //Old configuration
+        /*
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
@@ -62,6 +64,25 @@ return [
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
+        */
+
+        'mysql' => [
+            'driver' => 'mysql',
+            'host' => env('MYSQL_HOST', env('DB_HOST', 'localhost')),
+            'port' => env('MYSQL_PORT', env('DB_PORT', '3306')),
+            'database' => env('GROUPNAME', env('DB_DATABASE', 'forge')),
+            'username' => env('GROUPNAME', env('DB_USERNAME', 'forge')),
+            'password' => env('PASSWORD', env('DB_PASSWORD', '')),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+        ],
+
+
 
         'pgsql' => [
             'driver' => 'pgsql',

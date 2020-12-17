@@ -23,9 +23,9 @@ class CreateGameTable extends Migration
             $table->foreignId("player4")->references("id")->on("users")->onDelete('cascade')->onUpdate('cascade');
 
             $table->unsignedInteger("scorelimit");
-            $table->unsignedInteger("scoreteam1");
-            $table->unsignedInteger("scoreteam2");
-            $table->tinyInteger("gamestate");
+            $table->unsignedInteger("scoreteam1")->default(0);
+            $table->unsignedInteger("scoreteam2")->default(0);
+            $table->tinyInteger("gamestate")->default(0);
             $table->timestamps();            
         });
         Schema::enableForeignKeyConstraints();
