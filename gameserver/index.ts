@@ -13,7 +13,7 @@ function checkGameCreation()
 {
     if(newPlayers.length == MAX_PLAYER_IN_GAME)
     {
-        const game = new Game(newPlayers, 50);
+        const game = new Game(newPlayers, CONFIG.maxscore);
 
         game.patchData(State.Created);
         game.playGame();
