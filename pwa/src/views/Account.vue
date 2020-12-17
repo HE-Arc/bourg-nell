@@ -5,7 +5,9 @@
             <h2>{{name}}</h2>
         </div>
         <h3>Games</h3>
-        <div class="games">
+        <NoGames v-if="!games.length && !loading"/>
+        <Loading v-if="loading"/>
+        <div v-if="!loading" class="games">
             <HistoryItem @loadUser="loadUser" v-for="item in games" :key="item.gameId" :gameObj="item"/>
         </div>
     </div>
@@ -15,12 +17,16 @@
 
 import Avatar from '../components/Avatar';
 import HistoryItem from '../components/HistoryItem';
+import NoGames from '../components/NoGames';
+import Loading from '../components/Loading';
 
 export default {
     name: 'App',
     components: {
         Avatar,
-        HistoryItem
+        HistoryItem,
+        NoGames,
+        Loading
     },
     data() {
         return {
