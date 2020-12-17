@@ -3,8 +3,6 @@ import {CARD_COLOR} from "./CardColor";
 import {Deck} from "./Deck";
 import {CARD_VALUE}  from "./CardValue";
 import {NetworkManager} from "./NetworkManager";
-import {State} from "./State";
-import CONFIG from "../config";
 
 export class Player
 {
@@ -24,7 +22,7 @@ export class Player
         let header = {Authorization: `Bearer ${this.token}`}
 
         NetworkManager.getInstance().fetchInfo(
-            CONFIG.api +'users/me',
+            'users/me',
             header
         ).then((res) => {
             this.id = res.id;

@@ -5,7 +5,6 @@ import { Deck } from "./Deck";
 import {Player} from "./Player";
 import { State } from "./State";
 import {NetworkManager} from "./NetworkManager";
-import CONFIG from "../config";
 
 const ROUND_SIZE = 9;
 const BONUS_POINTS_LAST_FOLD = 5;
@@ -50,7 +49,7 @@ export class Game
         let network = NetworkManager.getInstance();
 
         network.updateDatas(
-            CONFIG.api +'games',
+            'games',
             'post',
             datas
             ).then((res) => {
@@ -69,7 +68,7 @@ export class Game
         };
         
         NetworkManager.getInstance().updateDatas(
-            CONFIG.api + this.id,
+            this.id,
             "patch",
             datas
         )

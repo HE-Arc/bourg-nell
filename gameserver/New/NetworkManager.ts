@@ -49,14 +49,14 @@ export class NetworkManager {
 
     /**
      * @function updateDatas
-     * @param url the route you want to fetch
+     * @param route the route you want to fetch
      * @param methodType the type of method (get, post, patch, ..)
      * @param body the body you need to send, please be sure that the body is a Json
      * update datas in database, if the response is 401, recreate the gameserver token
      */
-    async updateDatas(url: string, methodType: string,  body: object) {
+    async updateDatas(route: string, methodType: string,  body: object) {
         await this.checkToken();
-        const res = await fetch(url, {
+        const res = await fetch(CONFIG.api + route, {
             method: methodType,
             headers: {
                 'Accept': 'application/json',
@@ -74,9 +74,15 @@ export class NetworkManager {
         }
     }
 
-    async fetchInfo(url: string, header: any) {
+    /**
+     * @function fetchInfo
+     * @param route the route where you need to fetch the informations
+     * @param header the header that contain a user token
+     * fetch user informations from a send token
+     */
+    async fetchInfo(route: string, header: any) {
         await this.checkToken();
-        let res = await fetch(url, {
+        let res = await fetch(CONFIG.api + route, {
             headers: header
         });
 
@@ -89,5 +95,4 @@ export class NetworkManager {
             return body.me;
         }
     }
-
 }
