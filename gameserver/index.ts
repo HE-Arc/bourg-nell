@@ -5,6 +5,7 @@ import {State} from "./New/State";
 import { CONFIG } from "./config";
 
 const io = require("socket.io")();
+const MAX_PLAYER_IN_GAME = 4;
 
 let newPlayers = new Array<Player>();
 
@@ -27,7 +28,7 @@ io.on("connect", (socket: SocketIO.Socket) => {
         }
 
 
-        if(newPlayers.length == 4)
+        if(newPlayers.length == MAX_PLAYER_IN_GAME)
         {
             const game = new Game(newPlayers);
 
