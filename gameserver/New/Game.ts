@@ -150,6 +150,7 @@ export class Game
             this.currentPlayerIndex = trumpMakerId;
             this.nextPlayer();
             trumpMakerId = this.currentPlayerIndex;
+            console.log(this.scoreTeam1 < this.maxScore && this.scoreTeam2 < this.maxScore)
         }
         // when the game is finished, set the game as finished
         let wonState = (this.scoreTeam1 >= this.maxScore ? State.WonTeam1 : State.WonTeam2);
@@ -157,6 +158,7 @@ export class Game
         this.patchData(wonState);
         
         this.roomBroadcast("gameWin", wonState);
+        console.log("game has been winning")
 
     }
     
@@ -231,7 +233,9 @@ export class Game
 
         let allFoldsFromTeam1 = true;
         let allFoldsFromTeam2 = true;
-        for(let roundIndex = 0; roundIndex < ROUND_SIZE; ++roundIndex)
+        let roundIndex = 0;
+        let isWin = false;
+        while(roundIndex < ROUND_SIZE && !isWin)
         {
             let startId = this.currentPlayerIndex;
 
@@ -289,13 +293,13 @@ export class Game
             this.roomBroadcast("scoreTeam2", this.scoreTeam2);
             this.roomBroadcast("fold", foldPlayerIndex);
 
-            if (this.scoreTeam1 < this.maxScore || this.scoreTeam2 < this.maxScore) {
-                return;
+            if (this.scoreTeam1 >= this.maxScore || this.scoreTeam2 >= this.maxScore) {
+                isWin = true;
             }
-
             // Reset for next round
             this.playedCards = [];
             this.currentPlayerIndex = foldPlayerIndex;
+            roundIndex++;
         }
 
         await this.wait(NEW_ROUND_DELAY_MS);
