@@ -9,6 +9,18 @@ const MAX_PLAYER_IN_GAME = 4;
 
 let newPlayers = new Array<Player>();
 
+function checkGameCreation()
+{
+    if(newPlayers.length == MAX_PLAYER_IN_GAME)
+    {
+        const game = new Game(newPlayers,50);
+
+        game.patchData(State.Created);
+        game.playGame();
+        newPlayers = [];
+    }
+}
+
 io.on("connect", (socket: SocketIO.Socket) => {
     console.log("A connection occur ! ");
 
@@ -16,25 +28,20 @@ io.on("connect", (socket: SocketIO.Socket) => {
     socket.on("playerJoin", async (token) => {
         const player = new Player(socket, token);
 
+        const playerRemoveCb = () => {
+            newPlayers.splice(newPlayers.indexOf(player));
+        };
+
         try
         {
             await player.fetchInfo();
             socket.emit("authSuccess");
             newPlayers.push(player);
+            checkGameCreation();
         }
         catch(err) {
             console.log(`Token ${token} for socket ${socket.id} is invalid`);
             socket.emit("authFailure");
-        }
-
-
-        if(newPlayers.length == MAX_PLAYER_IN_GAME)
-        {
-            const game = new Game(newPlayers);
-
-            game.patchData(State.Created);
-            game.playGame();
-            newPlayers = [];
         }
     });
 });

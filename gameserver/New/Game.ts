@@ -53,19 +53,15 @@ export class Game
             player3: this.players[2].getID(),
             player4: this.players[3].getID(),
             scorelimit: 1000,
-        }
-        let network = NetworkManager.getInstance();
-
-        network.updateDatas(
+        };
+        
+        let res =  await NetworkManager.getInstance().updateDatas(
             'games',
             'post',
             datas
-            ).then((res) => {
-                this.id = res;
-            }).catch((error) => {
-                console.log(error);
-            }
         );
+
+        this.id = res;
     }
 
     /**
@@ -79,12 +75,12 @@ export class Game
             scoreteam2: this.scoreTeam2,
             gamestate: state
         };
-        
+
         NetworkManager.getInstance().updateDatas(
-            this.id,
+            'games/' + this.id,
             "patch",
             datas
-        )
+        );
     }
 
     /**
@@ -134,18 +130,18 @@ export class Game
 
         for(let i = 0; i < this.players.length; ++i)
         {
-            this.players[i].emitID();
+            this.players[i].emitID(i);
         }
 
         for(let i = 0; i < this.players.length; ++i)
         {
-            this.roomBroadcast("player", i, this.players[i].getName());
+            this.roomBroadcast("player", i, this.players[i].getName(), this.players[i].getGravatar());
         }
         this.roomBroadcast("gameStart");
 
         let trumpMakerId = 0;
 
-        this.patchData(State.Playing)
+        this.patchData(State.Playing);
 
         while(this.scoreTeam1 < this.maxScore && this.scoreTeam2 < this.maxScore)
         {
@@ -160,7 +156,7 @@ export class Game
         
         this.patchData(wonState);
         
-        this.roomBroadcast("gameWin", wonState)
+        this.roomBroadcast("gameWin", wonState);
 
     }
     
@@ -250,7 +246,7 @@ export class Game
                 this.nextPlayer();
             }
 
-            let currentColor = Deck.findCardColor(this.playedCards[0])
+            let currentColor = Deck.findCardColor(this.playedCards[0]);
             
             // Best card values
             let cardScores = this.playedCards.map(c => Deck.findCardPower(c, currentColor, this.currentTrumpColor));
@@ -286,12 +282,16 @@ export class Game
                 if(allFoldsFromTeam2) this.scoreTeam2 += BONUS_POINTS_MATCH;
             }
 
-            this.patchData(State.Playing)
+            this.patchData(State.Playing);
 
             // Notify score and winner of current fold
             this.roomBroadcast("scoreTeam1", this.scoreTeam1);
             this.roomBroadcast("scoreTeam2", this.scoreTeam2);
             this.roomBroadcast("fold", foldPlayerIndex);
+
+            if (this.scoreTeam1 < this.maxScore || this.scoreTeam2 < this.maxScore) {
+                return;
+            }
 
             // Reset for next round
             this.playedCards = [];

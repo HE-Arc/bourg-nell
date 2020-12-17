@@ -48,7 +48,7 @@ export class NetworkManager {
         });
         if(!response.ok) throw Error("Invalid Credentials");
         const body = await response.json();
-        return body.token;
+        return this.token = body.token;
     }
 
     /**
@@ -68,7 +68,7 @@ export class NetworkManager {
                 Authorization: `Bearer ${this.token}`
             },
             body : JSON.stringify(body),
-        })
+        });
 
         if (res.status == 401) { // if the status is 401, authentificate the server again
             this.authentification();
@@ -94,9 +94,10 @@ export class NetworkManager {
 
         if (res.status == 401) {
             this.authentification();
+            console.log("error 401");
         } else {
             const body = await res.json();
-            return body.me;
+            return body;
         }
     }
 }

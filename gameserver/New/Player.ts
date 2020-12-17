@@ -16,6 +16,7 @@ export class Player
 
     private id = 0;
     private name = "";
+    private gravatar = "";
 
     constructor(socket: SocketIO.Socket, name: string) {
         this.socket = socket;
@@ -28,16 +29,21 @@ export class Player
      */
     async fetchInfo() {
         let header = {Authorization: `Bearer ${this.token}`}
-
-        NetworkManager.getInstance().fetchInfo(
+        let res = await NetworkManager.getInstance().fetchInfo(
             'users/me',
             header
-        ).then((res) => {
-            this.id = res.id;
-            this.name = res.name;
-        }).catch((error) => {
-            console.log(error);
-        });
+        );
+        this.id = res.me.id;
+        this.name = res.me.name;
+        this.gravatar = res.me.gravatar;
+    }
+
+    /**
+     * @function getGravatar
+     * @returns return the md5 hash linked to the player avatar
+     */
+    getGravatar() {
+        return this.gravatar;
     }
 
     /**
@@ -68,8 +74,8 @@ export class Player
      * @function emitID
      * Emit the current player id to the client
      */
-    emitID() {
-        this.socket.emit("id", this.id)
+    emitID(id: number) {
+        this.socket.emit("id", id)
     }
 
     /**
