@@ -4,10 +4,10 @@
             <h2 v-if="allowPass">Choose trump</h2>
             <h2 v-else>Passed ! Choose trump</h2>
             <div class="choices">
-                <img @click="emitHearts" src="/img/cards_fr/hearts/ace.png" alt="">
-                <img @click="emitSpades" src="/img/cards_fr/spades/ace.png" alt="">
-                <img @click="emitDiamonds" src="/img/cards_fr/diamonds/ace.png" alt="">
-                <img @click="emitClubs" src="/img/cards_fr/clubs/ace.png" alt="">
+                <img @click="emitHearts" src="../../assets/hearts_ace.png" alt="">
+                <img @click="emitSpades" src="../../assets/spades_ace.png" alt="">
+                <img @click="emitDiamonds" src="../../assets/diamonds_ace.png" alt="">
+                <img @click="emitClubs" src="../../assets/clubs_ace.png" alt="">
             </div>
             <button v-if="allowPass" @click="emitPass" class="pass-button">Pass</button>
         </div>

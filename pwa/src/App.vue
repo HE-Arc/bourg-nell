@@ -1,6 +1,6 @@
 <template>
     <div>
-        <link rel="stylesheet" :href="`/${theme}.theme.css`"/>
+        <link rel="stylesheet" :href="`${publicPath}${theme}.theme.css`"/>
         <router-view :key="$route.fullPath"></router-view>
     </div>
 </template>
@@ -14,6 +14,11 @@ export default {
     name: 'App',
     components: {
         Navigation
+    },
+    data() {
+        return {
+            publicPath: process.env.BASE_URL
+        };
     },
     computed: {
         connected() {

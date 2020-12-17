@@ -59,7 +59,6 @@
             }
         }
     }
-
     
     .player
     {
@@ -242,6 +241,16 @@
                 transform: translate(-50%, -50%);
                 width: 400px;
                 animation: loading-dot 1s infinite;
+            }
+        }
+
+        &.gamewin
+        {
+            background-color: var(--base-background-color);
+            .game-recap {
+                margin: 48px auto 0 auto;
+                max-width: 600px;
+                text-align: center;
             }
         }
     }
