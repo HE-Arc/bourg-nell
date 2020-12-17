@@ -1,14 +1,18 @@
 {
-  "name": "pwa-new",
+  "name": "BourgNell",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "tsc && npm run less && vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "less": "lessc -x src/style/main.less public/main.min.css"
+    "less": "lessc -x src/style/themes/base.less public/light.theme.css && lessc -x src/style/themes/dark.less public/dark.theme.css && lessc -x src/style/main.less public/main.min.css"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.32",
+    "@fortawesome/free-regular-svg-icons": "^5.15.1",
+    "@fortawesome/free-solid-svg-icons": "^5.15.1",
+    "@fortawesome/vue-fontawesome": "^2.0.0",
     "axios": "^0.21.0",
     "core-js": "^3.6.5",
     "socket.io-client": "^2.1.0",

@@ -4,14 +4,17 @@
             <form @submit.prevent="login">
                 <h4>Welcome back !</h4>
 
-                <label for="username">Username</label>
-                <TextInputWithError v-model="username" :errors="connectErrors" name="username" tabindex="1" type="text" placeholder="Username"/>
+                <label for="username">Email</label>
+                <TextInputWithError v-model="username" :errors="connectErrors" name="username" tabindex="1" type="text" placeholder="Email"/>
 
                 <label for="password">Password</label>
                 <TextInputWithError v-model="password" name="password" tabindex="2" type="password" placeholder="Password"/>
 
                 <input tabindex="4" type="submit" name="submit" value="Sign in">
             </form>
+        </div>
+        <div>
+            Dont't have an account ? <router-link to="register">create one now !</router-link>
         </div>
     </div>
 </template>
@@ -36,10 +39,8 @@
                     email: this.username,
                     password: this.password
                 }).then(() => {
-                    console.log("Connected !");
                     this.$router.push({ name: "account" })
                 }).catch(() => {
-                    console.log("error !");
                     this.connectErrors = ["Invalid username or password"];
                 });
             }

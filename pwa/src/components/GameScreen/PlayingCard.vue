@@ -31,12 +31,17 @@
                 required: false
             }
         },
+        data() {
+            return {
+                publicPath: process.env.BASE_URL
+            };
+        },
         computed: { 
             imgName() {
                 let cardColor = CARD_COLOR[Cards.findCardColor(this.card)].toLowerCase();
                 let cardValue = CARD_VALUE[Cards.findCardValue(this.card)].toLowerCase();
                 let cardLang = this.lang || "fr";
-                return `/img/cards_${cardLang}/${cardColor}/${cardValue}.png`;
+                return `${this.publicPath}img/cards_${cardLang}/${cardColor}/${cardValue}.png`;
             },
             displayClass() {
                 return `playing-card ${this.playedDirection || ""} ${this.foldDirection()} ${this.indexPosition()}`;

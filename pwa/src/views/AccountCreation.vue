@@ -19,6 +19,9 @@
                 <input tabindex="4" type="submit" name="submit" value="Sign up">
             </form>
         </div>
+        <div>
+            Already have an account ? <router-link to="login">Sign in !</router-link>
+        </div>
     </div>
 </template>
 
@@ -39,8 +42,7 @@
                 password: "",
                 passwordRepeat: "",
                 emailTaken: false,
-                nameErrors: [],
-                passwordErrors: []
+                nameErrors: []
             }
         },
         methods: {
@@ -72,6 +74,10 @@
                 if(this.hasEmailParseErrors) errors.push("Enter a valid email");
                 if(this.emailTaken) errors.push("Email already used");
                 return errors;
+            },
+            passwordErrors() {
+                if(this.passwordRepeatErrors.length) return [""];
+                return [];
             },
             passwordRepeatErrors() {
                 let errors = [];

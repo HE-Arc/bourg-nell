@@ -1,7 +1,7 @@
 <template>
     <div>
-        <router-view></router-view>
-        <!--<Navigation/>-->
+        <link rel="stylesheet" :href="`${publicPath}${theme}.theme.css`"/>
+        <router-view :key="$route.fullPath"></router-view>
     </div>
 </template>
 
@@ -15,9 +15,17 @@ export default {
     components: {
         Navigation
     },
+    data() {
+        return {
+            publicPath: process.env.BASE_URL
+        };
+    },
     computed: {
         connected() {
             return this.$store.getters.loggedIn;
+        },
+        theme() {
+            return this.$store.state.theme;
         }
     }
 }

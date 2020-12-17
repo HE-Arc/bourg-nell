@@ -21,9 +21,9 @@
         </div>
 
         <!-- Other players -->
-        <Player :playing="player1Playing" :name="playerRightName || ''" imgPath="78d172c9cbb993794d2e9021fce57d68" pos="right"/>
-        <Player :playing="player2Playing" :name="playerTopName || ''" imgPath="78d172c9cbb993794d2e9021fce57d68" pos="top"/>
-        <Player :playing="player3Playing" :name="playerLeftName || ''" imgPath="78d172c9cbb993794d2e9021fce57d68" pos="left"/>
+        <Player :playing="player1Playing" :name="playerRightName || ''" :imgPath="playerRightIcon" pos="right"/>
+        <Player :playing="player2Playing" :name="playerTopName || ''" :imgPath="playerTopIcon" pos="top"/>
+        <Player :playing="player3Playing" :name="playerLeftName || ''" :imgPath="playerLeftIcon" pos="left"/>
 
         <!-- Current trump -->
         <CurrentTrump v-if="currentTrump" :currentTrump="currentTrump"/>
@@ -52,6 +52,9 @@
 
         <!-- Loading Modal -->
         <LoadingModal v-if="!connected || !gameStarted"/>
+
+        <!-- Loading Modal -->
+        <GameWinModal v-if="showWinModal" gameState="3" :scoreTeam1="myTeamScore" :scoreTeam2="theirTeamScore" />
     </div>
 </template>
 
@@ -62,6 +65,7 @@ import PlayingCard from "../components/GameScreen/PlayingCard";
 import Player from "../components/GameScreen/Player";
 import ChooseTrumpModal from "../components/GameScreen/ChooseTrumpModal";
 import LoadingModal from "../components/GameScreen/LoadingModal";
+import GameWinModal from "../components/GameScreen/GameWinModal";
 import CurrentTrump from "../components/GameScreen/CurrentTrump";
 import Score from "../components/GameScreen/Score";
 import {CARD_COLOR} from "../cards/CardColor";
@@ -78,7 +82,8 @@ export default {
         ChooseTrumpModal,
         CurrentTrump,
         LoadingModal,
-        Score
+        Score,
+        GameWinModal
     },
     data()
     {
@@ -92,10 +97,13 @@ export default {
 
             playerRightPlayedCard: null,
             playerRightName: null,
+            playerRightIcon: "",
             playerLeftPlayedCard: null,
             playerLeftName: null,
+            playerLeftIcon: "",
             playerTopPlayedCard: null,
             playerTopName: null,
+            playerTopIcon: "",
 
             lang: "fr",
 
@@ -110,7 +118,9 @@ export default {
             gameStarted: false,
 
             showTrumpModal: false,
-            allowPass: true
+            allowPass: true,
+
+            showWinModal: false
         }
     },
     mounted() {
@@ -137,6 +147,7 @@ export default {
 
         this.socket.on("scoreTeam1", this.onScoreTeam1);
         this.socket.on("scoreTeam2", this.onScoreTeam2);
+        this.socket.on("gameWin", this.onGameWin);
 
         this.socket.on("playCard", this.onPlayCard);
         this.socket.on("playerPlaying", (id) => {this.currentPlayerPlaying = id});
@@ -172,13 +183,25 @@ export default {
         onId(id) { this.myId = id; },
 
         // Player joined the game
-        onPlayer(index, name)
+        onPlayer(index, name, gravatar)
         {
             let relativeIndex = this.relativeIndex(index);
 
-            if(relativeIndex == 1) { this.playerRightName = name; }
-            else if(relativeIndex == 2) { this.playerTopName = name; }
-            else if(relativeIndex == 3) { this.playerLeftName = name; }
+            if(relativeIndex == 1)
+            { 
+                this.playerRightName = name;
+                this.playerRightIcon = gravatar;
+            }
+            else if(relativeIndex == 2)
+            { 
+                this.playerTopName = name;
+                this.playerTopIcon = gravatar;
+            }
+            else if(relativeIndex == 3)
+            {
+                this.playerLeftName = name;
+                this.playerLeftIcon = gravatar;
+            }
         },
 
         // You receive your cards
@@ -213,6 +236,10 @@ export default {
         // Scores updates
         onScoreTeam1(score) {if(this.myId % 2 == 0) this.myTeamScore = score; else this.theirTeamScore = score},
         onScoreTeam2(score) {if(this.myId % 2 != 0) this.myTeamScore = score; else this.theirTeamScore = score},
+
+        onGameWin(gameState) {
+            this.showWinModal = true; 
+        },
 
         // 4 cards on the board, best card fold to the player
         onFoldCards(playerWinning)

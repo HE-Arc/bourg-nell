@@ -1,5 +1,7 @@
 .account.screen
 {
+    position: relative;
+
     > .account-header
     {
         display: flex;
@@ -17,6 +19,16 @@
             height: 60px;
             margin-right: 16px;
         }
+
+        .action-buttons
+        {
+            flex: 1;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end;
+
+        }
+
     }
 
     > h3
@@ -31,6 +43,41 @@
         grid-template-columns: repeat(1, auto);
         column-gap: 24px;
         row-gap: 24px;
+    }
+
+    .fab-container
+    {
+        position: fixed;
+        width: 100%;
+        max-width: 1200px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 12px;
+        bottom: 0;
+        display: flex;
+        align-items: flex-end;
+        flex-direction: column;
+
+        > .play-button
+        {
+            cursor: pointer;
+            border-radius: 100%;
+            color: var(--secondary-text-color);
+            box-shadow: var(--lvl3-elevation-shadow);
+            font-size: 50px;
+            text-align: center;
+            box-sizing: content-box;
+            width: 80px;
+            height: 80px;
+            line-height: 80px;
+            color: var(--primary-text-color);
+            background-color: var(--lvl3-elevation-background-color);
+            transition: background-color 250ms;
+
+            &:hover {
+                background-color: var(--divider-color);
+            }
+        }
 
     }
 }

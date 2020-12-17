@@ -14,12 +14,12 @@
             },
             md5hash: {
                 type: String,
-                required: true
+                required: false
             }
         },
         computed: { 
             img() {
-                return `https://www.gravatar.com/avatar/${this.md5hash}`;
+                return `https://www.gravatar.com/avatar/${this.md5hash || ""}`;
             }
         }
     }

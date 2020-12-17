@@ -1,6 +1,6 @@
 <template>
     <div  class="loading modal">
-        <img src="/img/swisscross.png"/>
+        <img src="../../assets/swisscross.png"/>
     </div>
 </template>
 
