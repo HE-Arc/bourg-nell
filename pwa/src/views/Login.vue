@@ -4,8 +4,8 @@
             <form @submit.prevent="login">
                 <h4>Welcome back !</h4>
 
-                <label for="username">Username</label>
-                <TextInputWithError v-model="username" :errors="connectErrors" name="username" tabindex="1" type="text" placeholder="Username"/>
+                <label for="username">Email</label>
+                <TextInputWithError v-model="username" :errors="connectErrors" name="username" tabindex="1" type="text" placeholder="Email"/>
 
                 <label for="password">Password</label>
                 <TextInputWithError v-model="password" name="password" tabindex="2" type="password" placeholder="Password"/>

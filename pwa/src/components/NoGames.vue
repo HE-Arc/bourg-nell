@@ -8,11 +8,7 @@
 </template>
 
 <script>
-    import {faSadCry} from "@fortawesome/free-solid-svg-icons";
     export default {
-        name: "noGames",
-        components: {
-            faSadCry
-        }
+        name: "noGames"
     }
 </script>

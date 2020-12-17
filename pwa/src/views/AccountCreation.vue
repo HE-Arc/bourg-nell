@@ -42,8 +42,7 @@
                 password: "",
                 passwordRepeat: "",
                 emailTaken: false,
-                nameErrors: [],
-                passwordErrors: []
+                nameErrors: []
             }
         },
         methods: {
@@ -75,6 +74,10 @@
                 if(this.hasEmailParseErrors) errors.push("Enter a valid email");
                 if(this.emailTaken) errors.push("Email already used");
                 return errors;
+            },
+            passwordErrors() {
+                if(this.passwordRepeatErrors.length) return [""];
+                return [];
             },
             passwordRepeatErrors() {
                 let errors = [];
