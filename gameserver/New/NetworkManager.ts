@@ -17,6 +17,10 @@ export class NetworkManager {
         return NetworkManager.instance;
     }
 
+    /**
+     * @function checkToken
+     * Check if there is a current token, if not, create it
+     */
     async checkToken()
     {
         if(!this.token)
@@ -66,7 +70,7 @@ export class NetworkManager {
             body : JSON.stringify(body),
         })
 
-        if (res.status == 401) {
+        if (res.status == 401) { // if the status is 401, authentificate the server again
             this.authentification();
         } else if (methodType.toLowerCase() == 'post') {
             const body = await res.json();
