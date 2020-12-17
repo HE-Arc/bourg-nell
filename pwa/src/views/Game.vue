@@ -8,7 +8,6 @@
                 :key="card"
                 :card="card"
                 :handPosition="getCardHandPosition(card)"
-                :lang="lang"
             />
         </div>
 
@@ -104,8 +103,6 @@ export default {
             playerTopPlayedCard: null,
             playerTopName: null,
             playerTopIcon: "",
-
-            lang: "fr",
 
             folding: false,
             fold: null,
