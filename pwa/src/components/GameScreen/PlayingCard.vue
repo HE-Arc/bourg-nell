@@ -10,10 +10,6 @@
     export default {
         name: "PlayingCard",
         props: {
-            lang: {
-                type: String,
-                required: false
-            },
             card: {
                 type: Number,
                 required: true
@@ -41,7 +37,7 @@
                 let cardColor = CARD_COLOR[Cards.findCardColor(this.card)].toLowerCase();
                 let cardValue = CARD_VALUE[Cards.findCardValue(this.card)].toLowerCase();
                 let cardLang = this.lang || "fr";
-                return `${this.publicPath}img/cards_${cardLang}/${cardColor}/${cardValue}.png`;
+                return `${this.publicPath}img/cards/${cardColor}/${cardValue}.png`;
             },
             displayClass() {
                 return `playing-card ${this.playedDirection || ""} ${this.foldDirection()} ${this.indexPosition()}`;
