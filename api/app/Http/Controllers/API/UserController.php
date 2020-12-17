@@ -49,7 +49,7 @@ class UserController extends Controller
                 return response()->json(['user' => $user]);
             }
         } else {
-            return response()->json(['error' => 'user exists or name to long. max: 20 characters'], 400);
+            return response()->json(['error' => 'duplicate email or name to long. max: 20 characters'], 400);
         }
     }
 
