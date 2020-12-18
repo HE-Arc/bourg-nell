@@ -17,15 +17,12 @@ class UserSeeder extends Seeder
      */
     public function run()
     {   
-        $u = new User();
-        $u->name = Str::random(10);
-        $u->password = Hash::make("1234");
-        $u->email = "test" . Str::random(5) . "@gmail.com";
-        $u->gravatar = md5($u->email);
-        $u->save();
+        $this->createAdminUser();
+        $this->createUsers();
+
     }
 
-    public function createAdminUser(){
+    private function createAdminUser(){
         $adminUser = new User();
         $adminUser->name = "admin";
         $adminUser->password = Hash::make("adminpassword");
@@ -33,5 +30,18 @@ class UserSeeder extends Seeder
         $adminUser->gravatar = md5($adminUser->email);
         $adminUser->isadmin = true;
         $adminUser->save();
+    }
+
+    private function createUsers(){
+        $nameArray = ['Bob', 'Jean', 'Hector', 'Marc', 'Benoit', 'Antoine'];
+
+        foreach($nameArray as $name){
+            $u = new User();
+            $u->name = $name;
+            $u->password = Hash::make('1234');
+            $u->email = strtolower($name) . '@gmail.com';
+            $u->gravatar = md5($u->email);
+            $u->save();
+        }
     }
 }

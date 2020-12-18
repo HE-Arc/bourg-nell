@@ -14,26 +14,11 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $user = new UserSeeder();
-        $user->createAdminUser();
-        for($i = 0; $i <= 60; $i++){
-            $user->run();
-        }
+        $user->run();
 
         $game = new GameSeeder();
-        for($i = 0; $i < 15; $i++){
+        for($i = 0; $i < 5; $i++){
             $game->run();
         }
-
-        /*
-        $friend = new FriendSeeder();
-        for($i = 0; $i < 15; $i++){
-            $friend->run();
-        }
-
-        $friendInvitation = new FriendinvitationSeeder();
-        for($i = 0; $i < 5; $i++){
-            $friendInvitation->run();
-        }
-        */
     }
 }
