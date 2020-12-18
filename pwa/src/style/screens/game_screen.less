@@ -162,7 +162,8 @@
         }
     }
 
-    .current-trump
+    .current-trump,
+    .player-passed
     {
         position: fixed;
         z-index: 3;
@@ -179,12 +180,19 @@
 
         width: 30px;
         height: 30px;
+        font-size: 30px;
+        text-align: center;
 
         img
         {
             width: 100%;
             height: 100%;
         }
+    }
+
+    .player-passed
+    {
+        right: 78px;
     }
 
     .modal

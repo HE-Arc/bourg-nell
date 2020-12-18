@@ -9,6 +9,9 @@ import {
     faSpinner,
     faSignOutAlt,
     faArrowLeft,
+    faArrowRight,
+    faArrowDown,
+    faArrowUp,
     faUser,
     faShareAlt,
     faMoon
@@ -16,7 +19,10 @@ import {
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
  
-library.add(faSadCry, faSpinner, faPlayCircle, faUser, faSignOutAlt, faArrowLeft, faShareAlt, faMoon);
+library.add(
+    faSadCry, faSpinner, faPlayCircle, faUser,
+    faSignOutAlt, faArrowLeft, faArrowRight, faArrowDown, faArrowUp, faShareAlt, faMoon
+);
  
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
