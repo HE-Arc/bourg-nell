@@ -77,12 +77,6 @@
             },
             historyItemClass() {
                 let classStr = "";
-                {
-                    console.log(this.gameObj.gameid)
-                    console.log(this.myId);
-                    console.log(this.isMyIdTeam1);
-                    console.log(this.isMyIdTeam2);
-                }
                 switch(this.gameObj.gamestate)
                 {
                     case 2: classStr = "playing"; break;
