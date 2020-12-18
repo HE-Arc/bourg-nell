@@ -27,6 +27,9 @@
         <!-- Current trump -->
         <CurrentTrump v-if="currentTrump" :currentTrump="currentTrump"/>
 
+        <!-- Current trump -->
+        <PlayerPassed v-if="playerPassDirection" :direction="playerPassDirection"/>
+
         <!-- Score -->
         <Score 
             :partnerName="playerTopName || ''" 
@@ -66,6 +69,7 @@ import ChooseTrumpModal from "../components/GameScreen/ChooseTrumpModal";
 import LoadingModal from "../components/GameScreen/LoadingModal";
 import GameWinModal from "../components/GameScreen/GameWinModal";
 import CurrentTrump from "../components/GameScreen/CurrentTrump";
+import PlayerPassed from "../components/GameScreen/PlayerPassed";
 import Score from "../components/GameScreen/Score";
 import {CARD_COLOR} from "../cards/CardColor";
 
@@ -82,6 +86,7 @@ export default {
         PlayingCard,
         ChooseTrumpModal,
         CurrentTrump,
+        PlayerPassed,
         LoadingModal,
         Score,
         GameWinModal
@@ -105,6 +110,8 @@ export default {
             playerTopPlayedCard: null,
             playerTopName: null,
             playerTopIcon: "",
+
+            playerPassDirection: null,
 
             folding: false,
             fold: null,
@@ -161,7 +168,7 @@ export default {
     methods: {
         relativeIndex(index)
         {
-            return (PLAYERS_PER_GAME + index - this.myId ) % PLAYERS_PER_GAME;
+            return (PLAYERS_PER_GAME + index - this.myId) % PLAYERS_PER_GAME;
         },
         getCardHandPosition(card)
         {
@@ -205,7 +212,11 @@ export default {
         },
 
         // You receive your cards
-        onCards(cards) { this.ownCards = cards.sort(); this.currentTrump = null; },
+        onCards(cards) { 
+            this.ownCards = cards.sort(); 
+            this.currentTrump = null;
+            this.playerPassDirection = null;
+        },
 
         // You have to choose trump
         onChooseTrump() { this.allowPass = true; this.showTrumpModal = true; },
@@ -223,6 +234,19 @@ export default {
             if(relativeIndex == 0)
             {
                 this.showTrumpModal = false;
+                this.playerPassDirection = "bottom";
+            }
+            else if(relativeIndex == 1)
+            {
+                this.playerPassDirection = "right";
+            }
+            else if(relativeIndex == 2)
+            {
+                this.playerPassDirection = "top";
+            }
+            else if(relativeIndex == 3)
+            {
+                this.playerPassDirection = "left";
             }
         },
 
@@ -268,6 +292,7 @@ export default {
         // A card has been played
         onPlayCard(playerIndex, card) {
             let relativeIndex = this.relativeIndex(playerIndex);
+            
             if(relativeIndex == 0)
             {
                 this.ownCards.splice(this.ownCards.indexOf(card), 1);

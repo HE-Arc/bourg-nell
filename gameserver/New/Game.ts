@@ -15,6 +15,7 @@ const TEAM_COUNT = 2;
 
 const FOLD_DELAY_MS = 2500;
 const NEW_ROUND_DELAY_MS = 1500;
+const NEW_GIVE_DELAY_MS = 1500;
 
 /**
  * @class Game
@@ -300,6 +301,8 @@ export class Game
             this.playedCards = [];
             this.currentPlayerIndex = foldPlayerIndex;
             roundIndex++;
+
+            await this.wait(NEW_GIVE_DELAY_MS);
         }
 
         await this.wait(NEW_ROUND_DELAY_MS);
