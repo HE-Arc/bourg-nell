@@ -67,20 +67,26 @@
         },
         computed: { 
             isMyIdTeam1() {
-                return (this.gameObj.player1.id == this.myId || this.gameObj.player3 == this.myId);
+                return (this.gameObj.player1.id == this.myId || this.gameObj.player3.id == this.myId);
             },
             isMyIdTeam2() {
-                return (this.gameObj.player2.id == this.myId || this.gameObj.player4 == this.myId);
+                return (this.gameObj.player2.id == this.myId || this.gameObj.player4.id == this.myId);
             },
             won() {
                 return (this.gameObj.gamestate == 3 && this.isMyIdTeam1) || (this.gameObj.gamestate == 4 && this.isMyIdTeam2);
             },
             historyItemClass() {
                 let classStr = "";
+                {
+                    console.log(this.gameObj.gameid)
+                    console.log(this.myId);
+                    console.log(this.isMyIdTeam1);
+                    console.log(this.isMyIdTeam2);
+                }
                 switch(this.gameObj.gamestate)
                 {
                     case 2: classStr = "playing"; break;
-                    case 3: ;
+                    case 3: 
                     case 4: classStr = this.won ? "won" : "lost"; break;
                 }
                 if(this.expanded || this.opened)
