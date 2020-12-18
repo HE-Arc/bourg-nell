@@ -3,6 +3,8 @@ import {CARDS} from "./Cards";
 import { findCardScore } from "./CardScore";
 import { Deck } from "./Deck";
 import {Player} from "./Player";
+import { State } from "./State";
+import {NetworkManager} from "./NetworkManager";
 
 const ROUND_SIZE = 9;
 const BONUS_POINTS_LAST_FOLD = 5;
@@ -14,6 +16,10 @@ const TEAM_COUNT = 2;
 const FOLD_DELAY_MS = 2500;
 const NEW_ROUND_DELAY_MS = 1500;
 
+/**
+ * @class Game
+ * Representation of a current game session
+ */
 export class Game
 {
     private players = new Array<Player>();
@@ -26,6 +32,7 @@ export class Game
     private playedCards = new Array<CARDS>();
     private firstTrump = true;
     private currentTrumpColor = CARD_COLOR.SPADES;
+    private id: string = "";
 
     public constructor(players: Player[], maxScore = 1000)
     {
@@ -34,6 +41,62 @@ export class Game
         this.maxScore = maxScore;
     }
 
+    /**
+     * @function createGame
+     * create a game entry in database with all the players in game and the score limit 
+     */
+    async createGame()
+    {
+        let datas = {
+            player1: this.players[0].getID(), 
+            player2: this.players[1].getID(),
+            player3: this.players[2].getID(),
+            player4: this.players[3].getID(),
+            scorelimit: 1000,
+        };
+        
+        let res =  await NetworkManager.getInstance().updateDatas(
+            'games',
+            'post',
+            datas
+        );
+
+        this.id = res;
+    }
+
+    /**
+     * @function patchData
+     * @param state state of the game when this function is called
+     * Update database entrys at each turn, to update the scores and the state during a match
+     */
+    async patchData(state: State) {
+        let datas = {
+            scoreteam1: this.scoreTeam1,
+            scoreteam2: this.scoreTeam2,
+            gamestate: state
+        };
+
+        NetworkManager.getInstance().updateDatas(
+            'games/' + this.id,
+            "patch",
+            datas
+        );
+    }
+
+    /**
+     * @function setID
+     * @param id id of the game
+     * set the id of the game
+     */
+    public setId(id: string) {
+        this.id = id;
+    }
+
+    /**
+     * @function wait
+     * @param timems duration in ms
+     * make a pause for a given amount of time
+     */
     async wait(timems: number): Promise<void>
     {
         return new Promise((s, r) => {
@@ -43,13 +106,28 @@ export class Game
         });
     }
     
+    /**
+     * @function roomBroadcast
+     * @param event event you want to broadcast
+     * @param args all other param to send in function of the event
+     * broadcast to all players in game a event
+     */
     private roomBroadcast(event: string, ...args: any[])
     {
         this.players.forEach(p => p.getSocket().emit(event, ...args));
     }
 
+    /**
+     * @function playGame
+     * create and run a game until the end
+     */
     async playGame()
     {
+        
+        await this.createGame();
+
+        this.patchData(State.Created);
+
         for(let i = 0; i < this.players.length; ++i)
         {
             this.players[i].emitID(i);
@@ -57,12 +135,13 @@ export class Game
 
         for(let i = 0; i < this.players.length; ++i)
         {
-            this.roomBroadcast("player", i, this.players[i].getName());
+            this.roomBroadcast("player", i, this.players[i].getName(), this.players[i].getGravatar());
         }
-
         this.roomBroadcast("gameStart");
 
         let trumpMakerId = 0;
+
+        this.patchData(State.Playing);
 
         while(this.scoreTeam1 < this.maxScore && this.scoreTeam2 < this.maxScore)
         {
@@ -71,14 +150,34 @@ export class Game
             this.currentPlayerIndex = trumpMakerId;
             this.nextPlayer();
             trumpMakerId = this.currentPlayerIndex;
+            console.log(this.scoreTeam1 < this.maxScore && this.scoreTeam2 < this.maxScore)
         }
+        // when the game is finished, set the game as finished
+        let wonState = (this.scoreTeam1 >= this.maxScore ? State.WonTeam1 : State.WonTeam2);
+        
+        this.patchData(wonState);
+        
+        this.roomBroadcast("gameWin", wonState);
+        console.log("game has been winning")
+
     }
     
+    /**
+     * @function getCurrentPlayer
+     * @returns current player's turn
+     * return the current player's turn
+     */
     private getCurrentPlayer()
     {
         return this.players[this.currentPlayerIndex];
     }
 
+    /**
+     * @function addTeamScoreOfPlayer
+     * @param playerIndex index of the winner
+     * @param score score to add
+     * increment the score of the team that won the fold in function of the player index
+     */
     addTeamScoreOfPlayer(playerIndex: number, score: number)
     {
         // Player in team 1
@@ -93,6 +192,10 @@ export class Game
         }
     }
 
+    /**
+     * @function playRound
+     * play a round: give cards to players and is executing until no more cards are in the game
+     */
     async playRound()
     {
         // Distribute new cards
@@ -130,7 +233,9 @@ export class Game
 
         let allFoldsFromTeam1 = true;
         let allFoldsFromTeam2 = true;
-        for(let roundIndex = 0; roundIndex < ROUND_SIZE; ++roundIndex)
+        let roundIndex = 0;
+        let isWin = false;
+        while(roundIndex < ROUND_SIZE && !isWin)
         {
             let startId = this.currentPlayerIndex;
 
@@ -145,7 +250,7 @@ export class Game
                 this.nextPlayer();
             }
 
-            let currentColor = Deck.findCardColor(this.playedCards[0])
+            let currentColor = Deck.findCardColor(this.playedCards[0]);
             
             // Best card values
             let cardScores = this.playedCards.map(c => Deck.findCardPower(c, currentColor, this.currentTrumpColor));
@@ -181,19 +286,29 @@ export class Game
                 if(allFoldsFromTeam2) this.scoreTeam2 += BONUS_POINTS_MATCH;
             }
 
+            this.patchData(State.Playing);
+
             // Notify score and winner of current fold
             this.roomBroadcast("scoreTeam1", this.scoreTeam1);
             this.roomBroadcast("scoreTeam2", this.scoreTeam2);
             this.roomBroadcast("fold", foldPlayerIndex);
 
+            if (this.scoreTeam1 >= this.maxScore || this.scoreTeam2 >= this.maxScore) {
+                isWin = true;
+            }
             // Reset for next round
             this.playedCards = [];
             this.currentPlayerIndex = foldPlayerIndex;
+            roundIndex++;
         }
 
         await this.wait(NEW_ROUND_DELAY_MS);
     }
 
+    /**
+     * @function nextPlayer
+     * give the next player index 
+     */
     nextPlayer()
     {
         this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;

@@ -1,43 +1,113 @@
 import {CARDS} from "./Cards";
-import { CARD_COLOR } from "./CardColor";
-import { Deck } from "./Deck";
-import { CARD_VALUE } from "./CardValue";
+import {CARD_COLOR} from "./CardColor";
+import {Deck} from "./Deck";
+import {CARD_VALUE}  from "./CardValue";
+import {NetworkManager} from "./NetworkManager";
 
+/**
+ * @class Player
+ * Representation of an ingame player
+ */
 export class Player
 {
     private socket: SocketIO.Socket;
-    private name: string;
+    private token: string;
     private cards = new Array<CARDS>();
 
-    constructor(socket: SocketIO.Socket, name: string)
-    {
+    private id = 0;
+    private name = "";
+    private gravatar = "";
+
+    constructor(socket: SocketIO.Socket, name: string) {
         this.socket = socket;
-        this.name = name;
+        this.token = name;
     }
 
+    /**
+     * @function fetchInfo
+     * retrieve the name and the id of the player if his token is authorized
+     */
+    async fetchInfo() {
+        let header = {Authorization: `Bearer ${this.token}`}
+        let res = await NetworkManager.getInstance().fetchInfo(
+            'users/me',
+            header
+        );
+        this.id = res.me.id;
+        this.name = res.me.name;
+        this.gravatar = res.me.gravatar;
+    }
+
+    /**
+     * @function getGravatar
+     * @returns return the md5 hash linked to the player avatar
+     */
+    getGravatar() {
+        return this.gravatar;
+    }
+
+    /**
+     * @function getID
+     * @returns return the player's id
+     */
+    getID() {
+        return this.id;
+    }
+
+    /**
+     * @function getSocket
+     * @returns return the socket linked to the player
+     */
     getSocket() {
         return this.socket;
     }
-    
+
+    /**
+     * @function getName
+     * @returns return the player's name
+     */
     getName() {
         return this.name;
     }
 
+    /**
+     * @function emitID
+     * Emit the current player id to the client
+     */
     emitID(id: number) {
         this.socket.emit("id", id)
     }
 
+    /**
+     * @function getCards
+     * @returns return actual player's cards
+     */
     getCards() {
         return this.cards;
     }
 
+    /**
+     * @function setCards
+     * @param cards player's cards
+     * give new cards to the player, emit these cards to the client
+     */
     setCards(cards: CARDS[]) {
         this.cards = cards;
         this.socket.emit("cards", this.cards);
     }
 
-    async playCard(currentFold: CARDS[], currentTrump: CARD_COLOR): Promise<CARDS>
-    {
+    disconnect() {
+        console.log(this.id + " got disconnected");
+        this.socket.emit("disconnect");
+    }
+
+    /**
+     * @function playCard
+     * @param currentFold current card on the "table"
+     * @param currentTrump current trump color
+     * Emit a played card to the client, pop the played card of player's deck
+     */
+    async playCard(currentFold: CARDS[], currentTrump: CARD_COLOR): Promise<CARDS> {
         return new Promise((s, r) => {
             this.socket.emit("yourTurn");
             let playedCardCb = (card: CARDS) => {
@@ -52,6 +122,11 @@ export class Player
         });
     }
 
+    /**
+     * @function chooseTrump
+     * @param passed boolean that check if the trump was already passed
+     * Permit the player to choose the raw trumpCard, if the player want, he can pass to his mate, but only one time per raw
+     */
     async chooseTrump(passed = false): Promise<CARD_COLOR> {
         return new Promise((s,r) => {
             this.socket.emit(passed ? "passed" : "chooseTrump");
@@ -71,8 +146,14 @@ export class Player
         });
     }
 
-    private isCardAllowed(card: CARDS, currentTrump: CARD_COLOR, currentFold: CARDS[])
-    {
+    /**
+     * @function isCardAllowed
+     * @param card current played card
+     * @param currentTrump current trump card
+     * @param currentFold fold of played card
+     * Check if in function of the precedent card, the move is allowed
+     */
+    private isCardAllowed(card: CARDS, currentTrump: CARD_COLOR, currentFold: CARDS[]) {
         // Player must have the card
         if(!this.cards.includes(card)) return false;
         

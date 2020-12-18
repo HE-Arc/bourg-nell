@@ -1,3 +1,9 @@
+/**
+ * @enum CARDS
+ * Represents all cards in the game on 8 bits
+ * the 4 first bytes represents the color,
+ * the 4 last represents the value
+ */
 export enum CARDS
 {
     SIX_HEARTH     = 0b00010000,

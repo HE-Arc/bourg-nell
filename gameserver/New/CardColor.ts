@@ -1,3 +1,7 @@
+/**
+ * @enum CARD_COLOR
+ * represent the cards color of the cards
+ */
 export enum CARD_COLOR
 {
     HEARTS   = 0b00010000,
